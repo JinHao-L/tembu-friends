@@ -6,7 +6,9 @@ export default {
     Root: {
       path: 'root',
       screens: {
+        Login: 'login',
         Home: 'home',
+        FloorPlan: 'floorplan',
         Links: 'links',
       },
     },

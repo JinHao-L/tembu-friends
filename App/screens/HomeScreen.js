@@ -3,7 +3,8 @@ import * as React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { MonoText } from '../components/StyledText';
+import { MonoText } from '../components';
+import {Colors} from "../constants/index";
 
 export default function HomeScreen() {
   return (
@@ -92,7 +93,7 @@ function handleHelpPress() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
   },
   developmentModeText: {
     marginBottom: 20,
