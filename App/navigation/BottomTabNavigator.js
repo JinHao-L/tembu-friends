@@ -1,54 +1,69 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import * as React from 'react';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import * as React from "react";
 
-import {TabBarIcon} from '../components/index';
-import {HomeScreen, LinksScreen, LayoutScreen} from '../screens/index';
+import { TabBarIcon } from "../components/index";
+import { HomeScreen, LinksScreen, LayoutScreen } from "../screens/index";
+import { Colors } from "../constants/index";
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Home';
+const INITIAL_ROUTE_NAME = "Home";
 
-export default function BottomTabNavigator({navigation, route}) {
-    navigation.setOptions({headerTitle: getHeaderTitle(route)});
+export default function BottomTabNavigator({ navigation, route }) {
+  navigation.setOptions({
+    headerTitle: getHeaderTitle(route),
+    headerLeft: null,
+    headerStyle: {
+      backgroundColor: Colors.headerBackground,
+    },
+    headerTintColor: Colors.headerText,
+  });
 
-    return (
-        <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
-            <BottomTab.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                    title: 'Get Started',
-                    tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-code-working"/>,
-                }}
-            />
-            <BottomTab.Screen
-                name="FloorPlan"
-                component={LayoutScreen}
-                options={{
-                    title: 'Floor Plan',
-                    tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-book"/>,
-                }}
-            />
-            <BottomTab.Screen
-                name="Links"
-                component={LinksScreen}
-                options={{
-                    title: 'Resources',
-                    tabBarIcon: ({focused}) => <TabBarIcon focused={focused} name="md-book"/>,
-                }}
-            />
-        </BottomTab.Navigator>
-    );
+  return (
+    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+      <BottomTab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          title: "Get Started",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="md-code-working" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="FloorPlan"
+        component={LayoutScreen}
+        options={{
+          title: "Floor Plan",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="md-business" />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Links"
+        component={LinksScreen}
+        options={{
+          title: "Resources",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="md-book" />
+          ),
+        }}
+      />
+    </BottomTab.Navigator>
+  );
 }
 
 function getHeaderTitle(route) {
-    const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  const routeName =
+    route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
-    switch (routeName) {
-        case 'Home':
-            return 'How to get started';
-        case 'FloorPlan':
-            return 'Floor Plans';
-        case 'Links':
-            return 'Links to learn more';
-    }
+  switch (routeName) {
+    case "Home":
+      return "How to get started";
+    case "FloorPlan":
+      return "Floor Plans";
+    case "Links":
+      return "Links to learn more";
+  }
 }
