@@ -16,6 +16,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       backgroundColor: Colors.headerBackground,
     },
     headerTintColor: Colors.headerText,
+    headerTitleAlign: "center",
   });
 
   return (

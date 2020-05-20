@@ -1,87 +1,154 @@
-import React from "react";
-import {View, Button, TextInput, SafeAreaView, TouchableOpacity, Text, StyleSheet} from "react-native";
-import {Colors} from "../constants/index";
+import React, { Component } from "react";
+import {
+  View,
+  Button,
+  TextInput,
+  SafeAreaView,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Image,
+} from "react-native";
+import { Colors } from "../constants/index";
+import { AuthButton } from "../components/index";
 
-export default class SignUpScreen extends React.Component {
-    state = {
-        username: '',
-        password: '',
-    };
+class SignUpScreen extends Component {
+  state = {
+    nusNet: "",
+    username: "",
+    password: "",
+    isSignUpSuccess: false,
+  };
 
-    handleUsername = (text) => {
-        this.setState({username: text})
+  handleUsername = (text) => {
+    this.setState({ username: text });
+  };
+
+  handleId = (text) => {
+    this.setState({ nusNet: text });
+  };
+
+  handlePassword = (text) => {
+    this.setState({ password: text });
+  };
+
+  validateEntry = (user, netid, password) => {
+    if (user.length && password.length) {
+      if (netid.length !== 8 || netid.charAt(0) !== "e") {
+        alert("Please enter valid nusNet id");
+      } else {
+        alert(
+          "Under Development: \nusername entered: " +
+            user +
+            "\nnusnet entered: " +
+            netid +
+            "\npassword entered: " +
+            password
+        );
+        this.setState({ isSignUpSuccess: true });
+        // this.props.navigation.navigate('Login');
+      }
+    } else {
+      alert("Please fill up all fields");
     }
+  };
 
-    handlePassword = (text) => {
-        this.setState({password: text})
-    }
+  render() {
+    const { username, nusNet, password, isSignUpSuccess } = this.state;
 
-    render() {
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style = {styles.box}>
-                    <TextInput
-                        style = {styles.input}
-                        placeholder = "Username"
-                        placeholderTextColor = "#9a73ef"
-                        underlineColorAndroid = "transparent"
-                        autoCapitalize = "none"
-                        onChangeText = {this.handleUsername}
-                        value = {this.state.username}
-                    />
+    return (
+      <View style={styles.container}>
+        <Image
+          source={require("../assets/images/robot-dev.png")}
+          style={styles.logo}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder=" Username"
+          // placeholderStyle = {styles.inputDefault}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          onChangeText={this.handleUsername}
+          value={username}
+        />
 
-                    <TextInput
-                        style = {styles.input}
-                        placeholder = "Password"
-                        placeholderTextColor = "#9a73ef"
-                        underlineColorAndroid = "transparent"
-                        autoCapitalize = "none"
-                        onChangeText = {this.handlePassword}
-                        maxLength = {15}
-                        secureTextEntry = {true}
-                        value = {this.state.password}
-                    />
+        <TextInput
+          style={styles.input}
+          placeholder=" NUSNET"
+          // placeholderStyle = {styles.inputDefault}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          maxLength={8}
+          onChangeText={this.handleId}
+          value={nusNet}
+        />
 
-                    <TouchableOpacity
-                        onPress={() => this.props.navigation.navigate('Home')}
-                        style={styles.submitButton}>
+        <TextInput
+          style={styles.input}
+          placeholder=" Password"
+          // placeholderStyle = {styles.inputDefault}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          onChangeText={this.handlePassword}
+          maxLength={15}
+          secureTextEntry={true}
+          value={password}
+        />
 
-                        <Text style = {styles.submitButtonText}> SignUp </Text>
-                    </TouchableOpacity>
-                </View>
-            </SafeAreaView>
-        )
-    }
+        <AuthButton
+          onPress={() => this.validateEntry(username, nusNet, password)}
+          style={styles.button}
+        >
+          Sign Up
+        </AuthButton>
+        {isSignUpSuccess ? (
+          <Text
+            style={styles.text}
+            onPress={() => this.props.navigation.navigate("Login")}
+          >
+            Sign Up Successful{" "}
+          </Text>
+        ) : null}
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: Colors.background,
-    },
-    box: {
-        flex: 0.3,
-        justifyContent: 'center',
-        borderWidth: 5,
-        backgroundColor: Colors.box,
-        borderRadius: 20,
-    },
-    submitButton: {
-        backgroundColor: Colors.button,
-        padding: 10,
-        margin: 15,
-        height: 40,
-    },
-    submitButtonText: {
-        color: Colors.text,
-        textAlign: 'center'
-    },
-    input: {
-        borderColor: Colors.border,
-        borderWidth: 1,
-        margin: 15,
-        height: 40,
-    }
-})
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.background,
+  },
+  logo: {
+    width: 100,
+    height: 80,
+    resizeMode: "contain",
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  input: {
+    borderColor: Colors.border,
+    borderWidth: 1,
+    backgroundColor: "#fff",
+    fontSize: 20,
+    margin: 10,
+    height: 30,
+    width: 200,
+  },
+  // inputDefault: {
+  //     color: "#565756",
+  // },
+  button: {
+    // position: 'relative',
+    marginTop: 10,
+  },
+  text: {
+    fontSize: 20,
+    color: "green",
+  },
+});
+
+export default SignUpScreen;

@@ -2,15 +2,16 @@ import React, { Component } from "react";
 import {
   TextInput,
   View,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
 import { onSignIn } from "../auth";
 import { Colors } from "../constants";
+import { AuthButton } from "../components";
 
-export default class Login extends Component {
+class LoginScreen extends Component {
   state = {
     username: "",
     password: "",
@@ -25,44 +26,64 @@ export default class Login extends Component {
   };
 
   login = (user, pass) => {
-    // return (this.user !== '' || this.pw !== '')
-    alert("username: " + user + "password: " + pass);
+    if (this.state.username.length && this.state.password.length) {
+      alert(
+        "Under Development: \nusername entered: " +
+          user +
+          "\npassword entered: " +
+          pass
+      );
+      this.props.navigation.navigate("Root", { username: user });
+    } else {
+      alert("Please enter valid username and password");
+    }
   };
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.box}>
-          <TextInput
-            style={styles.input}
-            placeholder=" Username"
-            placeholderTextColor="#9a73ef"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            onChangeText={this.handleUsername}
-            value={this.state.username}
-          />
+      <View style={styles.container}>
+        <Image
+          source={require("../assets/images/robot-prod.png")}
+          style={styles.logo}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder=" Username"
+          placeholderStyle={styles.inputDefault}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          onChangeText={this.handleUsername}
+          value={this.state.username}
+        />
 
-          <TextInput
-            style={styles.input}
-            placeholder=" Password"
-            placeholderTextColor="#9a73ef"
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-            onChangeText={this.handlePassword}
-            maxLength={15}
-            secureTextEntry={true}
-            value={this.state.password}
-          />
+        <TextInput
+          style={styles.input}
+          placeholder=" Password"
+          placeholderStyle={styles.inputDefault}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+          onChangeText={this.handlePassword}
+          maxLength={15}
+          secureTextEntry={true}
+          value={this.state.password}
+        />
 
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Root")}
-            style={styles.submitButton}
+        <View style={styles.buttonContainer}>
+          <AuthButton
+            onPress={() => this.login(this.state.username, this.state.password)}
+            style={styles.button}
           >
-            <Text style={styles.submitButtonText}> Login </Text>
-          </TouchableOpacity>
+            Login
+          </AuthButton>
+
+          <AuthButton
+            onPress={() => this.props.navigation.navigate("SignUp")}
+            style={styles.button}
+          >
+            Register
+          </AuthButton>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -70,32 +91,36 @@ export default class Login extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
     justifyContent: "center",
-    padding: 20,
+    alignItems: "center",
     backgroundColor: Colors.background,
   },
-  box: {
-    flex: 0.3,
-    justifyContent: "center",
-    borderWidth: 2,
-    backgroundColor: Colors.box,
-    borderRadius: 20,
-  },
-  submitButton: {
-    backgroundColor: Colors.button,
-    padding: 10,
-    margin: 15,
-    height: 40,
-  },
-  submitButtonText: {
-    color: Colors.noticeText,
-    textAlign: "center",
+  logo: {
+    width: 100,
+    height: 80,
+    resizeMode: "contain",
+    marginBottom: 10,
   },
   input: {
     borderColor: Colors.border,
     borderWidth: 1,
-    // backgroundColor: Colors.WHITE,
-    margin: 15,
-    height: 40,
+    backgroundColor: "#fff",
+    margin: 10,
+    height: 30,
+    width: 200,
+  },
+  inputDefault: {
+    color: "#565756",
+  },
+  buttonContainer: {
+    position: "relative",
+    top: 10,
+  },
+  button: {
+    margin: 5,
+    width: 67,
   },
 });
+
+export default LoginScreen;
