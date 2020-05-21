@@ -1,5 +1,3 @@
-import { MonoText } from "./StyledText";
-import TabBarIcon from "./TabBarIcon";
-import AuthButton from "./AuthButton";
-
-export { MonoText, TabBarIcon, AuthButton };
+export MonoText from './StyledText';
+export TabBarIcon from './TabBarIcon';
+export AuthButton from './AuthButton';
