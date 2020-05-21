@@ -1,7 +1,4 @@
-import HomeScreen from "./HomeScreen";
-import LinksScreen from "./LinksScreen";
-import LoginScreen from "./LoginScreen";
-import LayoutScreen from "./FloorPlan";
-import SignUpScreen from "./SignUpScreen";
-
-export { HomeScreen, LinksScreen, LoginScreen, LayoutScreen, SignUpScreen};
+export HomeScreen from './HomeScreen';
+export LinksScreen from './LinksScreen';
+export LayoutScreen from './FloorPlan';
+export { SignInScreen, SignUpScreen, LoadingScreen } from './AuthenticationScreens';

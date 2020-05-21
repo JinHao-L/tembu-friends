@@ -1,32 +1,42 @@
 {
-  "expo": {
-    "name": "TembuFriends",
-    "slug": "TembuFriends",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./App/assets/images/icon.png",
-    "scheme": "myapp",
-    "splash": {
-      "image": "./App/assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
+    "expo": {
+        "name": "TembuFriends",
+        "slug": "TembuFriends",
+        "scheme": "tembufriends",
+        "notification": {
+            "icon": "./App/assets/images/notification-icon.png",
+            "androidMode": "default"
+        },
+        "platforms": ["ios", "android", "web"],
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./App/assets/images/icon.png",
+        "splash": {
+            "image": "./App/assets/images/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "bundleIdentifier": "com.nus.tembu-friends",
+            "supportsTablet": true,
+            "infoPlist": {
+                "NSCameraUsageDescription": "To take picture of QR code"
+            },
+            "config": {}
+        },
+        "android": {
+            "package": "com.nus.tembu_friends",
+            "googleServicesFile": "",
+            "permissions": []
+        },
+        "web": {
+            "favicon": "./assets/images/favicon.png"
+        },
+        "description": "",
+        "githubUrl": "https://github.com/JinHao-L/tembu-friends"
     }
-  }
 }

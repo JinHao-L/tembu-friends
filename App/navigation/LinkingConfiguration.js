@@ -1,16 +1,16 @@
 import * as Linking from 'expo-linking';
 
 export default {
-  prefixes: [Linking.makeUrl('/')],
-  config: {
-    Root: {
-      path: 'root',
-      screens: {
-        Login: 'login',
-        Home: 'home',
-        FloorPlan: 'floorplan',
-        Links: 'links',
-      },
+    prefixes: [Linking.makeUrl('/')],
+    config: {
+        Root: {
+            path: 'root',
+            screens: {
+                Login: 'login',
+                Home: 'home',
+                FloorPlan: 'floorplan',
+                Links: 'links',
+            },
+        },
     },
-  },
 };
