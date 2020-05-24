@@ -10,6 +10,8 @@ export default {
     tabIconSelected: tintColor,
     tabBar: '#fefefe',
 
+    formInputIcon: '#2C384A',
+
     errorBackground: 'red',
     errorText: '#fff',
 
@@ -21,9 +23,9 @@ export default {
 
     background: '#fff',
     box: '#fefefe',
-    border: '#000000',
+    inputBorder: '#000000',
     text: '#000000',
 
-    button: '#003D7C',
+    button: '#228B22',
     buttonText: '#fff',
 };

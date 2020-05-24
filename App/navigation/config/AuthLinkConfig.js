@@ -4,12 +4,11 @@ export default {
     prefixes: [Linking.makeUrl('/')],
     config: {
         Root: {
-            path: 'root',
+            path: 'auth',
             screens: {
-                Login: 'login',
-                Home: 'home',
-                FloorPlan: 'floorplan',
-                Links: 'links',
+                SignUp: 'register',
+                SignIn: 'login',
+                ForgetPassword: 'pwreset',
             },
         },
     },

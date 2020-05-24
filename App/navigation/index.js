@@ -1,3 +1,5 @@
-export AuthNavigator from './AuthNavigator';
-export BottomTabNavigator from './BottomTabNavigator';
-export LinkingConfiguration from './LinkingConfiguration';
+import RootNavigator from './RootNavigator';
+// export AppNavigator from './AppNavigator';
+// export AuthNavigator from './AuthNavigator';
+
+export default RootNavigator;
