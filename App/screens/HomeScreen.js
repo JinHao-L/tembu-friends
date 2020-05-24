@@ -9,33 +9,19 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-// import {  } from 'react-native-gesture-handler';
+import { SignOutButton } from '../components';
 import firebase from 'firebase';
 
 import { MonoText } from '../components/index';
 import { Colors } from '../constants/index';
 
 export default class HomeScreen extends Component {
-    state = { user: {} };
-
-    componentDidMount() {
-        this.firebaseUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                this.setState({ user: user });
-            } else {
-                this.props.navigation.navigate('Auth');
-            }
-        });
-    }
-
-    componentWillUnmount() {
-        this.firebaseUnsubscribe();
-    }
-
     render() {
         return (
             <View style={styles.container}>
-                <Text>{this.state.user.email}</Text>
+                <SignOutButton>
+                    <Text>SignOut</Text>
+                </SignOutButton>
                 <ScrollView
                     style={styles.container}
                     contentContainerStyle={styles.contentContainer}
@@ -59,15 +45,6 @@ export default class HomeScreen extends Component {
                         <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
                             <MonoText>screens/HomeScreen.js</MonoText>
                         </View>
-
-                        {/*<Text>{this.state.user.email}</Text>*/}
-                        <TouchableOpacity
-                            onPress={() => {
-                                firebase.auth().signOut();
-                            }}
-                        >
-                            <Text>Log Off</Text>
-                        </TouchableOpacity>
 
                         <Text style={styles.getStartedText}>
                             Change any of the text, save the file, and your app will automatically
@@ -141,7 +118,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.background,
-        alignItems: 'center',
+        // alignItems: 'center',
     },
     developmentModeText: {
         marginBottom: 20,
@@ -224,5 +201,9 @@ const styles = StyleSheet.create({
     helpLinkText: {
         fontSize: 14,
         color: '#2e78b7',
+    },
+    buttonText: {
+        fontSize: 24,
+        color: '#ffe2ff',
     },
 });

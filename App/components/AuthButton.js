@@ -1,12 +1,19 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Colors } from '../constants';
+import { MainText } from './MyAppText';
 
 const AuthButton = (property) => {
-    const { style, onPress, children } = property;
+    const { style, onPress, loading, children, ...others } = property;
     return (
-        <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-            <Text style={styles.text}> {children} </Text>
+        <TouchableOpacity {...others} style={[styles.container, style]} onPress={onPress}>
+            {loading ? (
+                <View>
+                    <ActivityIndicator size="small" color="white" />
+                </View>
+            ) : (
+                <MainText style={styles.text}> {children} </MainText>
+            )}
         </TouchableOpacity>
     );
 };
@@ -20,7 +27,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 14,
-        color: Colors.buttonText,
+        color: 'white',
         textAlign: 'center',
     },
 });

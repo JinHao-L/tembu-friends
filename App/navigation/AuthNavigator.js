@@ -1,26 +1,25 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
-import { LoadingScreen, SignUpScreen, SignInScreen } from '../screens/index';
-import { Colors } from '../constants';
+import { SignUpScreen, SignInScreen, ForgetPassword } from '../screens/index';
+import { AuthLinkConfig } from './config';
 
-const AuthStack = createStackNavigator();
+const LoginStack = createStackNavigator();
 
-function AuthNavigator({ navigation, route }) {
+function AuthNavigator({ navigation }) {
     navigation.setOptions({
         headerShown: false,
     });
+
     return (
-        <AuthStack.Navigator
-            initialRouteName="Loading"
-            screenOptions={{
-                headerShown: false,
-            }}
-        >
-            <AuthStack.Screen name="Loading" component={LoadingScreen} />
-            <AuthStack.Screen name="SignUp" component={SignUpScreen} />
-            <AuthStack.Screen name="SignIn" component={SignInScreen} />
-        </AuthStack.Navigator>
+        // <NavigationContainer linking={AuthLinkConfig}>
+        <LoginStack.Navigator initialRouteName="SignIn" headerMode="none">
+            <LoginStack.Screen name="SignIn" component={SignInScreen} />
+            <LoginStack.Screen name="SignUp" component={SignUpScreen} />
+            <LoginStack.Screen name="ForgetPassword" component={ForgetPassword} />
+        </LoginStack.Navigator>
+        // </NavigationContainer>
     );
 }
 

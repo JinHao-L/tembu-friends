@@ -1,4 +1,3 @@
-import Colors from './Colors';
-import Layout from './Layout';
-
-export { Layout, Colors };
+export Colors from './Colors';
+export Layout from './Layout';
+export * from './AppConstants';
