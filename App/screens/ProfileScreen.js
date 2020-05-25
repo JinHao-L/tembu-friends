@@ -1,29 +1,22 @@
-import React from 'react';
-import { View, Button, Text, Card, StyleSheet } from 'react-native';
-import { onSignOut } from './auth';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
 import { Colors } from '../constants';
+import { withFirebase } from '../config/Firebase';
+import { AuthButton } from '../components';
 
-const ProfilePage = () => {
-    // constructor(props) {
-    //     super(props);
-    //
-    //     // this.toggleTheme = () => {
-    //     //     this.setState(state => ({
-    //     //         theme: state.theme === themes.dark
-    //     //             ? themes.light
-    //     //             : themes.dark,
-    //     //     }))
-    //     // };
-    //
-    //     // this.state = {
-    //     //     theme: themes.light,
-    //     //     toggleTheme: this.toggleTheme,
-    //     // };
-    // }
+class ProfilePage extends Component {
+    signOut = async () => {
+        try {
+            await this.props.firebase.signOut();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    return (
-        <View style={styles.container}>
-            <Card title="John">
+    render() {
+        return (
+            <View style={styles.container}>
                 <View
                     style={[
                         styles.box,
@@ -37,21 +30,11 @@ const ProfilePage = () => {
                 >
                     <Text> Ipsum Lorem </Text>
                 </View>
-                <Button
-                    style={[
-                        styles.button,
-                        // {backgroundColor: currTheme.background}
-                    ]}
-                    title="Sign Out"
-                    onPress={() => onSignOut()}
-                />
-            </Card>
-            {/* <ThemeContext.Provider value = {this.state}> */}
-            {/*    <ThemeTogglerButton/> */}
-            {/* </ThemeContext.Provider> */}
-        </View>
-    );
-};
+                <AuthButton onPress={this.signOut}>Sign Out</AuthButton>
+            </View>
+        );
+    }
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -75,4 +58,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfilePage;
+export default withFirebase(ProfilePage);

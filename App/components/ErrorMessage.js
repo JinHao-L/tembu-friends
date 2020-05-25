@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 import { MainText } from './MyAppText';
+import { Colors } from '../constants/index';
 
 function ErrorMessage({ error }) {
     return (
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     errorText: {
         fontSize: 12,
         textAlign: 'center',
-        color: 'red',
+        color: Colors.errorText,
         flexWrap: 'wrap',
     },
 });

@@ -3,6 +3,7 @@ import { View, FlatList, ActivityIndicator, Text, StyleSheet } from 'reactnative
 import firebaseDb from '../../firebaseDb';
 import { Colors } from '../constants/index';
 
+// Admin feature
 class UserListScreen extends React.Component {
     state = {
         isLoading: true,

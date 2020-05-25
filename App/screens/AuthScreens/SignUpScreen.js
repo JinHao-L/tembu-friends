@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         // fontWeight: '700',
-        color: 'green',
+        color: Colors.greenText,
         marginBottom: 10,
         textAlign: 'left',
     },
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         flexWrap: 'wrap',
         textAlign: 'left',
-        color: 'green',
+        color: Colors.greenText,
         paddingLeft: 10,
     },
     titleContainer: {
@@ -439,10 +439,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     validInput: {
-        borderColor: 'gray',
+        borderColor: Colors.defaultBorder,
     },
     errorInput: {
-        borderColor: 'red',
+        borderColor: Colors.errorBorder,
     },
     box: {
         flex: 1,
@@ -457,11 +457,11 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         fontSize: 15,
         textAlign: 'center',
-        color: 'black',
+        color: Colors.defaultText,
         marginBottom: 20,
     },
     hyperlink: {
-        color: 'green',
+        color: Colors.greenText,
     },
 });
 

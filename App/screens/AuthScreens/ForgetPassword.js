@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 30,
         // fontWeight: '700',
-        color: 'green',
+        color: Colors.greenText,
         marginBottom: 10,
         textAlign: 'center',
     },
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     validInput: {
-        borderColor: 'gray',
+        borderColor: Colors.defaultBorder,
     },
     errorInput: {
-        borderColor: 'red',
+        borderColor: Colors.errorBorder,
     },
     box: {
         marginTop: 10,
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     successMessage: {
-        color: '#4BB543',
+        color: Colors.successText,
         textAlign: 'center',
         fontSize: 16,
     },
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         fontSize: 15,
         textAlign: 'center',
-        color: 'green',
+        color: Colors.greenText,
         marginBottom: 20,
     },
 });

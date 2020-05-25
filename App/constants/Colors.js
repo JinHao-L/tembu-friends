@@ -12,8 +12,10 @@ export default {
 
     formInputIcon: '#2C384A',
 
-    errorBackground: 'red',
-    errorText: '#fff',
+    errorBackground: '#fff',
+    errorText: '#FF0000',
+
+    successText: '#4BB543',
 
     warningBackground: '#EAEB5E',
     warningText: '#666804',
@@ -23,9 +25,15 @@ export default {
 
     background: '#fff',
     box: '#fefefe',
-    inputBorder: '#000000',
-    text: '#000000',
 
-    button: '#228B22',
+    defaultBorder: 'gray',
+    errorBorder: 'red',
+
+    defaultText: '#000000',
+    greenText: '#248458',
+    whiteText: '#fff',
+
+    button: '#248458',
     buttonText: '#fff',
+    buttonLoading: '#D9D9D9',
 };
