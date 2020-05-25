@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import { withFirebase } from '../../config/Firebase';
-import { Colors, NUSEmailSignature, Layout } from '../../constants';
+import { Colors, NUSEmailSignature } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
 
 class SignInScreen extends Component {
@@ -30,7 +30,8 @@ class SignInScreen extends Component {
         passwordIcon: 'ios-eye',
         passwordVisibility: true,
     };
-
+    // TODO: Pop-up to ensure that email is verified
+    // View: https://stackoverflow.com/questions/57762736/firebase-auth-createuserwithemailandpassword-prevent-login-until-email-is
     onSignInSuccess() {
         this.setState({
             nusEmail: '',
@@ -97,6 +98,7 @@ class SignInScreen extends Component {
 
         try {
             const response = await this.props.firebase.signInWithEmail(nusEmail, password);
+
             if (response.user) {
                 this.onSignInSuccess.bind(this)();
             }
@@ -137,7 +139,6 @@ class SignInScreen extends Component {
                     <View>
                         <View style={styles.titleContainer}>
                             <MainText style={styles.title}> TembuFriends </MainText>
-                            <MainText style={styles.intro}> Login</MainText>
                         </View>
 
                         <View style={styles.form}>
@@ -233,17 +234,9 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         // fontWeight: '700',
-        color: 'green',
+        color: Colors.greenText,
         marginBottom: 10,
         textAlign: 'left',
-    },
-    intro: {
-        fontSize: 15,
-        fontWeight: '200',
-        flexWrap: 'wrap',
-        textAlign: 'left',
-        color: 'green',
-        paddingLeft: 10,
     },
     titleContainer: {
         flex: 2,
@@ -262,10 +255,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     validInput: {
-        borderColor: 'gray',
+        borderColor: Colors.defaultBorder,
     },
     errorInput: {
-        borderColor: 'red',
+        borderColor: Colors.errorBorder,
     },
     box: {
         flex: 1,
@@ -285,11 +278,11 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         fontSize: 15,
         textAlign: 'center',
-        color: 'black',
+        color: Colors.defaultText,
         marginBottom: 20,
     },
     hyperlink: {
-        color: 'green',
+        color: Colors.greenText,
     },
 });
 

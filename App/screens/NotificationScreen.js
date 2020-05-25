@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 import { Colors } from '../constants/index';
 
-export default function LinksScreen() {
+function NotificationScreen() {
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <OptionButton
@@ -30,7 +30,6 @@ export default function LinksScreen() {
     );
 }
 
-// eslint-disable-next-line react/prop-types
 function OptionButton({ icon, label, onPress, isLastOption }) {
     return (
         <RectButton style={[styles.option, isLastOption && styles.lastOption]} onPress={onPress}>
@@ -74,3 +73,5 @@ const styles = StyleSheet.create({
         marginTop: 1,
     },
 });
+
+export default NotificationScreen;

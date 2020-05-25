@@ -54,14 +54,22 @@ class RootNavigator extends Component {
 
         return (
             <NavigationContainer linking={LinkConfig}>
-                <RootStack.Navigator headerMode="none">
+                <RootStack.Navigator>
                     {loading.isUserLoading || loading.isAssetsLoading ? (
                         // Not ready yet
-                        <RootStack.Screen name="Loading" component={LoadingScreen} />
+                        <RootStack.Screen
+                            name="Loading"
+                            component={LoadingScreen}
+                            options={{ headerShown: 'none' }}
+                        />
                     ) : user ? (
                         <RootStack.Screen name="App" component={AppNavigator} />
                     ) : (
-                        <RootStack.Screen name="Auth" component={AuthNavigator} />
+                        <RootStack.Screen
+                            name="Auth"
+                            component={AuthNavigator}
+                            options={{ headerShown: 'none' }}
+                        />
                     )}
                 </RootStack.Navigator>
             </NavigationContainer>

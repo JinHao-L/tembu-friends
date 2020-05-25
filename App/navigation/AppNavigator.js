@@ -1,62 +1,65 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import { Colors } from '../constants/index';
 import { TabBarIcon } from '../components/index';
-import { HomeScreen, LinksScreen, LayoutScreen } from '../screens/index';
+import { HomeScreen, DiscoverScreen, NotificationScreen, ProfileScreen } from '../screens/index';
+import { withFirebase } from '../config/Firebase';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
-class AppNavigator extends Component {
-    // componentDidMount() {
-    //     const { navigation, route } = this.state;
-    //
-    //     navigation.setOptions({
-    //         headerTitle: getHeaderTitle(route),
-    //         headerLeft: null,
-    //         headerStyle: {
-    //             backgroundColor: Colors.headerBackground,
-    //         },
-    //         headerTintColor: Colors.headerText,
-    //         headerTitleAlign: 'center',
-    //     });
-    // }
-    render() {
-        return (
-            <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
-                <BottomTab.Screen
-                    name="Home"
-                    component={HomeScreen}
-                    options={{
-                        title: 'Get Started',
-                        tabBarIcon: ({ focused }) => (
-                            <TabBarIcon focused={focused} name="md-code-working" />
-                        ),
-                    }}
-                />
-                <BottomTab.Screen
-                    name="FloorPlan"
-                    component={LayoutScreen}
-                    options={{
-                        title: 'Floor Plan',
-                        tabBarIcon: ({ focused }) => (
-                            <TabBarIcon focused={focused} name="md-business" />
-                        ),
-                    }}
-                />
-                <BottomTab.Screen
-                    name="Links"
-                    component={LinksScreen}
-                    options={{
-                        title: 'Resources',
-                        tabBarIcon: ({ focused }) => (
-                            <TabBarIcon focused={focused} name="md-book" />
-                        ),
-                    }}
-                />
-            </BottomTab.Navigator>
-        );
-    }
+function AppNavigator({ navigation, route }) {
+    navigation.setOptions({
+        headerTitle: getHeaderTitle(route),
+        headerLeft: null,
+        headerStyle: {
+            backgroundColor: Colors.headerBackground,
+        },
+        headerTintColor: Colors.headerText,
+        headerTitleAlign: 'center',
+    });
+
+    return (
+        <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+            <BottomTab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    title: 'Welcome',
+                    tabBarIcon: ({ focused }) => (
+                        <TabBarIcon focused={focused} name="md-code-working" />
+                    ),
+                }}
+            />
+            <BottomTab.Screen
+                name="Discover"
+                component={DiscoverScreen}
+                options={{
+                    title: 'Discover Friends',
+                    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-search" />,
+                }}
+            />
+            <BottomTab.Screen
+                name="Notification"
+                component={NotificationScreen}
+                options={{
+                    title: 'Notifications',
+                    tabBarIcon: ({ focused }) => (
+                        <TabBarIcon focused={focused} name="md-notifications" />
+                    ),
+                }}
+            />
+            <BottomTab.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{
+                    title: 'My Profile',
+                    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-person" />,
+                }}
+            />
+        </BottomTab.Navigator>
+    );
 }
 
 function getHeaderTitle(route) {
@@ -65,11 +68,14 @@ function getHeaderTitle(route) {
     switch (routeName) {
         case 'Home':
             return 'Welcome Home';
-        case 'FloorPlan':
-            return 'Floor Plans';
-        case 'Links':
-            return 'Links to learn more';
+        // return 'Welcome Home ' + this.props.firebase.getDisplayName();
+        case 'Discover':
+            return 'Make Friends';
+        case 'Notification':
+            return 'Notifications';
+        case 'Profile':
+            return 'My Profile';
     }
 }
 
-export default AppNavigator;
+export default withFirebase(AppNavigator);
