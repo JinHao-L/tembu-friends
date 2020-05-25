@@ -23,14 +23,16 @@ class ForgetPassword extends Component {
 
         // Control - others
         isLoading: false,
+        isSuccess: false,
     };
 
     onResetSuccess() {
         this.setState({
             nusEmail: '',
+            isSuccess: true,
         });
         //TODO: Pop-up here
-        this.props.navigation.navigate('SignIn');
+        // this.props.navigation.navigate('SignIn');
     }
 
     onResetFailure(error) {
@@ -52,8 +54,8 @@ class ForgetPassword extends Component {
             this.setState({ generalError: 'Network error' });
         } else {
             // Others
-            this.setState({ generalError: 'Unknown error ' + errorCode });
-            console.warn('Unknown error: ' + errorMessage);
+            this.setState({ generalError: 'Unknown error' });
+            console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
     }
 
@@ -71,7 +73,7 @@ class ForgetPassword extends Component {
         try {
             await this.props.firebase.passwordReset(nusEmail);
             console.log('Password reset email sent successfully');
-            this.onResetSuccess.bind(this);
+            this.onResetSuccess.bind(this)();
         } catch (error) {
             this.onResetFailure.bind(this)(error);
         } finally {
@@ -88,7 +90,7 @@ class ForgetPassword extends Component {
     }
 
     render() {
-        const { nusEmail, emailError, generalError, isLoading } = this.state;
+        const { nusEmail, emailError, generalError, isLoading, isSuccess } = this.state;
 
         return (
             <KeyboardAvoidingView
@@ -131,6 +133,9 @@ class ForgetPassword extends Component {
                                     Next
                                 </AuthButton>
                                 <ErrorMessage error={generalError} />
+                                <MainText style={styles.successMessage}>
+                                    {isSuccess ? 'Reset mail successfully sent' : null}
+                                </MainText>
                             </View>
                         </View>
 
@@ -159,7 +164,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 30,
-        fontWeight: '700',
+        // fontWeight: '700',
         color: 'green',
         marginBottom: 10,
         textAlign: 'center',
@@ -175,7 +180,6 @@ const styles = StyleSheet.create({
     },
     form: {
         flex: 2,
-        // alignItems: 'center',
         justifyContent: 'flex-start',
         marginTop: 30,
         marginHorizontal: 30,
@@ -197,6 +201,11 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 10,
+    },
+    successMessage: {
+        color: '#4BB543',
+        textAlign: 'center',
+        fontSize: 16,
     },
     backLoginText: {
         position: 'absolute',

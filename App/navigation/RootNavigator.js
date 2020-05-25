@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import AppNavigator from './AppNavigator';
 import AuthNavigator from './AuthNavigator';
-import { LoadingScreen } from '../screens/AuthScreens/index';
+import { LoadingScreen } from '../screens/index';
 import { withFirebase } from '../config/Firebase';
 import { NavigationContainer } from '@react-navigation/native';
 import LinkConfig from './config/LinkConfig';
@@ -20,7 +19,7 @@ class RootNavigator extends Component {
             isUserLoading: true,
             isAssetsLoading: true,
         },
-        user: '',
+        user: null,
     };
 
     async componentDidMount() {
@@ -30,10 +29,7 @@ class RootNavigator extends Component {
             });
 
             await this.props.firebase.checkUserAuth((result) => {
-                this.setState({ user: result });
-                if (this.state.isUserLoading) {
-                    this.setState({ loading: { isUserLoading: false } });
-                }
+                this.setState({ user: result, loading: { isUserLoading: false } });
             });
         } catch (error) {
             console.log(error);

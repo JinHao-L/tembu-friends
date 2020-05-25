@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { Colors } from '../../constants';
+import { Colors } from '../constants';
 
 class LoadingScreen extends Component {
     render() {

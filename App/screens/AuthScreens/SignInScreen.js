@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import { withFirebase } from '../../config/Firebase';
-import { Colors, NUSEmailSignature } from '../../constants';
+import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
 
 class SignInScreen extends Component {
@@ -61,8 +61,8 @@ class SignInScreen extends Component {
             this.setState({ generalError: 'Network error' });
         } else {
             // Others
-            this.setState({ generalError: errorMessage });
-            console.warn('Unknown error: ' + errorCode);
+            this.setState({ generalError: 'Unknown error' });
+            console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
     }
 
@@ -94,13 +94,17 @@ class SignInScreen extends Component {
     async signIn() {
         const { nusEmail, password } = this.state;
         this.setState({ isLoading: true });
-        await this.props.firebase
-            .signInWithEmail(nusEmail, password)
-            .then(this.onSignInSuccess.bind(this))
-            .catch((error) => {
-                this.onSignInFailure.bind(this)(error);
-            })
-            .finally(this.setState({ isLoading: false }));
+
+        try {
+            const response = await this.props.firebase.signInWithEmail(nusEmail, password);
+            if (response.user) {
+                this.onSignInSuccess.bind(this)();
+            }
+        } catch (error) {
+            this.onSignInFailure.bind(this)(error);
+        } finally {
+            this.setState({ isLoading: false });
+        }
     }
 
     validateInputAndSignIn() {
@@ -132,7 +136,8 @@ class SignInScreen extends Component {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         <View style={styles.titleContainer}>
-                            <MainText style={styles.title}>Tembu Friends</MainText>
+                            <MainText style={styles.title}> TembuFriends </MainText>
+                            <MainText style={styles.intro}> Login</MainText>
                         </View>
 
                         <View style={styles.form}>
@@ -178,7 +183,9 @@ class SignInScreen extends Component {
                                         </TouchableOpacity>
                                     }
                                 />
+                                <MainText />
                             </View>
+
                             <View style={styles.box}>
                                 <MainText
                                     style={[styles.hyperlink, styles.forgetPasswordText]}
@@ -186,8 +193,6 @@ class SignInScreen extends Component {
                                 >
                                     Forgotten password?
                                 </MainText>
-                            </View>
-                            <View style={styles.box}>
                                 <AuthButton
                                     onPress={this.validateInputAndSignIn.bind(this)}
                                     style={styles.button}
@@ -201,7 +206,7 @@ class SignInScreen extends Component {
 
                         <View style={styles.bottom}>
                             <MainText style={styles.registerText}>
-                                Don't have an Account?{' '}
+                                Don't have an account?{' '}
                                 <MainText
                                     style={styles.hyperlink}
                                     onPress={this.goToRegister.bind(this)}
@@ -227,15 +232,22 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 40,
-        fontWeight: '700',
+        // fontWeight: '700',
         color: 'green',
         marginBottom: 10,
         textAlign: 'left',
     },
+    intro: {
+        fontSize: 15,
+        fontWeight: '200',
+        flexWrap: 'wrap',
+        textAlign: 'left',
+        color: 'green',
+        paddingLeft: 10,
+    },
     titleContainer: {
         flex: 2,
         justifyContent: 'flex-end',
-        // alignItems: 'flex-start',
     },
     form: {
         flex: 1,
@@ -244,7 +256,7 @@ const styles = StyleSheet.create({
         // marginHorizontal: 30,
     },
     bottom: {
-        flex: 1,
+        flex: 1.5,
         justifyContent: 'flex-end',
         marginBottom: 36,
         alignItems: 'center',
