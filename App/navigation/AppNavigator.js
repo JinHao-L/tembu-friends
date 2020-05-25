@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { TabBarIcon } from '../components/index';
 import { HomeScreen, LinksScreen, LayoutScreen } from '../screens/index';
-import { Colors } from '../constants/index';
-import { HomeLinkConfig } from './config';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -26,19 +23,7 @@ class AppNavigator extends Component {
     // }
     render() {
         return (
-            // <NavigationContainer linking={HomeLinkConfig}>
-            <BottomTab.Navigator
-                initialRouteName={INITIAL_ROUTE_NAME}
-                // setOptions={{
-                //     headerTitle: getHeaderTitle(this.state.route),
-                //     headerLeft: null,
-                //     headerStyle: {
-                //         backgroundColor: Colors.headerBackground,
-                //     },
-                //     headerTintColor: Colors.headerText,
-                //     headerTitleAlign: 'center',
-                // }}
-            >
+            <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
                 <BottomTab.Screen
                     name="Home"
                     component={HomeScreen}
@@ -70,7 +55,6 @@ class AppNavigator extends Component {
                     }}
                 />
             </BottomTab.Navigator>
-            // </NavigationContainer>
         );
     }
 }

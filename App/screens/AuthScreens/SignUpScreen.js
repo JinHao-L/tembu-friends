@@ -78,8 +78,8 @@ class SignUpScreen extends Component {
             this.setState({ generalError: 'Network error' });
         } else {
             // Others
-            this.setState({ generalError: 'Unknown error: ' + errorCode });
-            console.warn('Unknown error: ' + errorMessage);
+            this.setState({ generalError: 'Unknown error' });
+            console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
     }
 
@@ -134,11 +134,12 @@ class SignUpScreen extends Component {
             }
         } catch (error) {
             this.onSignUpFailure.bind(this)(error);
+        } finally {
             this.setState({ isLoading: false });
         }
     }
 
-    validateFirstName(input) {
+    validateFirstName() {
         const { firstName } = this.state;
         if (!firstName || !firstName.match(wordsOnly)) {
             this.setState({ firstNameError: 'Invalid first name' });
@@ -170,7 +171,7 @@ class SignUpScreen extends Component {
         }
     }
 
-    validSignUp() {
+    validInputAndSignUp() {
         const {
             password,
             confirmPassword,
@@ -243,7 +244,8 @@ class SignUpScreen extends Component {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         <View style={styles.titleContainer}>
-                            <MainText style={styles.title}>Tembu Friends</MainText>
+                            <MainText style={styles.title}> TembuFriends </MainText>
+                            <MainText style={styles.intro}> Sign Up</MainText>
                         </View>
 
                         <View style={styles.form}>
@@ -281,7 +283,7 @@ class SignUpScreen extends Component {
                                         onChangeText={this.handleLastName.bind(this)}
                                         onSubmitEditing={this.validateLastName.bind(this)}
                                     />
-                                    <ErrorMessage error={lastNameError} />
+                                    <ErrorMessage error={lastNameError ? lastNameError : ' '} />
                                 </View>
                             </View>
 
@@ -360,21 +362,24 @@ class SignUpScreen extends Component {
                                         </TouchableOpacity>
                                     }
                                 />
-                                <ErrorMessage error={confirmPasswordError} />
+                                <ErrorMessage
+                                    error={confirmPasswordError ? confirmPasswordError : ' '}
+                                />
                             </View>
-
-                            <AuthButton
-                                onPress={this.validSignUp.bind(this)}
-                                style={styles.button}
-                                loading={isLoading}
-                            >
-                                Sign Up
-                            </AuthButton>
-                            <ErrorMessage error={generalError} />
+                            <View style={styles.box}>
+                                <AuthButton
+                                    onPress={this.validInputAndSignUp.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Sign Up
+                                </AuthButton>
+                                <ErrorMessage error={generalError ? generalError : ' '} />
+                            </View>
                         </View>
                         <View style={styles.bottom}>
                             <MainText style={styles.haveAccountText}>
-                                Already have an Account?{' '}
+                                Already have an account?{' '}
                                 <MainText
                                     style={styles.hyperlink}
                                     onPress={this.goToSignIn.bind(this)}
@@ -393,29 +398,38 @@ class SignUpScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: 'center',
+        justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: Colors.background,
     },
     title: {
         fontSize: 40,
-        fontWeight: '700',
+        // fontWeight: '700',
         color: 'green',
-        marginBottom: 20,
+        marginBottom: 10,
         textAlign: 'left',
     },
+    intro: {
+        fontSize: 15,
+        fontWeight: '200',
+        flexWrap: 'wrap',
+        textAlign: 'left',
+        color: 'green',
+        paddingLeft: 10,
+    },
     titleContainer: {
-        flex: 2,
+        flex: 3.5,
         justifyContent: 'flex-end',
         // alignItems: 'flex-start',
     },
     form: {
-        flex: 3,
+        flex: 3.5,
         justifyContent: 'center',
+        marginTop: 10,
     },
     bottom: {
-        flex: 1,
+        flex: 1.5,
         justifyContent: 'flex-end',
         marginBottom: 36,
         alignItems: 'center',
@@ -423,8 +437,6 @@ const styles = StyleSheet.create({
     nameContainer: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     validInput: {
         borderColor: 'gray',
@@ -434,7 +446,7 @@ const styles = StyleSheet.create({
     },
     box: {
         flex: 1,
-        marginTop: 5,
+        // marginTop: 5,
     },
     button: {
         marginTop: 10,
