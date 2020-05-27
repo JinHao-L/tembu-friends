@@ -99,7 +99,7 @@ class SignInScreen extends Component {
         try {
             const response = await this.props.firebase.signInWithEmail(nusEmail, password);
 
-            if (response.user) {
+            if (response && response.user) {
                 this.onSignInSuccess.bind(this)();
             }
         } catch (error) {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.authBackground,
     },
     title: {
         fontSize: 40,

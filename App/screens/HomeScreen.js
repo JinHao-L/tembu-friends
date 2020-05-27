@@ -8,6 +8,12 @@ import { MonoText } from '../components/index';
 import { Colors } from '../constants/index';
 
 class HomeScreen extends Component {
+    componentDidMount() {
+        this.props.navigation.setOptions({
+            headerShown: false,
+        });
+    }
+
     render() {
         return (
             // <View style={styles.container}>
@@ -103,7 +109,7 @@ class HomeScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.appBackground,
         // alignItems: 'center',
     },
     developmentModeText: {

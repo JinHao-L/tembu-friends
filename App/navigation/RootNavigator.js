@@ -4,7 +4,7 @@ import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import AppNavigator from './AppNavigator';
+import HomeNavigator from './HomeNavigator';
 import AuthNavigator from './AuthNavigator';
 import { LoadingScreen } from '../screens/index';
 import { withFirebase } from '../config/Firebase';
@@ -18,22 +18,51 @@ class RootNavigator extends Component {
         loading: {
             isUserLoading: true,
             isAssetsLoading: true,
+            isUserSignedIn: false,
         },
-        user: null,
+        timerCounting: true,
+        userVerified: false,
     };
 
     async componentDidMount() {
+        this._isMounted = true;
+        console.log('Starting app');
         try {
             await this.loadLocalAsync().then(() => {
                 this.setState({ loading: { isAssetsLoading: false } });
             });
 
             await this.props.firebase.checkUserAuth((result) => {
-                this.setState({ user: result, loading: { isUserLoading: false } });
+                if (result) {
+                    this.setState({
+                        user: result,
+                        userVerified: result.emailVerified,
+                        loading: {
+                            isUserLoading: false,
+                            isUserSignedIn: true,
+                        },
+                    });
+                } else {
+                    this.setState({
+                        loading: {
+                            isUserLoading: false,
+                        },
+                    });
+                }
             });
+
+            setTimeout(() => {
+                this.setState({
+                    timerCounting: false,
+                });
+            }, 3000);
         } catch (error) {
             console.log(error);
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     async loadLocalAsync() {
@@ -50,25 +79,27 @@ class RootNavigator extends Component {
     }
 
     render() {
-        const { loading, user } = this.state;
+        const { loading, userVerified, timerCounting } = this.state;
 
         return (
-            <NavigationContainer linking={LinkConfig}>
+            <NavigationContainer>
                 <RootStack.Navigator>
-                    {loading.isUserLoading || loading.isAssetsLoading ? (
-                        // Not ready yet
+                    {timerCounting || loading.isUserLoading || loading.isAssetsLoading ? (
                         <RootStack.Screen
                             name="Loading"
                             component={LoadingScreen}
-                            options={{ headerShown: 'none' }}
+                            initialParams={{
+                                children: loading,
+                            }}
                         />
-                    ) : user ? (
-                        <RootStack.Screen name="App" component={AppNavigator} />
+                    ) : // ) : user && userVerified ? (
+                    loading.isUserSignedIn ? (
+                        <RootStack.Screen name="App" component={HomeNavigator} />
                     ) : (
                         <RootStack.Screen
                             name="Auth"
                             component={AuthNavigator}
-                            options={{ headerShown: 'none' }}
+                            initialParams={userVerified}
                         />
                     )}
                 </RootStack.Navigator>

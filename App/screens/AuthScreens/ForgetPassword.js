@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.authBackground,
     },
     title: {
         fontSize: 30,
