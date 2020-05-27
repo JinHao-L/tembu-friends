@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'react-native-gesture-handler';
 import { Firebase, FirebaseProvider } from './config/Firebase/';
 

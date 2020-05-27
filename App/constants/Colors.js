@@ -1,9 +1,9 @@
-const tintColor = '#2f95dc';
+const tintColor = '#049853';
 
 export default {
     tintColor,
 
-    headerBackground: '#f4511e',
+    headerBackground: '#278F5F',
     headerText: '#fff',
 
     tabIconDefault: '#ccc',
@@ -20,11 +20,11 @@ export default {
     warningBackground: '#EAEB5E',
     warningText: '#666804',
 
-    noticeBackground: tintColor,
-    noticeText: '#fff',
+    noticeBackground: '#fff',
+    noticeText: '#000',
 
-    background: '#fff',
-    box: '#fefefe',
+    authBackground: '#fff',
+    appBackground: '#278F5F',
 
     defaultBorder: 'gray',
     errorBorder: 'red',
@@ -36,4 +36,8 @@ export default {
     button: '#248458',
     buttonText: '#fff',
     buttonLoading: '#D9D9D9',
+
+    menuButton: '#fff',
+    menuButtonUnderlay: 'gray',
+    menuButtonText: '#000',
 };

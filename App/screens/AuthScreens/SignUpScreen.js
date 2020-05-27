@@ -129,7 +129,7 @@ class SignUpScreen extends Component {
         this.setState({ isLoading: true });
         try {
             const response = await this.props.firebase.signUpWithEmail(nusEmail, password);
-            if (response.user.uid) {
+            if (response && response.user.uid) {
                 await this.onSignUpSuccess.bind(this)(response.user.uid);
             }
         } catch (error) {
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.authBackground,
     },
     title: {
         fontSize: 40,
