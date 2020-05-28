@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     text: {
-        fontSize: 17,
+        fontSize: 15,
         color: Colors.menuButtonText,
         textAlign: 'center',
     },

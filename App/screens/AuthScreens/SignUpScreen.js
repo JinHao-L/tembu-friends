@@ -7,16 +7,19 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     KeyboardAvoidingView,
+    YellowBox,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { withFirebase } from '../../config/Firebase';
-import { Colors, NUSEmailSignature } from '../../constants';
+import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
+import { Popup, Root } from '../../components/Popup';
 
 const wordsOnly = /^[A-Za-z]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;
 
+YellowBox.ignoreWarnings(['Setting a timer']);
 class SignUpScreen extends Component {
     state = {
         // Details
@@ -37,28 +40,68 @@ class SignUpScreen extends Component {
         // Control - others
         isLoading: false,
         passwordIcon: 'ios-eye',
-        passwordVisibility: true,
+        passwordHidden: true,
         confirmPasswordIcon: 'ios-eye',
-        confirmPasswordVisibility: true,
+        confirmPasswordHidden: true,
+        keyboardShown: false,
     };
 
-    onSignUpSuccess = async (uid) => {
-        const { nusEmail, firstName, lastName } = this.state;
-        const userData = { email: nusEmail, firstName, lastName, displayName: firstName, uid };
-        try {
-            await this.props.firebase.createNewUser(userData);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            this.setState({
-                firstName: '',
-                lastName: '',
-                nusEmail: '',
-                password: '',
-                confirmPassword: '',
-            });
-        }
-    };
+    clearInputs() {
+        this.setState({
+            firstName: '',
+            lastName: '',
+            nusEmail: '',
+            password: '',
+            confirmPassword: '',
+            firstNameError: '',
+            lastNameError: '',
+            emailError: '',
+            passwordError: '',
+            confirmPasswordError: '',
+            generalError: '',
+        });
+    }
+
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow.bind(this)
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide.bind(this)
+        );
+    }
+
+    _keyboardDidShow() {
+        console.log('Keyboard Shown');
+        this.setState({
+            keyboardShown: true,
+        });
+    }
+
+    _keyboardDidHide() {
+        console.log('Keyboard Hidden');
+        this.setState({
+            keyboardShown: false,
+        });
+    }
+
+    componentWillUnmount() {
+        this.keyboardDidHideListener.remove();
+        this.keyboardDidShowListener.remove();
+    }
+
+    onSignUpSuccess() {
+        this.successPopup();
+        this.setState({
+            firstName: '',
+            lastName: '',
+            nusEmail: '',
+            password: '',
+            confirmPassword: '',
+        });
+    }
 
     onSignUpFailure(error) {
         let errorCode = error.code;
@@ -84,22 +127,21 @@ class SignUpScreen extends Component {
     }
 
     goToSignIn() {
-        console.log('Go to sign in');
+        this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignIn');
     }
 
     handlePasswordVisibility() {
         this.setState((prevState) => ({
             passwordIcon: prevState.passwordIcon === 'ios-eye' ? 'ios-eye-off' : 'ios-eye',
-            passwordVisibility: !prevState.passwordVisibility,
+            passwordHidden: !prevState.passwordHidden,
         }));
     }
-
     handleConfirmPasswordVisibility() {
         this.setState((prevState) => ({
             confirmPasswordIcon:
                 prevState.confirmPasswordIcon === 'ios-eye' ? 'ios-eye-off' : 'ios-eye',
-            confirmPasswordVisibility: !prevState.confirmPasswordVisibility,
+            confirmPasswordHidden: !prevState.confirmPasswordHidden,
         }));
     }
 
@@ -125,12 +167,30 @@ class SignUpScreen extends Component {
     }
 
     async signUp() {
-        const { nusEmail, password } = this.state;
+        const { nusEmail, password, firstName, lastName } = this.state;
         this.setState({ isLoading: true });
+
         try {
             const response = await this.props.firebase.signUpWithEmail(nusEmail, password);
-            if (response && response.user.uid) {
-                await this.onSignUpSuccess.bind(this)(response.user.uid);
+            if (response && response.user) {
+                const userData = {
+                    email: nusEmail,
+                    firstName,
+                    lastName,
+                    displayName: firstName + ' ' + lastName,
+                    uid: response.user.uid,
+                    firstLogin: true,
+                };
+                console.log('starting creation process');
+                await response.user.updateProfile({ displayName: firstName + ' ' + lastName });
+                console.log('update display name');
+                await this.props.firebase.createNewUser(userData);
+                console.log('creating new user');
+                await response.user.sendEmailVerification();
+                console.log('send email verification');
+                await this.props.firebase.signOut();
+                console.log('sign out');
+                this.onSignUpSuccess.bind(this)();
             }
         } catch (error) {
             this.onSignUpFailure.bind(this)(error);
@@ -145,14 +205,12 @@ class SignUpScreen extends Component {
             this.setState({ firstNameError: 'Invalid first name' });
         }
     }
-
     validateLastName() {
         const { lastName } = this.state;
         if (!lastName || !lastName.match(wordsOnly)) {
             this.setState({ lastNameError: 'Invalid first name' });
         }
     }
-
     validateEmail() {
         const { nusEmail } = this.state;
         if (!String(nusEmail).includes(NUSEmailSignature)) {
@@ -160,7 +218,6 @@ class SignUpScreen extends Component {
             this.setState({ emailError: 'Please use your NUS email' });
         }
     }
-
     validatePassword() {
         const { password } = this.state;
         if (!password.match(passwordFormat)) {
@@ -170,8 +227,8 @@ class SignUpScreen extends Component {
             });
         }
     }
-
     validInputAndSignUp() {
+        Keyboard.dismiss();
         const {
             password,
             confirmPassword,
@@ -214,6 +271,25 @@ class SignUpScreen extends Component {
         }
     }
 
+    successPopup = () => {
+        Popup.show({
+            type: 'Success',
+            title: 'Email link sent',
+            body:
+                'We sent an email to ' +
+                this.state.nusEmail +
+                ' with a verification link to activate your account.',
+            showButton: true,
+            buttonText: 'OK',
+            autoClose: false,
+            verticalOffset: 40,
+            callback: () => {
+                Popup.hide();
+                this.props.navigation.navigate('SignIn');
+            },
+        });
+    };
+
     render() {
         const {
             firstName,
@@ -227,169 +303,186 @@ class SignUpScreen extends Component {
             passwordError,
             confirmPasswordError,
             generalError,
-            passwordVisibility,
+            passwordHidden,
             passwordIcon,
-            confirmPasswordVisibility,
+            confirmPasswordHidden,
             confirmPasswordIcon,
             isLoading,
+            keyboardShown,
         } = this.state;
 
         return (
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : -150}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 50}
                 contentContainerStyle={{ flex: 1 }}
             >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        <View style={styles.titleContainer}>
-                            <MainText style={styles.title}> TembuFriends </MainText>
-                            <MainText style={styles.intro}> Sign Up</MainText>
-                        </View>
+                <Root>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View>
+                            <View
+                                style={
+                                    keyboardShown
+                                        ? styles.titleContainerWithKeyboard
+                                        : styles.titleContainer
+                                }
+                            >
+                                <MainText style={styles.title}> Sign Up</MainText>
+                            </View>
 
-                        <View style={styles.form}>
-                            <View style={styles.nameContainer}>
-                                <View style={{ flex: 1, flexDirection: 'column' }}>
-                                    <FormInput
-                                        style={[
-                                            firstNameError ? styles.errorInput : styles.validInput,
-                                            { marginRight: 5 },
-                                        ]}
-                                        leftIconName="md-person"
-                                        placeholder="First Name"
-                                        returnKeyType="next"
-                                        textContentType="name"
-                                        autoCapitalize="words"
-                                        value={firstName}
-                                        onChangeText={this.handleFirstName.bind(this)}
-                                        onSubmitEditing={this.validateFirstName.bind(this)}
-                                    />
-                                    <ErrorMessage error={firstNameError ? firstNameError : ' '} />
+                            <View style={styles.form}>
+                                <View style={styles.nameContainer}>
+                                    <View
+                                        style={{ flex: 1, flexDirection: 'column', marginRight: 5 }}
+                                    >
+                                        <FormInput
+                                            style={
+                                                firstNameError
+                                                    ? styles.errorInput
+                                                    : styles.validInput
+                                            }
+                                            placeholder="First Name"
+                                            returnKeyType="next"
+                                            textContentType="name"
+                                            autoCapitalize="words"
+                                            value={firstName}
+                                            onChangeText={this.handleFirstName.bind(this)}
+                                            onSubmitEditing={this.validateFirstName.bind(this)}
+                                        />
+                                        <ErrorMessage
+                                            error={firstNameError ? firstNameError : ' '}
+                                        />
+                                    </View>
+
+                                    <View
+                                        style={{ flex: 1, flexDirection: 'column', marginLeft: 5 }}
+                                    >
+                                        <FormInput
+                                            style={
+                                                lastNameError
+                                                    ? styles.errorInput
+                                                    : styles.validInput
+                                            }
+                                            placeholder="Last Name"
+                                            returnKeyType="next"
+                                            textContentType="name"
+                                            autoCapitalize="words"
+                                            value={lastName}
+                                            onChangeText={this.handleLastName.bind(this)}
+                                            onSubmitEditing={this.validateLastName.bind(this)}
+                                        />
+                                        <ErrorMessage error={lastNameError ? lastNameError : ' '} />
+                                    </View>
                                 </View>
 
-                                <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <View style={styles.box}>
                                     <FormInput
-                                        style={[
-                                            lastNameError ? styles.errorInput : styles.validInput,
-                                            { marginLeft: 5 },
-                                        ]}
-                                        leftIconName="md-person"
-                                        placeholder="Last Name"
+                                        style={emailError ? styles.errorInput : styles.validInput}
+                                        placeholder="NUS email address"
+                                        keyboardType="email-address"
                                         returnKeyType="next"
-                                        textContentType="name"
-                                        autoCapitalize="words"
-                                        value={lastName}
-                                        onChangeText={this.handleLastName.bind(this)}
-                                        onSubmitEditing={this.validateLastName.bind(this)}
+                                        textContentType="emailAddress"
+                                        autoCapitalize="none"
+                                        value={nusEmail}
+                                        onChangeText={this.handleEmail.bind(this)}
+                                        onSubmitEditing={this.validateEmail.bind(this)}
                                     />
-                                    <ErrorMessage error={lastNameError ? lastNameError : ' '} />
+                                    <ErrorMessage error={emailError ? emailError : ' '} />
+                                </View>
+
+                                <View style={styles.box}>
+                                    <FormInput
+                                        style={
+                                            passwordError || confirmPasswordError
+                                                ? styles.errorInput
+                                                : styles.validInput
+                                        }
+                                        placeholder="Password"
+                                        autoCapitalize="none"
+                                        returnKeyType="next"
+                                        textContentType="none"
+                                        onChangeText={this.handlePassword.bind(this)}
+                                        onSubmitEditing={this.validatePassword.bind(this)}
+                                        secureTextEntry={passwordHidden}
+                                        value={password}
+                                        rightIcon={
+                                            <TouchableOpacity
+                                                onPress={this.handlePasswordVisibility.bind(this)}
+                                            >
+                                                <Ionicons
+                                                    name={passwordIcon}
+                                                    size={28}
+                                                    color="grey"
+                                                    style={{ marginRight: 5 }}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                    />
+                                    <ErrorMessage error={passwordError ? passwordError : ' '} />
+                                </View>
+                                <View style={styles.box}>
+                                    <FormInput
+                                        style={
+                                            confirmPasswordError
+                                                ? styles.errorInput
+                                                : styles.validInput
+                                        }
+                                        placeholder="Confirm password"
+                                        autoCapitalize="none"
+                                        returnKeyType="done"
+                                        textContentType="none"
+                                        onChangeText={this.handleConfirmPassword.bind(this)}
+                                        secureTextEntry={confirmPasswordHidden}
+                                        value={confirmPassword}
+                                        rightIcon={
+                                            <TouchableOpacity
+                                                onPress={this.handleConfirmPasswordVisibility.bind(
+                                                    this
+                                                )}
+                                            >
+                                                <Ionicons
+                                                    name={confirmPasswordIcon}
+                                                    size={28}
+                                                    color="grey"
+                                                    style={{ marginRight: 5 }}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                    />
+                                    <ErrorMessage
+                                        error={confirmPasswordError ? confirmPasswordError : ' '}
+                                    />
+                                </View>
+                                <View style={styles.box}>
+                                    <AuthButton
+                                        onPress={this.validInputAndSignUp.bind(this)}
+                                        style={styles.button}
+                                        loading={isLoading}
+                                    >
+                                        Sign Up
+                                    </AuthButton>
+                                    <ErrorMessage error={generalError ? generalError : ' '} />
                                 </View>
                             </View>
-
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={emailError ? styles.errorInput : styles.validInput}
-                                    leftIconName="ios-mail"
-                                    placeholder="NUS email address"
-                                    keyboardType="email-address"
-                                    returnKeyType="next"
-                                    textContentType="emailAddress"
-                                    autoCapitalize="none"
-                                    value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onSubmitEditing={this.validateEmail.bind(this)}
-                                />
-                                <ErrorMessage error={emailError ? emailError : ' '} />
-                            </View>
-
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={
-                                        passwordError || confirmPasswordError
-                                            ? styles.errorInput
-                                            : styles.validInput
-                                    }
-                                    leftIconName="ios-lock"
-                                    placeholder="Password"
-                                    autoCapitalize="none"
-                                    returnKeyType="next"
-                                    textContentType="none"
-                                    onChangeText={this.handlePassword.bind(this)}
-                                    onSubmitEditing={this.validatePassword.bind(this)}
-                                    secureTextEntry={passwordVisibility}
-                                    value={password}
-                                    rightIcon={
-                                        <TouchableOpacity
-                                            onPress={this.handlePasswordVisibility.bind(this)}
+                            {keyboardShown ? (
+                                <View style={{ flex: 0.5 }} />
+                            ) : (
+                                <View style={styles.bottom}>
+                                    <MainText style={styles.haveAccountText}>
+                                        Already have an account?{' '}
+                                        <MainText
+                                            style={styles.hyperlink}
+                                            onPress={this.goToSignIn.bind(this)}
                                         >
-                                            <Ionicons
-                                                name={passwordIcon}
-                                                size={28}
-                                                color="grey"
-                                                style={{ marginRight: 5 }}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <ErrorMessage error={passwordError ? passwordError : ' '} />
-                            </View>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={
-                                        confirmPasswordError ? styles.errorInput : styles.validInput
-                                    }
-                                    leftIconName="ios-lock"
-                                    placeholder="Confirm password"
-                                    autoCapitalize="none"
-                                    returnKeyType="done"
-                                    textContentType="none"
-                                    onChangeText={this.handleConfirmPassword.bind(this)}
-                                    secureTextEntry={confirmPasswordVisibility}
-                                    value={confirmPassword}
-                                    rightIcon={
-                                        <TouchableOpacity
-                                            onPress={this.handleConfirmPasswordVisibility.bind(
-                                                this
-                                            )}
-                                        >
-                                            <Ionicons
-                                                name={confirmPasswordIcon}
-                                                size={28}
-                                                color="grey"
-                                                style={{ marginRight: '1%' }}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <ErrorMessage
-                                    error={confirmPasswordError ? confirmPasswordError : ' '}
-                                />
-                            </View>
-                            <View style={styles.box}>
-                                <AuthButton
-                                    onPress={this.validInputAndSignUp.bind(this)}
-                                    style={styles.button}
-                                    loading={isLoading}
-                                >
-                                    Sign Up
-                                </AuthButton>
-                                <ErrorMessage error={generalError ? generalError : ' '} />
-                            </View>
+                                            Login here
+                                        </MainText>
+                                    </MainText>
+                                </View>
+                            )}
                         </View>
-                        <View style={styles.bottom}>
-                            <MainText style={styles.haveAccountText}>
-                                Already have an account?{' '}
-                                <MainText
-                                    style={styles.hyperlink}
-                                    onPress={this.goToSignIn.bind(this)}
-                                >
-                                    Login here
-                                </MainText>
-                            </MainText>
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+                </Root>
             </KeyboardAvoidingView>
         );
     }
@@ -405,28 +498,25 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 40,
-        // fontWeight: '700',
         color: Colors.greenText,
         marginBottom: 10,
         textAlign: 'left',
-    },
-    intro: {
-        fontSize: 15,
-        fontWeight: '200',
-        flexWrap: 'wrap',
-        textAlign: 'left',
-        color: Colors.greenText,
-        paddingLeft: 10,
+        width: Layout.window.width,
+        left: 35,
     },
     titleContainer: {
         flex: 3.5,
         justifyContent: 'flex-end',
-        // alignItems: 'flex-start',
+    },
+    titleContainerWithKeyboard: {
+        flex: 2,
+        justifyContent: 'flex-end',
     },
     form: {
         flex: 3.5,
         justifyContent: 'center',
         marginTop: 10,
+        marginHorizontal: 40,
     },
     bottom: {
         flex: 1.5,
