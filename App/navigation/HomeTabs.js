@@ -10,27 +10,16 @@ const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
 function HomeTabs({ navigation }) {
+    navigation.setOptions({
+        headerShown: false,
+    });
     return (
-        <BottomTab.Navigator
-            initialRouteName={INITIAL_ROUTE_NAME}
-            options={{
-                // headerMode: 'none',
-                headerShown: false,
-                // headerStyle: { backgroundColor: Colors.headerBackground },
-                // headerTitleStyle: {
-                //     ...textStyles,
-                //     fontSize: 20,
-                // },
-                // headerTintColor: Colors.headerText,
-                // headerTitleAlign: 'left',
-            }}
-        >
+        <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
             <BottomTab.Screen
                 name="Home"
                 component={HomeScreen}
                 options={{
                     title: 'Welcome',
-                    headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <TabBarIcon focused={focused} name="md-code-working" />
                     ),
@@ -59,7 +48,7 @@ function HomeTabs({ navigation }) {
                 component={MenuScreen}
                 options={{
                     title: 'Menu',
-                    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-person" />,
+                    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-menu" />,
                 }}
             />
         </BottomTab.Navigator>

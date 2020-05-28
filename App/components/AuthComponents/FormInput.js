@@ -1,18 +1,18 @@
 import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
-import { textStyles } from './MyAppText';
+import Colors from '../../constants/Colors';
+import { textStyles } from '../MyAppText';
 
 function FormInput({ style, leftIconName, iconColor, placeholder, rightIcon, ...rest }) {
     return (
         <View style={[styles.inputContainer, style]}>
-            <Ionicons
+            {/**<Ionicons
                 name={leftIconName}
                 size={28}
                 style={styles.iconStyle}
                 color={iconColor ? iconColor : Colors.textIconDefault}
-            />
+            />**/}
             <TextInput
                 {...rest}
                 placeholderTextColor="#b1b1b1"
@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     input: {
+        marginLeft: 5,
         ...textStyles,
         flex: 1,
     },

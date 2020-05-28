@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 
 import { Colors, Layout } from '../constants';
 import { withFirebase } from '../config/Firebase';
-import { MenuButton, Popup, Root } from '../components';
+import { MainText, MenuButton } from '../components';
+import { Popup, Root } from '../components/Popup';
 
 class MenuScreen extends Component {
     state = {
         isVisible: false,
     };
+
     signOut = async () => {
         try {
             await this.props.firebase.signOut();
@@ -21,37 +23,74 @@ class MenuScreen extends Component {
         this.props.navigation.navigate('Profile');
     };
 
-    showPopup = () => {
+    testingPopup = () => {
         Popup.show({
-            type: 'Success',
-            title: 'It works',
-            body: 'Congrats! The popup is open\nClosing in 5 seconds',
-            button: true,
+            type: 'Testing',
+            title: 'Not available',
+            body: 'Under Maintenance... \nClosing in 5 seconds',
+            showButton: true,
             buttonText: 'Close',
             autoClose: true,
-            callback: () => {
-                Console.log('popup closed');
-                Popup.hide();
-            },
+            // because of bottom tab bar
+            verticalOffset: 100,
         });
     };
 
     render() {
         return (
-            <Root>
-                <ScrollView
-                    style={styles.container}
-                    contentContainerStyle={styles.contentContainer}
-                >
-                    <View>
-                        <MenuButton onPress={this.showPopup}>Testing</MenuButton>
-                        <MenuButton onPress={this.goToProfile}>Profile</MenuButton>
-                        <MenuButton>Friends</MenuButton>
-                        <MenuButton>Settings</MenuButton>
-                        <MenuButton onPress={this.signOut}>Sign Out</MenuButton>
+            <SafeAreaView style={{ flex: 1 }}>
+                <Root>
+                    <View style={styles.titleContainer}>
+                        <MainText style={styles.title}>Menu</MainText>
                     </View>
-                </ScrollView>
-            </Root>
+                    <ScrollView
+                        style={styles.container}
+                        contentContainerStyle={styles.contentContainer}
+                    >
+                        <View>
+                            <MenuButton onPress={this.goToProfile}>Profile</MenuButton>
+                            <MenuButton>Friends</MenuButton>
+                            <MenuButton>Settings</MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Testing
+                            </MenuButton>
+                            <MenuButton style={styles.signOutButton} onPress={this.signOut}>
+                                Sign Out
+                            </MenuButton>
+                        </View>
+                    </ScrollView>
+                </Root>
+            </SafeAreaView>
         );
     }
 }
@@ -67,26 +106,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginHorizontal: 30,
     },
-    noticeContainer: {
-        backgroundColor: Colors.noticeBackground,
-        borderColor: '#000',
-        borderRadius: 10,
-        overflow: 'hidden',
-        alignItems: 'center',
-        justifyContent: 'center',
-        maxHeight: Layout.window.height / 2,
-        width: (Layout.window.width / 3) * 2,
+    titleContainer: {
+        flex: 0.1,
+        backgroundColor: Colors.appBackground,
+        justifyContent: 'flex-end',
+        paddingBottom: 5,
     },
-    image: {
-        width: 100,
-        height: 80,
-        resizeMode: 'contain',
-        margin: 20,
+    title: {
+        textAlign: 'left',
+        color: 'white',
+        fontSize: 24,
+        left: 30,
     },
-    text: {
-        flexWrap: 'wrap',
-        color: Colors.noticeText,
-        textAlign: 'center',
+    notAvailable: {
+        backgroundColor: 'grey',
+    },
+    signOutButton: {
+        backgroundColor: 'red',
     },
 });
 

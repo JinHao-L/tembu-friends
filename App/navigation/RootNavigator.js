@@ -21,43 +21,46 @@ class RootNavigator extends Component {
             isUserSignedIn: false,
         },
         timerCounting: true,
-        userVerified: false,
     };
 
     async componentDidMount() {
         this._isMounted = true;
-        console.log('Starting app');
-        try {
-            await this.loadLocalAsync().then(() => {
-                this.setState({ loading: { isAssetsLoading: false } });
-            });
-
-            await this.props.firebase.checkUserAuth((result) => {
-                if (result) {
-                    this.setState({
-                        user: result,
-                        userVerified: result.emailVerified,
-                        loading: {
-                            isUserLoading: false,
-                            isUserSignedIn: true,
-                        },
-                    });
-                } else {
-                    this.setState({
-                        loading: {
-                            isUserLoading: false,
-                        },
-                    });
-                }
-            });
-
-            setTimeout(() => {
-                this.setState({
-                    timerCounting: false,
+        if (this._isMounted) {
+            console.log('Starting app');
+            try {
+                await this.loadLocalAsync().then(() => {
+                    this.setState({ loading: { isAssetsLoading: false } });
                 });
-            }, 3000);
-        } catch (error) {
-            console.log(error);
+
+                await this.props.firebase.checkUserAuth((result) => {
+                    if (result && result.emailVerified) {
+                        this.setState({
+                            user: result,
+                            loading: {
+                                isUserLoading: false,
+                                isUserSignedIn: true,
+                            },
+                        });
+                    } else {
+                        if (result) {
+                            this.props.firebase.signOut();
+                        }
+                        this.setState({
+                            loading: {
+                                isUserLoading: false,
+                            },
+                        });
+                    }
+                });
+
+                setTimeout(() => {
+                    this.setState({
+                        timerCounting: false,
+                    });
+                }, 3000);
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -79,7 +82,7 @@ class RootNavigator extends Component {
     }
 
     render() {
-        const { loading, userVerified, timerCounting } = this.state;
+        const { loading, timerCounting } = this.state;
 
         return (
             <NavigationContainer>
@@ -92,15 +95,10 @@ class RootNavigator extends Component {
                                 children: loading,
                             }}
                         />
-                    ) : // ) : user && userVerified ? (
-                    loading.isUserSignedIn ? (
+                    ) : loading.isUserSignedIn ? (
                         <RootStack.Screen name="App" component={HomeNavigator} />
                     ) : (
-                        <RootStack.Screen
-                            name="Auth"
-                            component={AuthNavigator}
-                            initialParams={userVerified}
-                        />
+                        <RootStack.Screen name="Auth" component={AuthNavigator} />
                     )}
                 </RootStack.Navigator>
             </NavigationContainer>

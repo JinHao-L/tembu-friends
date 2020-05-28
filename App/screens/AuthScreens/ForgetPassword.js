@@ -10,7 +10,8 @@ import {
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText, textStyles } from '../../components';
+import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
+import { Popup, Root } from '../../components/Popup';
 
 class ForgetPassword extends Component {
     state = {
@@ -23,16 +24,52 @@ class ForgetPassword extends Component {
 
         // Control - others
         isLoading: false,
-        isSuccess: false,
+        keyboardShown: false,
     };
 
-    onResetSuccess() {
+    clearInputs() {
         this.setState({
             nusEmail: '',
-            isSuccess: true,
+            emailError: '',
+            generalError: '',
         });
-        //TODO: Pop-up here
-        // this.props.navigation.navigate('SignIn');
+    }
+
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow.bind(this)
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide.bind(this)
+        );
+    }
+
+    _keyboardDidShow() {
+        console.log('Keyboard Shown');
+        this.setState({
+            keyboardShown: true,
+        });
+    }
+
+    _keyboardDidHide() {
+        console.log('Keyboard Hidden');
+        this.setState({
+            keyboardShown: false,
+        });
+    }
+
+    componentWillUnmount() {
+        this.keyboardDidHideListener.remove();
+        this.keyboardDidShowListener.remove();
+    }
+
+    onResetSuccess() {
+        this.successPopup();
+        this.setState({
+            nusEmail: '',
+        });
     }
 
     onResetFailure(error) {
@@ -60,6 +97,7 @@ class ForgetPassword extends Component {
     }
 
     goToSignIn() {
+        this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignIn');
     }
 
@@ -71,7 +109,7 @@ class ForgetPassword extends Component {
         const { nusEmail } = this.state;
         this.setState({ isLoading: true });
         try {
-            await this.props.firebase.passwordReset(nusEmail);
+            await this.props.firebase.sendPasswordReset(nusEmail);
             console.log('Password reset email sent successfully');
             this.onResetSuccess.bind(this)();
         } catch (error) {
@@ -89,66 +127,82 @@ class ForgetPassword extends Component {
         return this.resetPassword.bind(this)();
     }
 
+    successPopup = () => {
+        Popup.show({
+            type: 'Success',
+            title: 'Email link sent',
+            body:
+                'We sent an email to ' +
+                this.state.nusEmail +
+                ' with a link to get back into your account.',
+            showButton: true,
+            buttonText: 'OK',
+            autoClose: false,
+            verticalOffset: 40,
+        });
+    };
+
     render() {
-        const { nusEmail, emailError, generalError, isLoading, isSuccess } = this.state;
+        const { nusEmail, emailError, generalError, isLoading, keyboardShown } = this.state;
 
         return (
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : -150}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
                 contentContainerStyle={{ flex: 1 }}
             >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        <View style={styles.textContainer}>
-                            <MainText style={styles.title}>Trouble with logging in?</MainText>
-                            <MainText style={styles.intro}>
-                                Enter your email address and we'll send you a link to reset your
-                                password
-                            </MainText>
-                        </View>
-
-                        <View style={styles.form}>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={emailError ? styles.errorInput : styles.validInput}
-                                    leftIconName="ios-mail"
-                                    placeholder="NUS email address"
-                                    returnKeyType="done"
-                                    keyboardType="email-address"
-                                    textContentType="emailAddress"
-                                    autoCapitalize="none"
-                                    value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                />
-                                <ErrorMessage error={emailError ? emailError : ' '} />
-                            </View>
-                            <View>
-                                <AuthButton
-                                    onPress={this.validateInput.bind(this)}
-                                    style={[styles.button, { position: 'relative', top: 10 }]}
-                                    loading={isLoading}
-                                >
-                                    Next
-                                </AuthButton>
-                                <ErrorMessage error={generalError} />
-                                <MainText style={styles.successMessage}>
-                                    {isSuccess ? 'Reset mail successfully sent' : null}
+                <Root>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View>
+                            <View style={styles.textContainer}>
+                                <MainText style={styles.title}>Trouble with logging in?</MainText>
+                                <MainText style={styles.intro}>
+                                    Enter your email address and we'll send you a link to reset your
+                                    password
                                 </MainText>
                             </View>
-                        </View>
 
-                        <View style={styles.bottom}>
-                            <MainText
-                                style={styles.backLoginText}
-                                onPress={this.goToSignIn.bind(this)}
-                            >
-                                Back to Login
-                            </MainText>
+                            <View style={styles.form}>
+                                <View style={styles.box}>
+                                    <FormInput
+                                        style={emailError ? styles.errorInput : styles.validInput}
+                                        leftIconName="ios-mail"
+                                        placeholder="NUS email address"
+                                        returnKeyType="done"
+                                        keyboardType="email-address"
+                                        textContentType="emailAddress"
+                                        autoCapitalize="none"
+                                        value={nusEmail}
+                                        onChangeText={this.handleEmail.bind(this)}
+                                    />
+                                    <ErrorMessage error={emailError ? emailError : ' '} />
+                                </View>
+                                <View>
+                                    <AuthButton
+                                        onPress={this.validateInput.bind(this)}
+                                        style={[styles.button, { position: 'relative', top: 10 }]}
+                                        loading={isLoading}
+                                    >
+                                        Next
+                                    </AuthButton>
+                                    <ErrorMessage error={generalError} />
+                                </View>
+                            </View>
+
+                            {keyboardShown ? null : (
+                                <View style={styles.bottom}>
+                                    <MainText
+                                        style={styles.backLoginText}
+                                        onPress={this.goToSignIn.bind(this)}
+                                    >
+                                        Back to Login
+                                    </MainText>
+                                </View>
+                            )}
                         </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+                </Root>
             </KeyboardAvoidingView>
         );
     }
@@ -182,7 +236,7 @@ const styles = StyleSheet.create({
         flex: 2,
         justifyContent: 'flex-start',
         marginTop: 30,
-        marginHorizontal: 30,
+        marginHorizontal: 40,
     },
     bottom: {
         flex: 1,

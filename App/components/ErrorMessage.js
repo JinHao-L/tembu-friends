@@ -14,11 +14,11 @@ function ErrorMessage({ error }) {
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 15,
+        // marginHorizontal: 15,
     },
     errorText: {
         fontSize: 12,
-        textAlign: 'center',
+        textAlign: 'left',
         color: Colors.errorText,
         flexWrap: 'wrap',
     },

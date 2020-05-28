@@ -1,14 +1,21 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 
 import { MainText } from '../components';
-import { Colors } from '../constants/index';
+import { Colors, Layout } from '../constants/index';
 
-function LayoutScreen() {
+function ExploreScreen() {
     return (
         <SafeAreaView style={styles.container}>
-            <View>
-                <MainText>Layout</MainText>
+            <View style={styles.header}>
+                <View style={styles.searchBar}>
+                    <MainText style={{ color: 'white' }}>Search Bar</MainText>
+                </View>
+            </View>
+            <View style={styles.content}>
+                <View style={styles.floorPlan}>
+                    <MainText style={{ color: 'white' }}>Floor Plan</MainText>
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -21,7 +28,36 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         backgroundColor: Colors.appBackground,
+        width: Layout.window.width,
+    },
+    header: {
+        flex: 1,
+        width: Layout.window.width,
+        justifyContent: 'center',
+    },
+    searchBar: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'black',
+        marginBottom: 10,
+        marginHorizontal: 20,
+        borderRadius: 5,
+        paddingHorizontal: 5,
+    },
+    content: {
+        flex: 15,
+        width: Layout.window.width,
+        justifyContent: 'center',
+    },
+    floorPlan: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'black',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        marginHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 
-export default LayoutScreen;
+export default ExploreScreen;
