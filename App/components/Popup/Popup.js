@@ -30,6 +30,7 @@ class Popup extends Component {
             {
                 title: params.title,
                 body: params.body,
+                specialBodyCall: params.specialBodyCall,
                 showButton: params.showButton === undefined ? true : params.showButton,
                 buttonText: params.buttonText,
                 callback: params.callback || this.defaultCallback.bind(this),
@@ -122,6 +123,7 @@ class Popup extends Component {
             popupPosition,
             title,
             body,
+            specialBodyCall,
             showButton,
             buttonText,
             callback,
@@ -157,7 +159,9 @@ class Popup extends Component {
                     />
                     <View style={styles.content}>
                         <MainText style={styles.title}>{title}</MainText>
-                        <MainText style={styles.body}>{body}</MainText>
+                        <MainText style={styles.body}>
+                            {body || (specialBodyCall ? specialBodyCall() : null)}
+                        </MainText>
                     </View>
                     {showButton && (
                         <View style={styles.buttonContainer}>
@@ -188,7 +192,7 @@ const styles = StyleSheet.create({
     },
     message: {
         maxWidth: 400,
-        width: 280,
+        width: 280 > width / 2 ? 280 : width / 2,
         minHeight: 200,
         backgroundColor: '#fff',
         borderRadius: 20,
@@ -221,12 +225,13 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     body: {
+        fontSize: 15,
         textAlign: 'center',
         color: '#666',
         marginTop: 10,
     },
     line: {
-        width: 280,
+        width: 280 > width / 2 ? 280 : width / 2,
         borderBottomColor: '#222',
         borderWidth: 0.5,
     },

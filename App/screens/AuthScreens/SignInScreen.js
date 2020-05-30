@@ -3,11 +3,11 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    Platform,
     TouchableWithoutFeedback,
     Keyboard,
-    KeyboardAvoidingView,
     Text,
+    YellowBox,
+    Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,7 +19,7 @@ import { Popup, Root } from '../../components/Popup';
 class SignInScreen extends Component {
     state = {
         // Details
-        email: '',
+        nusEmail: '',
         password: '',
 
         // Control - errors
@@ -32,11 +32,13 @@ class SignInScreen extends Component {
         passwordIcon: 'ios-eye',
         passwordHidden: true,
         keyboardShown: false,
+        disabled: false,
+        keyboardHeight: 0,
     };
 
     clearInputs() {
         this.setState({
-            email: '',
+            nusEmail: '',
             password: '',
             emailError: '',
             errorHighlight: false,
@@ -55,28 +57,26 @@ class SignInScreen extends Component {
         );
     }
 
-    _keyboardDidShow() {
-        console.log('Keyboard Shown');
+    _keyboardDidShow(event) {
         if (!this.state.keyboardShown) {
-            this.setState(
-                {
-                    keyboardShown: true,
-                }
-                // () => console.log(this.state.keyboardShown)
-            );
+            this.setState({
+                keyboardShown: true,
+                keyboardHeight: event.endCoordinates.height,
+            });
         }
     }
 
     _keyboardDidHide() {
-        console.log('Keyboard Hidden');
         if (this.state.keyboardShown) {
-            this.setState(
-                {
-                    keyboardShown: false,
-                }
-                // () => console.log(this.state.keyboardShown)
-            );
+            this.setState({
+                keyboardShown: false,
+            });
         }
+    }
+
+    componentWillUnmount() {
+        this.keyboardDidHideListener.remove();
+        this.keyboardDidShowListener.remove();
     }
 
     onSignInSuccess() {
@@ -154,7 +154,9 @@ class SignInScreen extends Component {
                     this.onSignInSuccess.bind(this)();
                 } else {
                     console.log('not verified');
-                    this.notVerifiedPopup(() => this.user.sendEmailVerification());
+                    this.notVerifiedPopup(() => {
+                        response.user.sendEmailVerification();
+                    });
                 }
             }
         } catch (error) {
@@ -174,21 +176,41 @@ class SignInScreen extends Component {
     }
 
     notVerifiedPopup = (sendLink) => {
+        const myCallback = () => {
+            this.props.firebase.signOut();
+            Popup.hide();
+        };
+
         Popup.show({
             type: 'Failure',
             title: 'Email Address Not Verified',
-            body:
-                'Click the link in the email we sent to verify your email address. ' +
-                'Click here' +
-                ' to resend it.',
+            specialBodyCall: () => {
+                return (
+                    <Text>
+                        Click the link in the email we sent to verify your email address.{' '}
+                        <Text
+                            onPress={() => {
+                                console.log('init');
+                                if (this.state.disabled === false) {
+                                    console.log('sent email verification');
+                                    sendLink();
+                                    this.setState({ disabled: true });
+                                }
+                                console.log('disabled');
+                            }}
+                            style={this.state.disabled ? { color: 'gray' } : styles.hyperlink}
+                        >
+                            Click here
+                        </Text>{' '}
+                        to resend it.
+                    </Text>
+                );
+            },
             showButton: true,
             buttonText: 'OK',
             autoClose: false,
-            verticalOffset: 40,
-            callback: () => {
-                this.props.firebase.signOut();
-                Popup.hide();
-            },
+            verticalOffset: 30,
+            callback: myCallback,
         });
     };
 
@@ -205,105 +227,107 @@ class SignInScreen extends Component {
             keyboardShown,
         } = this.state;
         return (
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.container}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-                contentContainerStyle={{ flex: 1 }}
+            <Root
+                style={[
+                    styles.container,
+                    {
+                        paddingBottom:
+                            Platform.OS === 'ios' && keyboardShown
+                                ? this.state.keyboardHeight
+                                : null,
+                    },
+                ]}
             >
-                <Root>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View>
-                            {keyboardShown ? null : <View style={styles.header} />}
-                            <View style={styles.titleContainer}>
-                                <MainText style={styles.title}>
-                                    Tembu<Text style={styles.title2}>Friends</Text>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View>
+                        {keyboardShown ? null : <View style={styles.header} />}
+                        <View style={styles.titleContainer}>
+                            <MainText style={styles.title}>
+                                TEMBU<Text style={styles.title2}>FRIENDS</Text>
+                            </MainText>
+                        </View>
+
+                        <View style={styles.form}>
+                            <View style={styles.box}>
+                                <FormInput
+                                    style={
+                                        errorHighlight || emailError
+                                            ? styles.errorInput
+                                            : styles.validInput
+                                    }
+                                    placeholder="NUS email address"
+                                    keyboardType="email-address"
+                                    returnKeyType="next"
+                                    textContentType="emailAddress"
+                                    autoCapitalize="none"
+                                    value={nusEmail}
+                                    onChangeText={this.handleEmail.bind(this)}
+                                    blurOnSubmit={false}
+                                />
+                                <ErrorMessage error={emailError ? emailError : ' '} />
+                            </View>
+                            <View style={styles.box}>
+                                <FormInput
+                                    style={errorHighlight ? styles.errorInput : styles.validInput}
+                                    placeholder="Password"
+                                    autoCapitalize="none"
+                                    returnKeyType="done"
+                                    textContentType="newPassword"
+                                    onChangeText={this.handlePassword.bind(this)}
+                                    secureTextEntry={passwordHidden}
+                                    value={password}
+                                    rightIcon={
+                                        <TouchableOpacity
+                                            onPress={this.handlePasswordVisibility.bind(this)}
+                                        >
+                                            <Ionicons
+                                                name={passwordIcon}
+                                                size={28}
+                                                color="grey"
+                                                style={{ marginRight: 5 }}
+                                            />
+                                        </TouchableOpacity>
+                                    }
+                                />
+                                <MainText />
+                            </View>
+
+                            <View style={styles.box}>
+                                <MainText
+                                    style={[styles.hyperlink, styles.forgetPasswordText]}
+                                    onPress={this.goToForgetPassword.bind(this)}
+                                >
+                                    Forgotten password?
+                                </MainText>
+                                <AuthButton
+                                    onPress={this.validateInputAndSignIn.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Log In
+                                </AuthButton>
+                                <ErrorMessage error={generalError ? generalError : ' '} />
+                            </View>
+                        </View>
+
+                        {keyboardShown ? (
+                            <View style={{ flex: 0.5 }} />
+                        ) : (
+                            <View style={styles.bottom}>
+                                <MainText style={styles.registerText}>
+                                    Don't have an account?{' '}
+                                    <Text
+                                        style={styles.hyperlink}
+                                        onPress={this.goToRegister.bind(this)}
+                                    >
+                                        Sign Up
+                                    </Text>
                                 </MainText>
                             </View>
-
-                            <View style={styles.form}>
-                                <View style={styles.box}>
-                                    <FormInput
-                                        style={
-                                            errorHighlight || emailError
-                                                ? styles.errorInput
-                                                : styles.validInput
-                                        }
-                                        placeholder="NUS email address"
-                                        keyboardType="email-address"
-                                        returnKeyType="next"
-                                        textContentType="emailAddress"
-                                        autoCapitalize="none"
-                                        value={nusEmail}
-                                        onChangeText={this.handleEmail.bind(this)}
-                                    />
-                                    <ErrorMessage error={emailError ? emailError : ' '} />
-                                </View>
-                                <View style={styles.box}>
-                                    <FormInput
-                                        style={
-                                            errorHighlight ? styles.errorInput : styles.validInput
-                                        }
-                                        placeholder="Password"
-                                        autoCapitalize="none"
-                                        returnKeyType="done"
-                                        textContentType="newPassword"
-                                        onChangeText={this.handlePassword.bind(this)}
-                                        secureTextEntry={passwordHidden}
-                                        value={password}
-                                        rightIcon={
-                                            <TouchableOpacity
-                                                onPress={this.handlePasswordVisibility.bind(this)}
-                                            >
-                                                <Ionicons
-                                                    name={passwordIcon}
-                                                    size={28}
-                                                    color="grey"
-                                                    style={{ marginRight: 5 }}
-                                                />
-                                            </TouchableOpacity>
-                                        }
-                                    />
-                                    <MainText />
-                                </View>
-
-                                <View style={styles.box}>
-                                    <MainText
-                                        style={[styles.hyperlink, styles.forgetPasswordText]}
-                                        onPress={this.goToForgetPassword.bind(this)}
-                                    >
-                                        Forgotten password?
-                                    </MainText>
-                                    <AuthButton
-                                        onPress={this.validateInputAndSignIn.bind(this)}
-                                        style={styles.button}
-                                        loading={isLoading}
-                                    >
-                                        Log In
-                                    </AuthButton>
-                                    <ErrorMessage error={generalError ? generalError : ' '} />
-                                </View>
-                            </View>
-
-                            {keyboardShown ? (
-                                <View style={{ flex: 0.5 }} />
-                            ) : (
-                                <View style={styles.bottom}>
-                                    <MainText style={styles.registerText}>
-                                        Don't have an account?{' '}
-                                        <MainText
-                                            style={styles.hyperlink}
-                                            onPress={this.goToRegister.bind(this)}
-                                        >
-                                            Sign Up
-                                        </MainText>
-                                    </MainText>
-                                </View>
-                            )}
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Root>
-            </KeyboardAvoidingView>
+                        )}
+                    </View>
+                </TouchableWithoutFeedback>
+            </Root>
         );
     }
 }
@@ -326,7 +350,7 @@ const styles = StyleSheet.create({
     },
     title2: {
         // Friends color
-        color: 'green',
+        color: 'black',
     },
     header: {
         flex: 0.5,

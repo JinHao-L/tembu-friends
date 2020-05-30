@@ -20,9 +20,7 @@ function HomeTabs({ navigation }) {
                 component={HomeScreen}
                 options={{
                     title: 'Welcome',
-                    tabBarIcon: ({ focused }) => (
-                        <TabBarIcon focused={focused} name="md-code-working" />
-                    ),
+                    tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-home" />,
                 }}
             />
             <BottomTab.Screen

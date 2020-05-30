@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 
-import { Colors, Layout } from '../constants';
+import { Colors } from '../constants';
 import { withFirebase } from '../config/Firebase';
 import { MainText, MenuButton } from '../components';
 import { Popup, Root } from '../components/Popup';
@@ -9,6 +9,10 @@ import { Popup, Root } from '../components/Popup';
 class MenuScreen extends Component {
     state = {
         isVisible: false,
+    };
+
+    getDisplayName = () => {
+        return this.props.firebase.getCurrentUser().displayName;
     };
 
     signOut = async () => {
@@ -19,8 +23,12 @@ class MenuScreen extends Component {
         }
     };
 
-    goToProfile = () => {
+    goToProfile = (params) => {
         this.props.navigation.navigate('Profile');
+    };
+
+    goToDelete = () => {
+        this.props.navigation.navigate('Delete');
     };
 
     testingPopup = () => {
@@ -32,7 +40,7 @@ class MenuScreen extends Component {
             buttonText: 'Close',
             autoClose: true,
             // because of bottom tab bar
-            verticalOffset: 100,
+            verticalOffset: 50,
         });
     };
 
@@ -40,7 +48,7 @@ class MenuScreen extends Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <Root>
-                    <View style={styles.titleContainer}>
+                    <View style={styles.header}>
                         <MainText style={styles.title}>Menu</MainText>
                     </View>
                     <ScrollView
@@ -48,44 +56,65 @@ class MenuScreen extends Component {
                         contentContainerStyle={styles.contentContainer}
                     >
                         <View>
-                            <MenuButton onPress={this.goToProfile}>Profile</MenuButton>
-                            <MenuButton>Friends</MenuButton>
-                            <MenuButton>Settings</MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                            <MenuButton img={'Profile'} onPress={this.goToProfile}>
+                                <Text style={{ color: 'green' }}>{this.getDisplayName()}</Text>
+                                {'\n'}
+                                <Text style={{ fontSize: 15 }}> See your profile</Text>
+                            </MenuButton>
+                            <MenuButton img={'Friends'} onPress={this.testingPopup}>
+                                Friends
+                            </MenuButton>
+                            <MenuButton img={'Settings'} onPress={this.testingPopup}>
+                                Settings
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Testing
+                                Ipsum Lorem
                             </MenuButton>
-                            <MenuButton style={styles.signOutButton} onPress={this.signOut}>
+                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
+                                Ipsum Lorem
+                            </MenuButton>
+                            <MenuButton
+                                img={'Settings'}
+                                style={styles.signOutButton}
+                                textStyle={{ color: 'white' }}
+                                onPress={this.signOut}
+                            >
                                 Sign Out
+                            </MenuButton>
+                            <MenuButton
+                                img={'Settings'}
+                                style={styles.signOutButton}
+                                textStyle={{ color: 'white' }}
+                                onPress={this.goToDelete}
+                            >
+                                Delete account
                             </MenuButton>
                         </View>
                     </ScrollView>
@@ -96,6 +125,11 @@ class MenuScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    header: {
+        backgroundColor: '#248458',
+        paddingBottom: 10,
+        paddingTop: 20,
+    },
     container: {
         flex: 1,
         backgroundColor: Colors.appBackground,
@@ -105,12 +139,6 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 30,
-    },
-    titleContainer: {
-        flex: 0.1,
-        backgroundColor: Colors.appBackground,
-        justifyContent: 'flex-end',
-        paddingBottom: 5,
     },
     title: {
         textAlign: 'left',

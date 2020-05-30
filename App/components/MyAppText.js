@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 export const textStyles = {
     fontFamily: 'futura-md',
     fontWeight: 'normal',
-    fontSize: 16,
+    fontSize: 13,
 };
 export function MonoText({ style, ...props }) {
     return <Text {...props} style={[style, { fontFamily: 'space-mono' }]} />;
