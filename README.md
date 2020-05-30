@@ -21,8 +21,6 @@ A social app for Tembusians (An Apollo-11 Project)
 
 ## Bugs (To be fixed)
 
--   Display rendered changes when switching keyboard type (KeyboardListener does not effectively detects keyboard when the keyboard type changes)
-
 ## License
 
 NIL
