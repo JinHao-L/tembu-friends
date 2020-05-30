@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
-    TouchableWithoutFeedback,
-    Keyboard,
-} from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature } from '../../constants';
@@ -25,6 +18,7 @@ class ForgetPassword extends Component {
         // Control - others
         isLoading: false,
         keyboardShown: false,
+        keyboardHeight: 0,
     };
 
     clearInputs() {
@@ -46,10 +40,11 @@ class ForgetPassword extends Component {
         );
     }
 
-    _keyboardDidShow() {
+    _keyboardDidShow(event) {
         console.log('Keyboard Shown');
         this.setState({
             keyboardShown: true,
+            keyboardHeight: event.endCoordinates.height,
         });
     }
 
@@ -138,7 +133,7 @@ class ForgetPassword extends Component {
             showButton: true,
             buttonText: 'OK',
             autoClose: false,
-            verticalOffset: 40,
+            verticalOffset: 30,
         });
     };
 
@@ -146,64 +141,67 @@ class ForgetPassword extends Component {
         const { nusEmail, emailError, generalError, isLoading, keyboardShown } = this.state;
 
         return (
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.container}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-                contentContainerStyle={{ flex: 1 }}
+            <Root
+                style={[
+                    styles.container,
+                    {
+                        paddingBottom:
+                            Platform.OS === 'ios' && keyboardShown
+                                ? this.state.keyboardHeight
+                                : null,
+                    },
+                ]}
             >
-                <Root>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View>
-                            <View style={styles.textContainer}>
-                                <MainText style={styles.title}>Trouble with logging in?</MainText>
-                                <MainText style={styles.intro}>
-                                    Enter your email address and we'll send you a link to reset your
-                                    password
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View>
+                        <View style={styles.textContainer}>
+                            <MainText style={styles.title}>Trouble with logging in?</MainText>
+                            <MainText style={styles.intro}>
+                                Enter your email address and we'll send you a link to reset your
+                                password
+                            </MainText>
+                        </View>
+
+                        <View style={styles.form}>
+                            <View style={styles.box}>
+                                <FormInput
+                                    style={emailError ? styles.errorInput : styles.validInput}
+                                    leftIconName="ios-mail"
+                                    placeholder="NUS email address"
+                                    returnKeyType="done"
+                                    keyboardType="email-address"
+                                    textContentType="emailAddress"
+                                    autoCapitalize="none"
+                                    value={nusEmail}
+                                    onChangeText={this.handleEmail.bind(this)}
+                                />
+                                <ErrorMessage error={emailError ? emailError : ' '} />
+                            </View>
+                            <View>
+                                <AuthButton
+                                    onPress={this.validateInput.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Next
+                                </AuthButton>
+                                <ErrorMessage error={generalError} />
+                            </View>
+                        </View>
+
+                        {keyboardShown ? null : (
+                            <View style={styles.bottom}>
+                                <MainText
+                                    style={styles.backLoginText}
+                                    onPress={this.goToSignIn.bind(this)}
+                                >
+                                    Back to Login
                                 </MainText>
                             </View>
-
-                            <View style={styles.form}>
-                                <View style={styles.box}>
-                                    <FormInput
-                                        style={emailError ? styles.errorInput : styles.validInput}
-                                        leftIconName="ios-mail"
-                                        placeholder="NUS email address"
-                                        returnKeyType="done"
-                                        keyboardType="email-address"
-                                        textContentType="emailAddress"
-                                        autoCapitalize="none"
-                                        value={nusEmail}
-                                        onChangeText={this.handleEmail.bind(this)}
-                                    />
-                                    <ErrorMessage error={emailError ? emailError : ' '} />
-                                </View>
-                                <View>
-                                    <AuthButton
-                                        onPress={this.validateInput.bind(this)}
-                                        style={[styles.button, { position: 'relative', top: 10 }]}
-                                        loading={isLoading}
-                                    >
-                                        Next
-                                    </AuthButton>
-                                    <ErrorMessage error={generalError} />
-                                </View>
-                            </View>
-
-                            {keyboardShown ? null : (
-                                <View style={styles.bottom}>
-                                    <MainText
-                                        style={styles.backLoginText}
-                                        onPress={this.goToSignIn.bind(this)}
-                                    >
-                                        Back to Login
-                                    </MainText>
-                                </View>
-                            )}
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Root>
-            </KeyboardAvoidingView>
+                        )}
+                    </View>
+                </TouchableWithoutFeedback>
+            </Root>
         );
     }
 }
@@ -218,7 +216,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 30,
-        // fontWeight: '700',
         color: Colors.greenText,
         marginBottom: 10,
         textAlign: 'center',
@@ -229,6 +226,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     intro: {
+        fontSize: 15,
         flexWrap: 'wrap',
         textAlign: 'center',
     },

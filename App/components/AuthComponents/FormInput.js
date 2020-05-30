@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderRadius: 6,
-        backgroundColor: 'transparent',
+        backgroundColor: 'white',
         height: 30,
         flexDirection: 'row',
     },
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     input: {
         marginLeft: 5,
         ...textStyles,
+        fontSize: 15,
         flex: 1,
     },
 });

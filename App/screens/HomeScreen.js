@@ -1,159 +1,31 @@
-import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
-import { ScrollView, Image, Platform, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Platform, StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 
-import { MonoText } from '../components/index';
 import { Colors } from '../constants/index';
+import Layout from '../constants/Layout';
 
 class HomeScreen extends Component {
-    componentDidMount() {
-        this.props.navigation.setOptions({
-            headerShown: false,
-        });
-    }
-
     render() {
         return (
-            // <View style={styles.container}>
-            //     <ScrollView
-            //         style={styles.container}
-            //         contentContainerStyle={styles.contentContainer}
-            //     >
-            <WebView source={{ uri: 'https://tembusu.nus.edu.sg/' }} style={{ marginTop: 20 }} />
-            //         <View style={styles.welcomeContainer}>
-            //             <Image
-            //                 source={
-            //                     __DEV__
-            //                         ? require('../assets/images/robot-dev.png')
-            //                         : require('../assets/images/robot-prod.png')
-            //                 }
-            //                 style={styles.welcomeImage}
-            //             />
-            //         </View>
-            //
-            //         <View style={styles.getStartedContainer}>
-            //             <DevelopmentModeNotice />
-            //
-            //             <Text style={styles.getStartedText}>Open up the code for this screen:</Text>
-            //
-            //             <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            //                 <MonoText>screens/HomeScreen.js</MonoText>
-            //             </View>
-            //
-            //             <Text style={styles.getStartedText}>
-            //                 Change any of the text, save the file, and your app will automatically
-            //                 reload.
-            //             </Text>
-            //         </View>
-            //
-            //         <View style={styles.helpContainer}>
-            //             <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            //                 <Text style={styles.helpLinkText}>
-            //                     Help, it didn’t automatically reload!
-            //                 </Text>
-            //             </TouchableOpacity>
-            //         </View>
-            //     </ScrollView>
-            //
-            //     <View style={styles.tabBarInfoContainer}>
-            //         <Text style={styles.tabBarInfoText}>
-            //             This is a tab bar. You can edit it in:
-            //         </Text>
-            //
-            //         <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            //             <MonoText style={styles.codeHighlightText}>
-            //                 navigation/BottomTabNavigator.js
-            //             </MonoText>
-            //         </View>
-            //     </View>
-            // </View>
+            <View style={styles.container}>
+                <WebView
+                    source={{ uri: 'https://tembusu.nus.edu.sg/' }}
+                    style={{ width: Layout.window.width, flex: 1 }}
+                />
+            </View>
         );
     }
 }
 
-// function DevelopmentModeNotice() {
-//     if (__DEV__) {
-//         const learnMoreButton = (
-//             <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-//                 Learn more
-//             </Text>
-//         );
-//
-//         return (
-//             <Text style={styles.developmentModeText}>
-//                 Development mode is enabled: your app will be slower but you can use useful
-//                 development tools. {learnMoreButton}
-//             </Text>
-//         );
-//     }
-//
-//     return (
-//         <Text style={styles.developmentModeText}>
-//             You are not in development mode: your app will run at full speed.
-//         </Text>
-//     );
-// }
-//
-// function handleLearnMorePress() {
-//     WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/workflow/development-mode/');
-// }
-//
-// function handleHelpPress() {
-//     WebBrowser.openBrowserAsync(
-//         'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
-//     );
-// }
-//
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.appBackground,
-        // alignItems: 'center',
-    },
-    developmentModeText: {
-        marginBottom: 20,
-        color: 'rgba(0,0,0,0.4)',
-        fontSize: 14,
-        lineHeight: 19,
-        textAlign: 'center',
+        alignItems: 'center',
     },
     contentContainer: {
         paddingTop: 30,
-    },
-    welcomeContainer: {
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 20,
-    },
-    welcomeImage: {
-        width: 100,
-        height: 80,
-        resizeMode: 'contain',
-        marginTop: 3,
-        marginLeft: -10,
-    },
-    getStartedContainer: {
-        alignItems: 'center',
-        marginHorizontal: 50,
-    },
-    homeScreenFilename: {
-        marginVertical: 7,
-    },
-    codeHighlightText: {
-        color: 'rgba(96,100,109, 0.8)',
-    },
-    codeHighlightContainer: {
-        backgroundColor: 'rgba(0,0,0,0.05)',
-        borderRadius: 3,
-        paddingHorizontal: 4,
-    },
-    getStartedText: {
-        fontSize: 17,
-        color: 'rgba(96,100,109, 1)',
-        lineHeight: 24,
-        textAlign: 'center',
     },
     tabBarInfoContainer: {
         position: 'absolute',
@@ -174,29 +46,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fbfbfb',
         paddingVertical: 20,
-    },
-    tabBarInfoText: {
-        fontSize: 17,
-        color: 'rgba(96,100,109, 1)',
-        textAlign: 'center',
-    },
-    navigationFilename: {
-        marginTop: 5,
-    },
-    helpContainer: {
-        marginTop: 15,
-        alignItems: 'center',
-    },
-    helpLink: {
-        paddingVertical: 15,
-    },
-    helpLinkText: {
-        fontSize: 14,
-        color: '#2e78b7',
-    },
-    buttonText: {
-        fontSize: 24,
-        color: '#ffe2ff',
     },
 });
 

@@ -21,22 +21,21 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "bundleIdentifier": "com.nus.tembu-friends",
+            "bundleIdentifier": "com.nus.tembufriends",
+            "buildNumber": "1.0.0",
             "supportsTablet": true,
-            "infoPlist": {
-                "NSCameraUsageDescription": "To take picture of QR code"
-            },
+            "infoPlist": {},
             "config": {}
         },
         "android": {
-            "package": "com.nus.tembu_friends",
+            "package": "com.nus.tembufriends",
+            "versionCode": 1,
             "googleServicesFile": "",
             "permissions": []
         },
         "web": {
             "favicon": "./assets/images/favicon.png"
         },
-        "description": "",
-        "githubUrl": "https://github.com/JinHao-L/tembu-friends"
+        "description": "A social app for Tembusians (An Apollo-11 Project)"
     }
 }

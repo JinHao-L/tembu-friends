@@ -9,7 +9,6 @@ import AuthNavigator from './AuthNavigator';
 import { LoadingScreen } from '../screens/index';
 import { withFirebase } from '../config/Firebase';
 import { NavigationContainer } from '@react-navigation/native';
-import LinkConfig from './config/LinkConfig';
 
 const RootStack = createStackNavigator();
 
@@ -75,7 +74,6 @@ class RootNavigator extends Component {
             ),
             Font.loadAsync({
                 ...Ionicons.font,
-                'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
                 'futura-md': require('../assets/fonts/Futura-Medium-BT.ttf'),
             }).then(() => console.log('font done')),
         ]);

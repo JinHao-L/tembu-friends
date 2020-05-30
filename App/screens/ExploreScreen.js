@@ -6,15 +6,20 @@ import { Colors, Layout } from '../constants/index';
 
 function ExploreScreen() {
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.header}>
-                <View style={styles.searchBar}>
-                    <MainText style={{ color: 'white' }}>Search Bar</MainText>
-                </View>
+                <MainText style={styles.title}>Explore</MainText>
             </View>
-            <View style={styles.content}>
-                <View style={styles.floorPlan}>
-                    <MainText style={{ color: 'white' }}>Floor Plan</MainText>
+            <View style={styles.container}>
+                <View style={styles.searchContainer}>
+                    <View style={styles.searchBar}>
+                        <MainText style={{ color: 'white' }}>Search Bar</MainText>
+                    </View>
+                </View>
+                <View style={styles.content}>
+                    <View style={styles.floorPlan}>
+                        <MainText style={{ color: 'white' }}>Floor Plan</MainText>
+                    </View>
                 </View>
             </View>
         </SafeAreaView>
@@ -22,6 +27,11 @@ function ExploreScreen() {
 }
 
 const styles = StyleSheet.create({
+    header: {
+        backgroundColor: '#248458',
+        paddingBottom: 10,
+        paddingTop: 20,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -30,10 +40,16 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appBackground,
         width: Layout.window.width,
     },
-    header: {
+    searchContainer: {
         flex: 1,
         width: Layout.window.width,
         justifyContent: 'center',
+    },
+    title: {
+        textAlign: 'left',
+        color: 'white',
+        fontSize: 24,
+        left: 30,
     },
     searchBar: {
         flex: 1,

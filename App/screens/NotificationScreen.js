@@ -13,25 +13,25 @@ function NotificationScreen({ navigation }) {
     });
     return (
         <View style={{ flex: 1 }}>
-            <View style={styles.titleContainer}>
+            <View style={styles.header}>
                 <MainText style={styles.title}>Notifications</MainText>
             </View>
             <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <OptionButton
                     icon="md-school"
-                    label="Read the Expo documentation"
+                    label="Testing Link 1"
                     onPress={() => WebBrowser.openBrowserAsync('https://docs.expo.io')}
                 />
 
                 <OptionButton
                     icon="md-compass"
-                    label="Read the React Navigation documentation"
+                    label="Testing Link 2"
                     onPress={() => WebBrowser.openBrowserAsync('https://reactnavigation.org')}
                 />
 
                 <OptionButton
                     icon="ios-chatboxes"
-                    label="Ask a question on the forums"
+                    label="Testng Link 3"
                     onPress={() => WebBrowser.openBrowserAsync('https://forums.expo.io')}
                     isLastOption
                 />
@@ -56,18 +56,17 @@ function OptionButton({ icon, label, onPress, isLastOption }) {
 }
 
 const styles = StyleSheet.create({
+    header: {
+        backgroundColor: '#248458',
+        paddingBottom: 10,
+        paddingTop: 20,
+    },
     container: {
         flex: 1,
         backgroundColor: Colors.appBackground,
     },
     contentContainer: {
         paddingTop: 15,
-    },
-    titleContainer: {
-        flex: 0.1,
-        backgroundColor: Colors.appBackground,
-        justifyContent: 'flex-end',
-        paddingBottom: 5,
     },
     title: {
         textAlign: 'left',
