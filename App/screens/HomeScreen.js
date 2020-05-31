@@ -21,7 +21,7 @@ class HomeScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.appBackground,
+        backgroundColor: Colors.appGreen,
         alignItems: 'center',
     },
     contentContainer: {
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         right: 0,
         ...Platform.select({
             ios: {
-                shadowColor: 'black',
+                shadowColor: Colors.appBlack,
                 shadowOffset: { width: 0, height: -3 },
                 shadowOpacity: 0.1,
                 shadowRadius: 3,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
             },
         }),
         alignItems: 'center',
-        backgroundColor: '#fbfbfb',
+        backgroundColor: Colors.appGreen,
         paddingVertical: 20,
     },
 });

@@ -11,7 +11,7 @@ const AuthButton = (property) => {
             {...others}
             style={[
                 styles.container,
-                { backgroundColor: loading ? Colors.buttonLoading : Colors.button },
+                { backgroundColor: loading ? Colors.appGray : Colors.appGreen },
                 style,
             ]}
             onPress={onPress}
@@ -29,14 +29,14 @@ const AuthButton = (property) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.button,
         borderRadius: 5,
         paddingHorizontal: 5,
         paddingVertical: 7,
     },
     text: {
         fontSize: 15,
-        color: Colors.whiteText,
+        fontWeight: '600',
+        color: Colors.appWhite,
         textAlign: 'center',
     },
 });
