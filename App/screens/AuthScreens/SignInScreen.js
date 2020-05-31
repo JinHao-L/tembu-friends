@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
+import { AuthButton, FormInput, ErrorMessage, LogoText, MainText } from '../../components';
 import { Popup, Root } from '../../components/Popup';
 
 class SignInScreen extends Component {
@@ -242,9 +242,9 @@ class SignInScreen extends Component {
                     <View>
                         {keyboardShown ? null : <View style={styles.header} />}
                         <View style={styles.titleContainer}>
-                            <MainText style={styles.title}>
+                            <LogoText style={styles.title}>
                                 TEMBU<Text style={styles.title2}>FRIENDS</Text>
-                            </MainText>
+                            </LogoText>
                         </View>
 
                         <View style={styles.form}>
@@ -283,7 +283,7 @@ class SignInScreen extends Component {
                                             <Ionicons
                                                 name={passwordIcon}
                                                 size={28}
-                                                color="grey"
+                                                color="lightgray"
                                                 style={{ marginRight: 5 }}
                                             />
                                         </TouchableOpacity>
@@ -338,19 +338,19 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.authBackground,
+        backgroundColor: Colors.appWhite,
     },
     title: {
         fontSize: 40,
-        // Tembu color
-        color: Colors.greenText,
+        // Color of 'Tembu' in 'TembuFriends'
+        color: Colors.appGreen,
         marginBottom: 10,
         textAlign: 'center',
         width: Layout.window.width,
     },
     title2: {
-        // Friends color
-        color: 'black',
+        // Color of 'Friends' in 'TembuFriends'
+        color: Colors.appBlack,
     },
     header: {
         flex: 0.5,
@@ -372,10 +372,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     validInput: {
-        borderColor: Colors.defaultBorder,
+        borderColor: Colors.appGray,
     },
     errorInput: {
-        borderColor: Colors.errorBorder,
+        borderColor: Colors.appRed,
     },
     box: {
         flex: 1,
@@ -385,21 +385,21 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     forgetPasswordText: {
-        fontWeight: '200',
         fontSize: 15,
+        fontWeight: '600',
         textAlign: 'right',
     },
     registerText: {
         position: 'absolute',
         bottom: 0,
-        fontWeight: '200',
         fontSize: 15,
+        fontWeight: '600',
         textAlign: 'center',
-        color: Colors.defaultText,
+        color: Colors.appBlack,
         marginBottom: 20,
     },
     hyperlink: {
-        color: Colors.greenText,
+        color: Colors.appGreen,
     },
 });
 

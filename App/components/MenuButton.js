@@ -42,7 +42,7 @@ const getImage = (img) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.menuButton,
+        backgroundColor: Colors.appWhite,
         height: 60,
         borderRadius: 5,
         paddingHorizontal: 5,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
-        color: Colors.menuButtonText,
+        color: Colors.appBlack,
         textAlign: 'left',
         textAlignVertical: 'center',
     },
