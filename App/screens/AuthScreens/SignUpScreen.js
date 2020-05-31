@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
-    YellowBox,
+    Text,
     Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -93,7 +93,7 @@ class SignUpScreen extends Component {
     }
 
     onSignUpSuccess() {
-        this.successPopup();
+        this.emailSentPopup();
         this.setState({
             firstName: '',
             lastName: '',
@@ -271,7 +271,7 @@ class SignUpScreen extends Component {
         }
     }
 
-    successPopup = () => {
+    emailSentPopup = () => {
         Popup.show({
             type: 'Success',
             title: 'Email link sent',
@@ -331,7 +331,7 @@ class SignUpScreen extends Component {
                         </View>
 
                         <View style={styles.form}>
-                            <View style={styles.nameContainer}>
+                            <View style={[styles.box, { flexDirection: 'row' }]}>
                                 <View style={{ flex: 1, flexDirection: 'column', marginRight: 5 }}>
                                     <FormInput
                                         style={
@@ -458,12 +458,12 @@ class SignUpScreen extends Component {
                             <View style={styles.bottom}>
                                 <MainText style={styles.haveAccountText}>
                                     Already have an account?{' '}
-                                    <MainText
+                                    <Text
                                         style={styles.hyperlink}
                                         onPress={this.goToSignIn.bind(this)}
                                     >
                                         Login here
-                                    </MainText>
+                                    </Text>
                                 </MainText>
                             </View>
                         )}
@@ -485,16 +485,16 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         color: Colors.greenText,
-        marginBottom: 10,
+        marginBottom: 5,
         textAlign: 'left',
         width: Layout.window.width,
         left: 35,
     },
     header: {
-        flex: 1.5,
+        flex: 1,
     },
     titleContainer: {
-        flex: 2,
+        flex: 1.5,
         justifyContent: 'flex-end',
     },
     form: {
@@ -509,10 +509,6 @@ const styles = StyleSheet.create({
         marginBottom: 36,
         alignItems: 'center',
     },
-    nameContainer: {
-        flex: 1,
-        flexDirection: 'row',
-    },
     validInput: {
         borderColor: Colors.defaultBorder,
     },
@@ -520,8 +516,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.errorBorder,
     },
     box: {
-        flex: 1,
-        // marginTop: 5,
+        marginBottom: 5,
     },
     button: {
         marginTop: 10,
