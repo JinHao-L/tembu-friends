@@ -28,7 +28,9 @@ class RootNavigator extends Component {
             console.log('Starting app');
             try {
                 await this.loadLocalAsync().then(() => {
-                    this.setState({ loading: { isAssetsLoading: false } });
+                    if (this.state.loading.isAssetsLoading) {
+                        this.setState({ loading: { isAssetsLoading: false } });
+                    }
                 });
 
                 await this.props.firebase.checkUserAuth((result) => {
@@ -47,6 +49,7 @@ class RootNavigator extends Component {
                         this.setState({
                             loading: {
                                 isUserLoading: false,
+                                isUserSignedIn: false,
                             },
                         });
                     }

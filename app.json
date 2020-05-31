@@ -5,7 +5,8 @@
         "scheme": "tembufriends",
         "notification": {
             "icon": "./App/assets/images/notification-icon.png",
-            "androidMode": "default"
+            "androidMode": "default",
+            "iosDisplayInForeground": true
         },
         "platforms": ["ios", "android", "web"],
         "version": "1.0.0",
@@ -23,9 +24,7 @@
         "ios": {
             "bundleIdentifier": "com.nus.tembufriends",
             "buildNumber": "1.0.0",
-            "supportsTablet": true,
-            "infoPlist": {},
-            "config": {}
+            "supportsTablet": true
         },
         "android": {
             "package": "com.nus.tembufriends",
