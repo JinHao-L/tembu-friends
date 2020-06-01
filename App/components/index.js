@@ -5,4 +5,3 @@ export * from './MyAppText';
 export TabBarIcon from './TabBarIcon';
 export MenuButton from './MenuButton';
 export Popup from './Popup';
-export MyStatusBar from './AppTheme';

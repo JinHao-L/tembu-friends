@@ -6,7 +6,6 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Text,
-    YellowBox,
     Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -154,8 +153,8 @@ class SignInScreen extends Component {
                     this.onSignInSuccess.bind(this)();
                 } else {
                     console.log('not verified');
-                    this.notVerifiedPopup(() => {
-                        response.user.sendEmailVerification();
+                    this.notVerifiedPopup(async () => {
+                        await response.user.sendEmailVerification();
                     });
                 }
             }
@@ -176,11 +175,6 @@ class SignInScreen extends Component {
     }
 
     notVerifiedPopup = (sendLink) => {
-        const myCallback = () => {
-            this.props.firebase.signOut();
-            Popup.hide();
-        };
-
         Popup.show({
             type: 'Failure',
             title: 'Email Address Not Verified',
@@ -190,15 +184,16 @@ class SignInScreen extends Component {
                         Click the link in the email we sent to verify your email address.{' '}
                         <Text
                             onPress={() => {
-                                console.log('init');
-                                if (this.state.disabled === false) {
-                                    console.log('sent email verification');
-                                    sendLink();
-                                    this.setState({ disabled: true });
-                                }
-                                console.log('disabled');
+                                console.log('Init');
+                                sendLink().then(() => {
+                                    this.props.firebase.signOut().then((r) => {
+                                        console.log('Closed and opening next');
+                                        this.emailSentPopup();
+                                        console.log('Done');
+                                    });
+                                });
                             }}
-                            style={this.state.disabled ? { color: 'gray' } : styles.hyperlink}
+                            style={styles.hyperlink}
                         >
                             Click here
                         </Text>{' '}
@@ -210,7 +205,28 @@ class SignInScreen extends Component {
             buttonText: 'OK',
             autoClose: false,
             verticalOffset: 30,
-            callback: myCallback,
+            callback: () => {
+                this.props.firebase.signOut();
+                Popup.hide();
+            },
+        });
+    };
+
+    emailSentPopup = () => {
+        Popup.show({
+            type: 'Success',
+            title: 'Email link sent',
+            body:
+                'We sent an email to\n' +
+                this.state.nusEmail +
+                '\nwith a verification link to activate your account.',
+            showButton: true,
+            buttonText: 'OK',
+            autoClose: false,
+            verticalOffset: 30,
+            callback: () => {
+                Popup.hide();
+            },
         });
     };
 
@@ -266,7 +282,7 @@ class SignInScreen extends Component {
                                 />
                                 <ErrorMessage error={emailError ? emailError : ' '} />
                             </View>
-                            <View style={styles.box}>
+                            <View>
                                 <FormInput
                                     style={errorHighlight ? styles.errorInput : styles.validInput}
                                     placeholder="Password"
@@ -378,8 +394,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.appRed,
     },
     box: {
-        flex: 1,
-        marginTop: 10,
+        marginBottom: 3,
     },
     button: {
         marginTop: 10,

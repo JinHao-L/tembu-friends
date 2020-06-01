@@ -61,7 +61,7 @@ class ForgetPassword extends Component {
     }
 
     onResetSuccess() {
-        this.successPopup();
+        this.emailSentPopup();
         this.setState({
             nusEmail: '',
         });
@@ -122,7 +122,7 @@ class ForgetPassword extends Component {
         return this.resetPassword.bind(this)();
     }
 
-    successPopup = () => {
+    emailSentPopup = () => {
         Popup.show({
             type: 'Success',
             title: 'Email link sent',
