@@ -57,20 +57,20 @@ function OptionButton({ icon, label, onPress, isLastOption }) {
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: '#248458',
+        backgroundColor: Colors.appGreen,
         paddingBottom: 10,
         paddingTop: 20,
     },
     container: {
         flex: 1,
-        backgroundColor: Colors.appBackground,
+        backgroundColor: Colors.appGreen,
     },
     contentContainer: {
         paddingTop: 15,
     },
     title: {
         textAlign: 'left',
-        color: 'white',
+        color: Colors.appWhite,
         fontSize: 24,
         left: 30,
     },

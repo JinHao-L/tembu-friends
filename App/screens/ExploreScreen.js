@@ -28,7 +28,7 @@ function ExploreScreen() {
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: '#248458',
+        backgroundColor: Colors.appGreen,
         paddingBottom: 10,
         paddingTop: 20,
     },
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: Colors.appBackground,
+        backgroundColor: Colors.appGreen,
         width: Layout.window.width,
     },
     searchContainer: {
@@ -47,14 +47,14 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'left',
-        color: 'white',
+        color: Colors.appWhite,
         fontSize: 24,
         left: 30,
     },
     searchBar: {
         flex: 1,
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: Colors.appGray,
         marginBottom: 10,
         marginHorizontal: 20,
         borderRadius: 5,

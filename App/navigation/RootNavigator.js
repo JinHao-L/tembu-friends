@@ -77,7 +77,8 @@ class RootNavigator extends Component {
             ),
             Font.loadAsync({
                 ...Ionicons.font,
-                'futura-md': require('../assets/fonts/Futura-Medium-BT.ttf'),
+                'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
+                'Futura-Medium-BT': require('../assets/fonts/Futura-Medium-BT.ttf'),
             }).then(() => console.log('font done')),
         ]);
     }

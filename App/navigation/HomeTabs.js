@@ -19,7 +19,6 @@ function HomeTabs({ navigation }) {
                 name="Home"
                 component={HomeScreen}
                 options={{
-                    title: 'Welcome',
                     tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-home" />,
                 }}
             />
@@ -27,15 +26,13 @@ function HomeTabs({ navigation }) {
                 name="Explore"
                 component={ExploreScreen}
                 options={{
-                    title: 'Explore',
                     tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-search" />,
                 }}
             />
             <BottomTab.Screen
-                name="Notification"
+                name="Notifications"
                 component={NotificationScreen}
                 options={{
-                    title: 'Notification',
                     tabBarIcon: ({ focused }) => (
                         <TabBarIcon focused={focused} name="md-notifications" />
                     ),
@@ -45,7 +42,6 @@ function HomeTabs({ navigation }) {
                 name="Menu"
                 component={MenuScreen}
                 options={{
-                    title: 'Menu',
                     tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-menu" />,
                 }}
             />
