@@ -4,4 +4,4 @@ export ErrorMessage from './ErrorMessage';
 export * from './MyAppText';
 export TabBarIcon from './TabBarIcon';
 export MenuButton from './MenuButton';
-export Popup from './Popup';
+export * from './Popup';

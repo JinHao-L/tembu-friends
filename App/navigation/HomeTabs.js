@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { TabBarIcon, textStyles } from '../components/index';
+import { TabBarIcon } from '../components/index';
 import { HomeScreen, ExploreScreen, NotificationScreen, MenuScreen } from '../screens/index';
 import { withFirebase } from '../config/Firebase';
 import { Colors } from '../constants';
@@ -14,7 +14,12 @@ function HomeTabs({ navigation }) {
         headerShown: false,
     });
     return (
-        <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+        <BottomTab.Navigator
+            initialRouteName={INITIAL_ROUTE_NAME}
+            tabBarOptions={{
+                activeTintColor: Colors.appGreen,
+            }}
+        >
             <BottomTab.Screen
                 name="Home"
                 component={HomeScreen}

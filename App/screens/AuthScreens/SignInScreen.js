@@ -133,11 +133,17 @@ class SignInScreen extends Component {
     }
 
     handleEmail(text) {
-        this.setState({ nusEmail: text, errorHighlight: false, emailError: '' });
+        this.setState({ nusEmail: text });
+    }
+    handlePassword(text) {
+        this.setState({ password: text });
     }
 
-    handlePassword(text) {
-        this.setState({ password: text, errorHighlight: false });
+    clearError() {
+        this.setState({
+            errorHighlight: false,
+            emailError: '',
+        });
     }
 
     async signIn() {
@@ -204,7 +210,7 @@ class SignInScreen extends Component {
             showButton: true,
             buttonText: 'OK',
             autoClose: false,
-            verticalOffset: 30,
+            verticalOffset: 50,
             callback: () => {
                 this.props.firebase.signOut();
                 Popup.hide();
@@ -213,17 +219,13 @@ class SignInScreen extends Component {
     };
 
     emailSentPopup = () => {
-        Popup.show({
+        Popup.replace({
             type: 'Success',
             title: 'Email link sent',
             body:
                 'We sent an email to\n' +
                 this.state.nusEmail +
                 '\nwith a verification link to activate your account.',
-            showButton: true,
-            buttonText: 'OK',
-            autoClose: false,
-            verticalOffset: 30,
             callback: () => {
                 Popup.hide();
             },
@@ -278,6 +280,7 @@ class SignInScreen extends Component {
                                     autoCapitalize="none"
                                     value={nusEmail}
                                     onChangeText={this.handleEmail.bind(this)}
+                                    onFocus={this.clearError.bind(this)}
                                     blurOnSubmit={false}
                                 />
                                 <ErrorMessage error={emailError ? emailError : ' '} />
@@ -290,6 +293,7 @@ class SignInScreen extends Component {
                                     returnKeyType="done"
                                     textContentType="newPassword"
                                     onChangeText={this.handlePassword.bind(this)}
+                                    onFocus={this.clearError.bind(this)}
                                     secureTextEntry={passwordHidden}
                                     value={password}
                                     rightIcon={
@@ -322,7 +326,10 @@ class SignInScreen extends Component {
                                 >
                                     Log In
                                 </AuthButton>
-                                <ErrorMessage error={generalError ? generalError : ' '} />
+                                <ErrorMessage
+                                    error={generalError ? generalError : ' '}
+                                    style={{ textAlign: 'center' }}
+                                />
                             </View>
                         </View>
 
@@ -358,14 +365,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 40,
-        // Color of 'Tembu' in 'TembuFriends'
         color: Colors.appGreen,
         marginBottom: 10,
         textAlign: 'center',
         width: Layout.window.width,
     },
     title2: {
-        // Color of 'Friends' in 'TembuFriends'
         color: Colors.appBlack,
     },
     header: {

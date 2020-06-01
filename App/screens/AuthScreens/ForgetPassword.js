@@ -97,7 +97,13 @@ class ForgetPassword extends Component {
     }
 
     handleEmail(text) {
-        this.setState({ nusEmail: text, emailError: '' });
+        this.setState({ nusEmail: text });
+    }
+
+    clearError() {
+        this.setState({
+            emailError: '',
+        });
     }
 
     async resetPassword() {
@@ -133,7 +139,7 @@ class ForgetPassword extends Component {
             showButton: true,
             buttonText: 'OK',
             autoClose: false,
-            verticalOffset: 30,
+            verticalOffset: 50,
         });
     };
 
@@ -174,6 +180,7 @@ class ForgetPassword extends Component {
                                     autoCapitalize="none"
                                     value={nusEmail}
                                     onChangeText={this.handleEmail.bind(this)}
+                                    onFocus={this.clearError.bind(this)}
                                 />
                                 <ErrorMessage error={emailError ? emailError : ' '} />
                             </View>
@@ -185,7 +192,10 @@ class ForgetPassword extends Component {
                                 >
                                     Next
                                 </AuthButton>
-                                <ErrorMessage error={generalError} />
+                                <ErrorMessage
+                                    error={generalError}
+                                    style={{ textAlign: 'center' }}
+                                />
                             </View>
                         </View>
 
@@ -215,15 +225,16 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     title: {
-        fontSize: 30,
+        fontSize: 25,
         color: Colors.appGreen,
-        marginBottom: 10,
         textAlign: 'center',
+        marginBottom: 10,
     },
     textContainer: {
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'flex-end',
+        marginHorizontal: 5,
     },
     intro: {
         fontSize: 15,

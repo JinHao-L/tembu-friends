@@ -6,11 +6,11 @@ import Popup from './Popup';
 class Root extends Component {
     render() {
         return (
-            <View style={{ flex: 1 }} {...this.props}>
+            <View ref={(popup) => (this._root = popup)} style={{ flex: 1 }} {...this.props}>
                 {this.props.children}
                 <Popup
-                    ref={(c) => {
-                        if (c) Popup.instance = c;
+                    ref={(popup) => {
+                        if (popup) Popup.instance = popup;
                     }}
                 />
             </View>

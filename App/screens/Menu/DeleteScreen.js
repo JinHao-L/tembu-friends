@@ -55,9 +55,9 @@ class SignUpScreen extends Component {
         );
         this.props.navigation.setOptions({
             headerStyle: {
-                backgroundColor: Colors.headerBackground,
+                backgroundColor: Colors.appGreen,
             },
-            headerTintColor: Colors.headerText,
+            headerTintColor: Colors.appWhite,
             headerTitleAlign: 'center',
         });
     }
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: '#dcdcdc',
+        backgroundColor: Colors.appWhite,
     },
     title: {
         fontSize: 40,
@@ -347,8 +347,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.appRed,
     },
     box: {
-        flex: 1,
-        // marginTop: 5,
+        marginTop: 5,
     },
     button: {
         color: 'red',

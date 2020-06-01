@@ -23,7 +23,7 @@ class MenuScreen extends Component {
         }
     };
 
-    goToProfile = (params) => {
+    goToProfile = () => {
         this.props.navigation.navigate('Profile');
     };
 
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: Colors.appBackground,
+        backgroundColor: Colors.appLightGreen,
     },
     contentContainer: {
         paddingTop: 15,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         left: 30,
     },
     notAvailable: {
-        backgroundColor: 'grey',
+        backgroundColor: Colors.appDarkGray,
     },
     signOutButton: {
         backgroundColor: 'red',

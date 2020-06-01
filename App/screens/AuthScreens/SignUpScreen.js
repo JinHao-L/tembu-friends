@@ -52,12 +52,6 @@ class SignUpScreen extends Component {
             nusEmail: '',
             password: '',
             confirmPassword: '',
-            firstNameError: '',
-            lastNameError: '',
-            emailError: '',
-            passwordError: '',
-            confirmPasswordError: '',
-            generalError: '',
         });
     }
 
@@ -119,6 +113,8 @@ class SignUpScreen extends Component {
         } else if (errorCode === 'auth/network-request-failed') {
             // Indicates network error
             this.setState({ generalError: 'Network error' });
+        } else if (errorCode === 'auth/weak-password') {
+            this.setState({ passwordError: 'Weak password' });
         } else {
             // Others
             this.setState({ generalError: 'Unknown error' });
@@ -146,24 +142,54 @@ class SignUpScreen extends Component {
     }
 
     handleFirstName(text) {
-        this.setState({ firstName: text, firstNameError: '', generalError: '' });
+        this.setState({ firstName: text });
     }
     handleLastName(text) {
-        this.setState({ lastName: text, lastNameError: '', generalError: '' });
+        this.setState({ lastName: text });
     }
     handleEmail(text) {
-        this.setState({ nusEmail: text, emailError: '', generalError: '' });
+        this.setState({ nusEmail: text });
     }
     handlePassword(text) {
         this.setState({
             password: text,
             passwordError: '',
+        });
+    }
+    handleConfirmPassword(text) {
+        this.setState({ confirmPassword: text });
+    }
+
+    clearFirstNameError() {
+        this.setState({
+            firstNameError: '',
+            generalError: '',
+        });
+    }
+    clearLastNameError() {
+        this.setState({
+            lastNameError: '',
+            generalError: '',
+        });
+    }
+    clearEmailError() {
+        this.setState({
+            emailError: '',
+            generalError: '',
+        });
+    }
+    clearPasswordError() {
+        this.setState({
+            passwordError: '',
             confirmPasswordError: '',
             generalError: '',
         });
     }
-    handleConfirmPassword(text) {
-        this.setState({ confirmPassword: text, confirmPasswordError: '', generalError: '' });
+    clearConfirmPasswordError() {
+        this.setState({
+            confirmPasswordError: '',
+            generalError: '',
+        });
     }
 
     async signUp() {
@@ -223,7 +249,7 @@ class SignUpScreen extends Component {
         if (!password.match(passwordFormat)) {
             this.setState({
                 passwordError:
-                    'Invalid password: minimum eight characters, at least one letter and one number',
+                    'Password must be at least eight characters long with one letter and one number',
             });
         }
     }
@@ -282,7 +308,7 @@ class SignUpScreen extends Component {
             showButton: true,
             buttonText: 'OK',
             autoClose: false,
-            verticalOffset: 30,
+            verticalOffset: 50,
             callback: () => {
                 Popup.hide();
                 this.props.navigation.navigate('SignIn');
@@ -343,7 +369,8 @@ class SignUpScreen extends Component {
                                         autoCapitalize="words"
                                         value={firstName}
                                         onChangeText={this.handleFirstName.bind(this)}
-                                        onSubmitEditing={this.validateFirstName.bind(this)}
+                                        onFocus={this.clearFirstNameError.bind(this)}
+                                        onEndEditing={this.validateFirstName.bind(this)}
                                     />
                                     <ErrorMessage error={firstNameError ? firstNameError : ' '} />
                                 </View>
@@ -359,7 +386,8 @@ class SignUpScreen extends Component {
                                         autoCapitalize="words"
                                         value={lastName}
                                         onChangeText={this.handleLastName.bind(this)}
-                                        onSubmitEditing={this.validateLastName.bind(this)}
+                                        onFocus={this.clearLastNameError.bind(this)}
+                                        onEndEditing={this.validateLastName.bind(this)}
                                     />
                                     <ErrorMessage error={lastNameError ? lastNameError : ' '} />
                                 </View>
@@ -375,7 +403,8 @@ class SignUpScreen extends Component {
                                     autoCapitalize="none"
                                     value={nusEmail}
                                     onChangeText={this.handleEmail.bind(this)}
-                                    onSubmitEditing={this.validateEmail.bind(this)}
+                                    onFocus={this.clearEmailError.bind(this)}
+                                    onEndEditing={this.validateEmail.bind(this)}
                                 />
                                 <ErrorMessage error={emailError ? emailError : ' '} />
                             </View>
@@ -392,7 +421,8 @@ class SignUpScreen extends Component {
                                     returnKeyType="next"
                                     textContentType="none"
                                     onChangeText={this.handlePassword.bind(this)}
-                                    onSubmitEditing={this.validatePassword.bind(this)}
+                                    onFocus={this.clearPasswordError.bind(this)}
+                                    onEndEditing={this.validatePassword.bind(this)}
                                     secureTextEntry={passwordHidden}
                                     value={password}
                                     rightIcon={
@@ -402,7 +432,7 @@ class SignUpScreen extends Component {
                                             <Ionicons
                                                 name={passwordIcon}
                                                 size={28}
-                                                color="grey"
+                                                color={Colors.appGray}
                                                 style={{ marginRight: 5 }}
                                             />
                                         </TouchableOpacity>
@@ -420,6 +450,7 @@ class SignUpScreen extends Component {
                                     returnKeyType="done"
                                     textContentType="none"
                                     onChangeText={this.handleConfirmPassword.bind(this)}
+                                    onFocus={this.clearConfirmPasswordError.bind(this)}
                                     secureTextEntry={confirmPasswordHidden}
                                     value={confirmPassword}
                                     rightIcon={
@@ -431,7 +462,7 @@ class SignUpScreen extends Component {
                                             <Ionicons
                                                 name={confirmPasswordIcon}
                                                 size={28}
-                                                color="grey"
+                                                color={Colors.appGray}
                                                 style={{ marginRight: 5 }}
                                             />
                                         </TouchableOpacity>
@@ -449,12 +480,13 @@ class SignUpScreen extends Component {
                                 >
                                     Sign Up
                                 </AuthButton>
-                                <ErrorMessage error={generalError ? generalError : ' '} />
+                                <ErrorMessage
+                                    error={generalError ? generalError : ' '}
+                                    style={{ textAlign: 'center' }}
+                                />
                             </View>
                         </View>
-                        {keyboardShown ? (
-                            <View style={{ flex: 0.5 }} />
-                        ) : (
+                        {!keyboardShown && (
                             <View style={styles.bottom}>
                                 <MainText style={styles.haveAccountText}>
                                     Already have an account?{' '}
@@ -485,7 +517,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         color: Colors.appGreen,
-        marginBottom: 5,
         textAlign: 'left',
         width: Layout.window.width,
         left: 35,
@@ -496,11 +527,11 @@ const styles = StyleSheet.create({
     titleContainer: {
         flex: 1.5,
         justifyContent: 'flex-end',
+        paddingBottom: 8,
     },
     form: {
         flex: 3.5,
         justifyContent: 'center',
-        marginTop: 10,
         marginHorizontal: 40,
     },
     bottom: {

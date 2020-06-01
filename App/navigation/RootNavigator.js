@@ -27,13 +27,13 @@ class RootNavigator extends Component {
         if (this._isMounted) {
             console.log('Starting app');
             try {
-                await this.loadLocalAsync().then(() => {
-                    if (this.state.loading.isAssetsLoading) {
+                if (this.state.loading.isAssetsLoading) {
+                    await this.loadLocalAsync().then(() => {
                         this.setState({ loading: { isAssetsLoading: false } });
-                    }
-                });
+                    });
+                }
 
-                await this.props.firebase.checkUserAuth((result) => {
+                this.task = await this.props.firebase.checkUserAuth((result) => {
                     if (result && result.emailVerified) {
                         this.setState({
                             user: result,
@@ -47,6 +47,7 @@ class RootNavigator extends Component {
                             this.props.firebase.signOut();
                         }
                         this.setState({
+                            user: null,
                             loading: {
                                 isUserLoading: false,
                                 isUserSignedIn: false,
@@ -55,7 +56,7 @@ class RootNavigator extends Component {
                     }
                 });
 
-                setTimeout(() => {
+                this.timer = setTimeout(() => {
                     this.setState({
                         timerCounting: false,
                     });
@@ -68,6 +69,8 @@ class RootNavigator extends Component {
 
     componentWillUnmount() {
         this._isMounted = false;
+        if (this.task) this.task = null;
+        if (this.timer) this.timer = null;
     }
 
     async loadLocalAsync() {

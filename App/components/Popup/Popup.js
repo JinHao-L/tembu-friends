@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Animated, Dimensions } from 'react-native';
+import { BorderlessButton } from 'react-native-gesture-handler';
 
 import { MainText } from '../MyAppText';
-import { BorderlessButton } from 'react-native-gesture-handler';
+import { Colors } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,8 +22,27 @@ class Popup extends Component {
         this.instance.showPopup(params);
     }
 
+    static replace({ ...params }) {
+        this.instance.replacePopup(params);
+    }
+
     static hide() {
         this.instance.hidePopup();
+    }
+
+    replacePopup({ ...params }) {
+        this.setState({
+            title: params.title || this.state.title,
+            body: params.body || this.state.body,
+            specialBodyCall: params.specialBodyCall || this.state.specialBodyCall,
+            showButton: params.showButton === undefined ? this.state.showButton : params.showButton,
+            buttonText: params.buttonText || this.state.buttonText,
+            callback: params.callback || this.state.callback,
+            background: params.background || this.state.background,
+            autoClose: params.autoClose || this.state.autoClose,
+            type: params.type || this.state.params.type,
+            verticalOffset: params.verticalOffset || this.state.verticalOffset,
+        });
     }
 
     showPopup({ ...params }) {
@@ -131,6 +151,7 @@ class Popup extends Component {
         } = this.state;
         return (
             <Animated.View
+                ref={(popup) => (this._root = popup)}
                 style={[
                     styles.container,
                     {
@@ -194,7 +215,7 @@ const styles = StyleSheet.create({
         maxWidth: 400,
         width: 280 > width / 2 ? 280 : width / 2,
         minHeight: 200,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.appWhite,
         borderRadius: 20,
         alignItems: 'center',
         overflow: 'hidden',
@@ -204,7 +225,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 100,
         width: 280,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.appWhite,
     },
     image: {
         width: 150,
@@ -223,6 +244,7 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         fontSize: 18,
         color: '#333',
+        textAlign: 'center',
     },
     body: {
         fontSize: 15,

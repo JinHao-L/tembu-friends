@@ -4,10 +4,10 @@ import { View, StyleSheet, Text } from 'react-native';
 import { MainText } from './MyAppText';
 import { Colors } from '../constants/index';
 
-function ErrorMessage({ error }) {
+function ErrorMessage({ error, style }) {
     return (
         <View style={styles.container}>
-            <MainText style={styles.errorText}>{error}</MainText>
+            <MainText style={[styles.errorText, style]}>{error}</MainText>
         </View>
     );
 }
