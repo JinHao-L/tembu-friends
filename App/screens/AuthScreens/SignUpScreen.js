@@ -480,11 +480,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: Colors.authBackground,
+        backgroundColor: Colors.appWhite,
     },
     title: {
         fontSize: 40,
-        color: Colors.greenText,
+        color: Colors.appGreen,
         marginBottom: 5,
         textAlign: 'left',
         width: Layout.window.width,
@@ -510,10 +510,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     validInput: {
-        borderColor: Colors.defaultBorder,
+        borderColor: Colors.appGray,
     },
     errorInput: {
-        borderColor: Colors.errorBorder,
+        borderColor: Colors.appRed,
     },
     box: {
         marginBottom: 5,
@@ -527,11 +527,11 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         fontSize: 15,
         textAlign: 'center',
-        color: Colors.defaultText,
+        color: Colors.appBlack,
         marginBottom: 20,
     },
     hyperlink: {
-        color: Colors.greenText,
+        color: Colors.appGreen,
     },
 });
 

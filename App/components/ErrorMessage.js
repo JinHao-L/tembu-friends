@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     errorText: {
         fontSize: 12,
         textAlign: 'left',
-        color: Colors.errorText,
+        color: Colors.appRed,
         flexWrap: 'wrap',
     },
 });
