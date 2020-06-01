@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, FlatList, Text, YellowBox } from 'react-native';
+import { View, StyleSheet, Image, FlatList, Text, YellowBox, Alert } from 'react-native';
 
 import { MainText } from '../../components';
 import { Colors } from '../../constants';
 import { withFirebase } from '../../config/Firebase';
-import { Popup, Root } from '../../components/Popup';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 class ProfileScreen extends Component {
@@ -49,9 +48,9 @@ class ProfileScreen extends Component {
     componentDidMount() {
         this.props.navigation.setOptions({
             headerStyle: {
-                backgroundColor: Colors.headerBackground,
+                backgroundColor: Colors.appGreen,
             },
-            headerTintColor: Colors.headerText,
+            headerTintColor: Colors.appWhite,
             headerTitleAlign: 'center',
         });
         // this.retrieveData();
@@ -84,23 +83,10 @@ class ProfileScreen extends Component {
     //     }
     // }
 
-    testingPopup = () => {
-        Popup.show({
-            type: 'Testing',
-            title: 'Not available',
-            body: 'Under Maintenance... \nClosing in 5 seconds',
-            showButton: true,
-            buttonText: 'Close',
-            autoClose: true,
-            // because of bottom tab bar
-            verticalOffset: 50,
-        });
-    };
-
     render() {
         const { groups, modules, intro, wall } = this.state;
         return (
-            <Root style={styles.container}>
+            <View style={styles.container}>
                 <View style={styles.info}>
                     <View style={styles.imageContainer}>
                         <Image
@@ -156,7 +142,12 @@ class ProfileScreen extends Component {
                 <View style={[styles.box, styles.wall]}>
                     <View style={styles.wallHeader}>
                         <MainText style={[styles.title]}>My Wall (8)</MainText>
-                        <MainText style={[styles.title]} onPress={this.testingPopup}>
+                        <MainText
+                            style={[styles.title]}
+                            onPress={() =>
+                                Alert.alert('Under Maintenance', 'Feature not available yet')
+                            }
+                        >
                             See All >
                         </MainText>
                     </View>
@@ -176,7 +167,7 @@ class ProfileScreen extends Component {
                                         />
                                     </View>
                                     <View style={{ flex: 1 }}>
-                                        <MainText style={{ color: Colors.greenText }}>
+                                        <MainText style={{ color: Colors.appGreen }}>
                                             {item.name}
                                         </MainText>
                                         <MainText>{item.message}</MainText>
@@ -187,7 +178,7 @@ class ProfileScreen extends Component {
                         />
                     </View>
                 </View>
-            </Root>
+            </View>
         );
     }
 }
@@ -199,7 +190,7 @@ styles = StyleSheet.create({
     },
     box: {
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appDarkGray,
         marginHorizontal: 20,
         marginBottom: 10,
         padding: 10,
@@ -212,8 +203,12 @@ styles = StyleSheet.create({
         height: 120,
     },
     intro: {},
-    groups: {},
-    modules: {},
+    groups: {
+        maxHeight: 120,
+    },
+    modules: {
+        maxHeight: 120,
+    },
     wall: {
         flex: 1,
         overflow: 'hidden',
@@ -253,11 +248,11 @@ styles = StyleSheet.create({
     infoText: {
         textAlign: 'left',
         textAlignVertical: 'center',
-        fontSize: 18,
+        fontSize: 16,
     },
     title: {
         color: Colors.appGreen,
-        fontSize: 15,
+        fontSize: 13,
         marginBottom: 5,
     },
     wallHeader: {

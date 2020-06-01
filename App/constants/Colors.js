@@ -2,7 +2,9 @@ export default {
     appBlack: '#000000',
     appWhite: '#ffffff',
     appGreen: '#248458',
+    appLightGreen: '#278F5F',
     appGray: '#d9d9d9',
+    appDarkGray: '#808080',
     appRed: '#ff0000',
 
     // headerBackground: '#278F5F',

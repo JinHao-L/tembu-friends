@@ -7,10 +7,7 @@ import { RectButton, ScrollView } from 'react-native-gesture-handler';
 import { Colors } from '../constants/index';
 import { MainText } from '../components';
 
-function NotificationScreen({ navigation }) {
-    navigation.setOptions({
-        headerShown: true,
-    });
+function NotificationScreen() {
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.header}>
@@ -63,7 +60,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: Colors.appGreen,
+        backgroundColor: Colors.appLightGreen,
     },
     contentContainer: {
         paddingTop: 15,

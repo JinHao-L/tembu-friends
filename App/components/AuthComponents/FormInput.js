@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Colors from '../../constants/Colors';
-import { textStyles } from '../MyAppText';
+import { MAIN_FONT } from '../MyAppText';
+import { Colors } from '../../constants';
 
-function FormInput({ style, leftIconName, iconColor, placeholder, rightIcon, ...rest }) {
+function FormInput({ style, iconColor, placeholder, rightIcon, onFocus, onBlur, ...rest }) {
+    const [focus, setFocus] = useState(false);
+
     return (
-        <View style={[styles.inputContainer, style]}>
-            {/**<Ionicons
-                name={leftIconName}
-                size={28}
-                style={styles.iconStyle}
-                color={iconColor ? iconColor : Colors.textIconDefault}
-            />**/}
+        <View
+            style={[
+                styles.inputContainer,
+                style,
+                focus ? { borderColor: Colors.appDarkGray } : null,
+            ]}
+        >
             <TextInput
                 {...rest}
-                placeholderTextColor="#d9d9d9"
+                placeholderTextColor={Colors.appGray}
                 placeholder={placeholder}
                 underlineColorAndroid="transparent"
                 style={styles.input}
+                onFocus={() => {
+                    setFocus(true);
+                    onFocus && onFocus();
+                }}
+                onBlur={() => {
+                    setFocus(false);
+                    onBlur && onBlur();
+                }}
             />
             {rightIcon}
         </View>
@@ -30,7 +39,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderRadius: 6,
-        backgroundColor: 'white',
+        backgroundColor: Colors.appWhite,
         height: 30,
         flexDirection: 'row',
     },
@@ -40,7 +49,7 @@ const styles = StyleSheet.create({
     },
     input: {
         marginLeft: 5,
-        ...textStyles,
+        fontFamily: MAIN_FONT,
         fontSize: 15,
         fontWeight: '600',
         flex: 1,

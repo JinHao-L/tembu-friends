@@ -9,10 +9,11 @@ const MenuButton = (property) => {
     const { img, style, onPress, children, textStyle, ...others } = property;
     return (
         <RectButton
-            {...others}
             style={[styles.container, style]}
             onPress={onPress}
-            underlayColor={Colors.menuButtonUnderlay}
+            underlayColor={Colors.appGray}
+            rippleColor={Colors.appGray}
+            {...others}
         >
             <View style={styles.contents} accessible>
                 <Image
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        fontSize: 18,
+        fontSize: 15,
         color: Colors.appBlack,
         textAlign: 'left',
         textAlignVertical: 'center',

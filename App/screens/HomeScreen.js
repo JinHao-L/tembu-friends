@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, ActivityIndicator } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { Colors } from '../constants/index';
@@ -12,16 +12,22 @@ class HomeScreen extends Component {
                 <WebView
                     source={{ uri: 'https://tembusu.nus.edu.sg/' }}
                     style={{ width: Layout.window.width, flex: 1 }}
+                    renderLoading={this.renderLoading}
+                    startInLoadingState={true}
                 />
             </View>
         );
     }
 }
 
+function renderLoading() {
+    return <ActivityIndicator size="large" />;
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.appGreen,
+        backgroundColor: Colors.appLightGreen,
         alignItems: 'center',
     },
     contentContainer: {
