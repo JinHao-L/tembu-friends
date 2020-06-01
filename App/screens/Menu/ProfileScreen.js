@@ -109,9 +109,11 @@ class ProfileScreen extends Component {
                         />
                     </View>
                     <View style={styles.infoText}>
-                        <MainText style={styles.infoText}>{this.getDisplayName()}</MainText>
                         <MainText style={styles.infoText}>
-                            <Text style={{ color: 'red' }}>Tancho</Text> #15-151
+                            <Text style={{ color: Colors.appGreen }}>{this.getDisplayName()} </Text>
+                        </MainText>
+                        <MainText style={styles.infoText}>
+                            <Text style={{ color: Colors.appRed }}>Tancho</Text> #15-151
                         </MainText>
                         <MainText style={styles.infoText}>Computer Science, Y1</MainText>
                         <MainText style={styles.infoText}>English, Mandarin</MainText>
@@ -193,11 +195,11 @@ class ProfileScreen extends Component {
 styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF',
+        backgroundColor: Colors.appWhite,
     },
     box: {
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: 'gray',
+        borderColor: Colors.appGray,
         marginHorizontal: 20,
         marginBottom: 10,
         padding: 10,
@@ -226,7 +228,7 @@ styles = StyleSheet.create({
         width: 90,
         height: 90,
         borderWidth: 2,
-        borderColor: Colors.greenText,
+        borderColor: Colors.appGreen,
         borderRadius: 90 / 2,
         overflow: 'hidden',
         marginHorizontal: 30,
@@ -242,7 +244,7 @@ styles = StyleSheet.create({
         width: 28,
         height: 28,
         borderWidth: 1,
-        borderColor: Colors.greenText,
+        borderColor: Colors.appGreen,
         borderRadius: 28 / 2,
         overflow: 'hidden',
         marginRight: 10,
@@ -254,7 +256,7 @@ styles = StyleSheet.create({
         fontSize: 18,
     },
     title: {
-        color: Colors.greenText,
+        color: Colors.appGreen,
         fontSize: 15,
         marginBottom: 5,
     },

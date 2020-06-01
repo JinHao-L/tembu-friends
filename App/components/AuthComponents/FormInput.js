@@ -15,7 +15,7 @@ function FormInput({ style, leftIconName, iconColor, placeholder, rightIcon, ...
             />**/}
             <TextInput
                 {...rest}
-                placeholderTextColor="#b1b1b1"
+                placeholderTextColor="#d9d9d9"
                 placeholder={placeholder}
                 underlineColorAndroid="transparent"
                 style={styles.input}
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         ...textStyles,
         fontSize: 15,
+        fontWeight: '600',
         flex: 1,
     },
 });
