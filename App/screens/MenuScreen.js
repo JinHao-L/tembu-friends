@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { connect } from 'react-redux';
 
 import { Colors } from '../constants';
 import { withFirebase } from '../config/Firebase';
 import { MainText, MenuButton } from '../components';
 import { Popup, Root } from '../components/Popup';
 
-class MenuScreen extends Component {
-    state = {
-        isVisible: false,
+const mapStateToProps = (state) => {
+    return {
+        userData: state.userData,
     };
+};
 
-    getDisplayName = () => {
-        return this.props.firebase.getCurrentUser().displayName;
-    };
+class MenuScreen extends Component {
+    componentDidMount() {
+        this.props.navigation.setOptions({
+            headerShown: false,
+        });
+    }
 
     signOut = async () => {
         try {
@@ -56,15 +61,21 @@ class MenuScreen extends Component {
                         contentContainerStyle={styles.contentContainer}
                     >
                         <View>
-                            <MenuButton img={'Profile'} onPress={this.goToProfile}>
-                                <Text style={{ color: 'green' }}>{this.getDisplayName()}</Text>
+                            <MenuButton
+                                type={'Profile'}
+                                link={this.props.userData.profilePicture}
+                                onPress={this.goToProfile}
+                            >
+                                <Text style={{ color: 'green' }}>
+                                    {this.props.userData.displayName}
+                                </Text>
                                 {'\n'}
                                 <Text style={{ fontSize: 15 }}> See your profile</Text>
                             </MenuButton>
-                            <MenuButton img={'Friends'} onPress={this.testingPopup}>
+                            <MenuButton type={'Friends'} onPress={this.testingPopup}>
                                 Friends
                             </MenuButton>
-                            <MenuButton img={'Settings'} onPress={this.testingPopup}>
+                            <MenuButton type={'Settings'} onPress={this.testingPopup}>
                                 Settings
                             </MenuButton>
                             <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
@@ -101,7 +112,7 @@ class MenuScreen extends Component {
                                 Ipsum Lorem
                             </MenuButton>
                             <MenuButton
-                                img={'Settings'}
+                                type={'Settings'}
                                 style={styles.signOutButton}
                                 textStyle={{ color: 'white' }}
                                 onPress={this.signOut}
@@ -109,7 +120,7 @@ class MenuScreen extends Component {
                                 Sign Out
                             </MenuButton>
                             <MenuButton
-                                img={'Settings'}
+                                type={'Settings'}
                                 style={styles.signOutButton}
                                 textStyle={{ color: 'white' }}
                                 onPress={this.goToDelete}
@@ -154,4 +165,6 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withFirebase(MenuScreen);
+const wrappedMenuScreen = withFirebase(MenuScreen);
+
+export default connect(mapStateToProps)(wrappedMenuScreen);

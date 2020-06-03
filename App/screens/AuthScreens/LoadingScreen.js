@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Colors } from '../../constants';
 
 function LoadingScreen({ navigation, route }) {
-    const { isUserLoading, isAssetsLoading, isUserSignedIn } = route.params.children;
+    const { isUserLoading, isAssetsLoading } = route.params.children;
 
     navigation.setOptions({
         headerShown: false,

@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, FlatList, Text, YellowBox, Alert } from 'react-native';
+import { View, StyleSheet, Image, FlatList, Text, Alert, ActivityIndicator } from 'react-native';
+import { connect } from 'react-redux';
 
 import { MainText } from '../../components';
 import { Colors } from '../../constants';
-import { withFirebase } from '../../config/Firebase';
 
-YellowBox.ignoreWarnings(['Setting a timer']);
+const mapStateToProps = (state) => {
+    return { userData: state.userData };
+};
+
 class ProfileScreen extends Component {
     state = {
-        intro: 'Love to share and learn! Hope to meet like-minded people here as well!',
-        groups: [
-            { id: '1', grp: 'Dodgeball (Captain)' },
-            { id: '2', grp: 'Urban Farmers' },
-            { id: '3', grp: 'Techne' },
-            { id: '4', grp: 'House Committee' },
-        ],
-        modules: [
-            { id: '1', code: 'UTW1001Z', name: 'Colour: Theory, Meaning and Practice' },
-            { id: '2', code: 'UTW1002C', name: 'Junior Seminar: Fakes' },
-            { id: '3', code: 'UTW2001Q', name: '‘What’s in a Word?’ Meaning Across Cultures' },
-            { id: '4', code: 'OTH157', name: 'The Heart of Negotiation' },
-        ],
         wall: [
             {
                 id: '1',
@@ -37,13 +27,11 @@ class ProfileScreen extends Component {
                     'Hey bro, thanks for the constant guidance in Com Science! Couldn’t have made it this far without you! Do stay in touch and I hope to see you in the next... ',
             },
         ],
-        // isLoading: true,
-        isLoadingTemp: true,
     };
 
-    getDisplayName() {
-        return this.props.firebase.getCurrentUser().displayName;
-    }
+    goToImageEdit = () => {
+        return this.props.navigation.navigate('ProfileEdit');
+    };
 
     componentDidMount() {
         this.props.navigation.setOptions({
@@ -53,133 +41,143 @@ class ProfileScreen extends Component {
             headerTintColor: Colors.appWhite,
             headerTitleAlign: 'center',
         });
-        // this.retrieveData();
-        // this.updateUserList();
     }
 
-    // retrieveData() {
-    //     const uid = this.props.firebase.getCurrentUser().uid;
-    //     this.props.firebase.getUserData(uid).then((results) => {
-    //         if (results) {
-    //             this.setState({ results, isLoading: false });
-    //         } else this.props.navigation.back();
-    //     });
-    // }
-
-    // async updateUserList() {
-    //     try {
-    //         const results = await this.props.firebase.getTempData();
-    //         if (results) {
-    //             const { groups, modules, intro } = results;
-    //             this.setState({
-    //                 isLoadingTemp: false,
-    //                 groups: groups.val(),
-    //                 modules: modules,
-    //                 intro: intro,
-    //             });
-    //         }
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // }
-
     render() {
-        const { groups, modules, intro, wall } = this.state;
-        return (
-            <View style={styles.container}>
-                <View style={styles.info}>
-                    <View style={styles.imageContainer}>
-                        <Image
-                            style={styles.image}
-                            source={require('../../assets/images/Profile.png')}
-                        />
+        const { userData } = this.props;
+        if (userData === null) {
+            return (
+                <View style={styles.container}>
+                    <ActivityIndicator />
+                </View>
+            );
+        } else {
+            return (
+                <View style={styles.container}>
+                    <View style={styles.info}>
+                        <View style={styles.imageContainer}>
+                            <Image style={styles.image} source={{ uri: userData.profilePicture }} />
+                        </View>
+                        <MainText onPress={this.goToImageEdit}>Choose Image</MainText>
+                        <View style={styles.infoText}>
+                            <MainText style={styles.infoText}>
+                                <Text style={{ color: Colors.appGreen }}>
+                                    {userData.displayName}{' '}
+                                </Text>
+                            </MainText>
+                            <MainText style={styles.infoText}>
+                                <Text style={{ color: Colors.appRed }}>Tancho</Text> #15-151
+                            </MainText>
+                            <MainText style={styles.infoText}>Computer Science, Y1</MainText>
+                            <MainText style={styles.infoText}>English, Mandarin</MainText>
+                        </View>
                     </View>
-                    <View style={styles.infoText}>
-                        <MainText style={styles.infoText}>
-                            <Text style={{ color: Colors.appGreen }}>{this.getDisplayName()} </Text>
-                        </MainText>
-                        <MainText style={styles.infoText}>
-                            <Text style={{ color: Colors.appRed }}>Tancho</Text> #15-151
-                        </MainText>
-                        <MainText style={styles.infoText}>Computer Science, Y1</MainText>
-                        <MainText style={styles.infoText}>English, Mandarin</MainText>
+                    <View style={[styles.box, styles.intro]}>
+                        <View style={styles.wallHeader}>
+                            <MainText style={[styles.title]}>Why am I in Tembusu?</MainText>
+                            <MainText
+                                style={[styles.title]}
+                                onPress={() =>
+                                    Alert.alert('Under Maintenance', 'Feature not available yet')
+                                }
+                            >
+                                Edit
+                            </MainText>
+                        </View>
+                        <MainText>{userData.intro_msg}</MainText>
                     </View>
-                </View>
-                <View style={[styles.box, styles.intro]}>
-                    <MainText style={styles.title}>Why am I in Tembusu?</MainText>
-                    <MainText>{intro}</MainText>
-                </View>
-                <View style={[styles.box, styles.groups]}>
-                    <MainText style={styles.title}>
-                        Interest Groups & Committees that I'm in!
-                    </MainText>
-                    <FlatList
-                        data={groups}
-                        renderItem={({ item }) => (
-                            <View style={{ flexDirection: 'row' }}>
-                                <MainText> - </MainText>
-                                <MainText>{item.grp}</MainText>
-                            </View>
-                        )}
-                        keyExtractor={(item) => item.id}
-                    />
-                </View>
-                <View style={[styles.box, styles.modules]}>
-                    <MainText style={styles.title}>Modules that I have taken in Tembusu!</MainText>
-                    <FlatList
-                        data={modules}
-                        renderItem={({ item }) => (
-                            <View style={{ flexDirection: 'row' }}>
-                                <MainText> - </MainText>
-                                <MainText>
-                                    {item.code} {item.name}
-                                </MainText>
-                            </View>
-                        )}
-                        keyExtractor={(item) => item.id}
-                    />
-                </View>
-                <View style={[styles.box, styles.wall]}>
-                    <View style={styles.wallHeader}>
-                        <MainText style={[styles.title]}>My Wall (8)</MainText>
-                        <MainText
-                            style={[styles.title]}
-                            onPress={() =>
-                                Alert.alert('Under Maintenance', 'Feature not available yet')
-                            }
-                        >
-                            See All >
-                        </MainText>
-                    </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={[styles.box, styles.groups]}>
+                        <View style={styles.wallHeader}>
+                            <MainText style={[styles.title]}>
+                                Interest Groups & Committees that I'm in!
+                            </MainText>
+                            <MainText
+                                style={[styles.title]}
+                                onPress={() =>
+                                    Alert.alert('Under Maintenance', 'Feature not available yet')
+                                }
+                            >
+                                Edit
+                            </MainText>
+                        </View>
                         <FlatList
-                            data={wall}
+                            data={userData.groups}
                             renderItem={({ item }) => (
-                                <View style={{ flexDirection: 'row', marginBottom: 5 }}>
-                                    <View style={styles.miniImageContainer}>
-                                        <Image
-                                            style={styles.miniImage}
-                                            source={
-                                                item.id === '1'
-                                                    ? require('../../assets/images/profile2.png')
-                                                    : require('../../assets/images/profile1.png')
-                                            }
-                                        />
-                                    </View>
-                                    <View style={{ flex: 1 }}>
-                                        <MainText style={{ color: Colors.appGreen }}>
-                                            {item.name}
-                                        </MainText>
-                                        <MainText>{item.message}</MainText>
-                                    </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MainText> - </MainText>
+                                    <MainText>{item}</MainText>
                                 </View>
                             )}
-                            keyExtractor={(item) => item.id}
+                            keyExtractor={(item) => item}
                         />
                     </View>
+                    <View style={[styles.box, styles.modules]}>
+                        <View style={styles.wallHeader}>
+                            <MainText style={[styles.title]}>
+                                Modules that I have taken in Tembusu!
+                            </MainText>
+                            <MainText
+                                style={[styles.title]}
+                                onPress={() =>
+                                    Alert.alert('Under Maintenance', 'Feature not available yet')
+                                }
+                            >
+                                Edit
+                            </MainText>
+                        </View>
+                        <FlatList
+                            data={userData.modules}
+                            renderItem={({ item }) => (
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MainText> - </MainText>
+                                    <MainText>{item}</MainText>
+                                </View>
+                            )}
+                            keyExtractor={(item) => item}
+                        />
+                    </View>
+                    <View style={[styles.box, styles.wall]}>
+                        <View style={styles.wallHeader}>
+                            <MainText style={[styles.title]}>My Wall (8)</MainText>
+                            <MainText
+                                style={[styles.title]}
+                                onPress={() =>
+                                    Alert.alert('Under Maintenance', 'Feature not available yet')
+                                }
+                            >
+                                See All >
+                            </MainText>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <FlatList
+                                data={this.state.wall}
+                                renderItem={({ item }) => (
+                                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+                                        <View style={styles.miniImageContainer}>
+                                            <Image
+                                                style={styles.miniImage}
+                                                source={
+                                                    item.id === '1'
+                                                        ? require('../../assets/images/profile2.png')
+                                                        : require('../../assets/images/profile1.png')
+                                                }
+                                            />
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <MainText style={{ color: Colors.appGreen }}>
+                                                {item.name}
+                                            </MainText>
+                                            <MainText>{item.message}</MainText>
+                                        </View>
+                                    </View>
+                                )}
+                                keyExtractor={(item) => item.id}
+                            />
+                        </View>
+                    </View>
                 </View>
-            </View>
-        );
+            );
+        }
     }
 }
 
@@ -200,7 +198,7 @@ styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         alignSelf: 'flex-start',
-        height: 120,
+        height: 110,
     },
     intro: {},
     groups: {
@@ -261,4 +259,4 @@ styles = StyleSheet.create({
     },
 });
 
-export default withFirebase(ProfileScreen);
+export default connect(mapStateToProps)(ProfileScreen);
