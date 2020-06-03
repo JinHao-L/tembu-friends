@@ -6,7 +6,7 @@ import { Colors } from '../constants';
 import { MainText } from './MyAppText';
 
 const MenuButton = (property) => {
-    const { img, style, onPress, children, textStyle, ...others } = property;
+    const { type, link, style, onPress, children, textStyle, ...others } = property;
     return (
         <RectButton
             style={[styles.container, style]}
@@ -16,10 +16,12 @@ const MenuButton = (property) => {
             {...others}
         >
             <View style={styles.contents} accessible>
-                <Image
-                    source={getImage(img)}
-                    style={img === 'Profile' ? styles.profilePicture : styles.image}
-                />
+                {link ? (
+                    <Image source={{ uri: link }} style={styles.profilePicture} />
+                ) : (
+                    <Image source={getImage(type)} style={styles.image} />
+                )}
+
                 <View style={styles.textContainer}>
                     <MainText style={[styles.text, textStyle]}> {children} </MainText>
                 </View>
@@ -34,8 +36,6 @@ const getImage = (img) => {
             return require('../assets/images/FriendsIcon.png');
         case 'Settings':
             return require('../assets/images/SettingsIcon.png');
-        case 'Profile':
-            return require('../assets/images/Profile.png');
         default:
             return require('../assets/images/robot-prod.png');
     }

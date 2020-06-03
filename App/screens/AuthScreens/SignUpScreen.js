@@ -32,7 +32,6 @@ class SignUpScreen extends Component {
         lastNameError: '',
         emailError: '',
         passwordError: '',
-        confirmPasswordError: '',
         generalError: '',
 
         // Control - others
@@ -181,13 +180,6 @@ class SignUpScreen extends Component {
     clearPasswordError() {
         this.setState({
             passwordError: '',
-            confirmPasswordError: '',
-            generalError: '',
-        });
-    }
-    clearConfirmPasswordError() {
-        this.setState({
-            confirmPasswordError: '',
             generalError: '',
         });
     }
@@ -199,13 +191,17 @@ class SignUpScreen extends Component {
         try {
             const response = await this.props.firebase.signUpWithEmail(nusEmail, password);
             if (response && response.user) {
+                const imageUrl = await this.props.firebase.defaultImage();
                 const userData = {
                     email: nusEmail,
                     firstName,
                     lastName,
                     displayName: firstName + ' ' + lastName,
+                    groups: [],
+                    intro_msg: 'Hi, I am new to TembuFriends!',
+                    modules: [],
+                    profilePicture: imageUrl,
                     uid: response.user.uid,
-                    firstLogin: true,
                 };
                 console.log('starting creation process');
                 await response.user.updateProfile({ displayName: firstName + ' ' + lastName });
@@ -225,76 +221,67 @@ class SignUpScreen extends Component {
         }
     }
 
-    validateFirstName() {
-        const { firstName } = this.state;
-        if (!firstName || !firstName.match(wordsOnly)) {
-            this.setState({ firstNameError: 'Invalid first name' });
-        }
-    }
-    validateLastName() {
-        const { lastName } = this.state;
-        if (!lastName || !lastName.match(wordsOnly)) {
-            this.setState({ lastNameError: 'Invalid first name' });
-        }
-    }
-    validateEmail() {
-        const { nusEmail } = this.state;
-        if (!String(nusEmail).includes(NUSEmailSignature)) {
-            // Potential update: check with tembu email database here?
-            this.setState({ emailError: 'Please use your NUS email' });
-        }
-    }
-    validatePassword() {
-        const { password } = this.state;
-        if (!password.match(passwordFormat)) {
-            this.setState({
-                passwordError:
-                    'Password must be at least eight characters long with one letter and one number',
-            });
-        }
-    }
     validateInputAndSignUp() {
         Keyboard.dismiss();
         const {
             password,
             confirmPassword,
-            firstNameError,
-            lastNameError,
-            emailError,
-            passwordError,
-            confirmPasswordError,
             firstName,
+            lastName,
             nusEmail,
+            passwordError,
             isLoading,
         } = this.state;
 
         if (isLoading) return null;
-        if (!(password && confirmPassword && firstName && nusEmail)) {
-            this.setState({
-                generalError: 'Empty field detected',
-            });
-            return null;
+
+        let validEntry = true;
+        // Validate first name
+        if (!firstName || !firstName.match(wordsOnly)) {
+            this.setState({ firstNameError: 'Invalid first name' });
+            validEntry = false;
         }
-        if (password !== confirmPassword) {
+
+        // Validate last name
+        if (!lastName || !lastName.match(wordsOnly)) {
+            this.setState({ lastNameError: 'Invalid first name' });
+            validEntry = false;
+        }
+
+        // Validate email
+        if (!String(nusEmail).includes(NUSEmailSignature)) {
+            // Potential update: check with tembu email database here?
+            this.setState({ emailError: 'Please use your NUS email' });
+            validEntry = false;
+        }
+
+        // Validate password
+        if (!password.match(passwordFormat)) {
             this.setState({
                 password: '',
                 confirmPassword: '',
-                confirmPasswordError: 'Passwords do not match',
+                passwordError:
+                    'Password must be at least eight characters long with one letter and one number',
             });
+            validEntry = false;
+        }
+
+        // Validate confirm password
+        if (!passwordError && password !== confirmPassword) {
+            this.setState({
+                password: '',
+                confirmPassword: '',
+                passwordError: 'Passwords do not match',
+            });
+            validEntry = false;
+        }
+
+        if (!validEntry) {
             return null;
         }
+
         console.log('VALID');
-        if (
-            !(
-                firstNameError ||
-                lastNameError ||
-                emailError ||
-                passwordError ||
-                confirmPasswordError
-            )
-        ) {
-            return this.signUp.bind(this)();
-        }
+        return this.signUp.bind(this)();
     }
 
     emailSentPopup = () => {
@@ -327,7 +314,6 @@ class SignUpScreen extends Component {
             lastNameError,
             emailError,
             passwordError,
-            confirmPasswordError,
             generalError,
             passwordHidden,
             passwordIcon,
@@ -370,7 +356,6 @@ class SignUpScreen extends Component {
                                         value={firstName}
                                         onChangeText={this.handleFirstName.bind(this)}
                                         onFocus={this.clearFirstNameError.bind(this)}
-                                        onEndEditing={this.validateFirstName.bind(this)}
                                     />
                                     <ErrorMessage error={firstNameError ? firstNameError : ' '} />
                                 </View>
@@ -387,7 +372,6 @@ class SignUpScreen extends Component {
                                         value={lastName}
                                         onChangeText={this.handleLastName.bind(this)}
                                         onFocus={this.clearLastNameError.bind(this)}
-                                        onEndEditing={this.validateLastName.bind(this)}
                                     />
                                     <ErrorMessage error={lastNameError ? lastNameError : ' '} />
                                 </View>
@@ -404,25 +388,19 @@ class SignUpScreen extends Component {
                                     value={nusEmail}
                                     onChangeText={this.handleEmail.bind(this)}
                                     onFocus={this.clearEmailError.bind(this)}
-                                    onEndEditing={this.validateEmail.bind(this)}
                                 />
                                 <ErrorMessage error={emailError ? emailError : ' '} />
                             </View>
 
                             <View style={styles.box}>
                                 <FormInput
-                                    style={
-                                        passwordError || confirmPasswordError
-                                            ? styles.errorInput
-                                            : styles.validInput
-                                    }
+                                    style={passwordError ? styles.errorInput : styles.validInput}
                                     placeholder="Password"
                                     autoCapitalize="none"
                                     returnKeyType="next"
                                     textContentType="none"
                                     onChangeText={this.handlePassword.bind(this)}
                                     onFocus={this.clearPasswordError.bind(this)}
-                                    onEndEditing={this.validatePassword.bind(this)}
                                     secureTextEntry={passwordHidden}
                                     value={password}
                                     rightIcon={
@@ -438,19 +416,17 @@ class SignUpScreen extends Component {
                                         </TouchableOpacity>
                                     }
                                 />
-                                <ErrorMessage error={passwordError ? passwordError : ' '} />
+                                <MainText />
                             </View>
                             <View style={styles.box}>
                                 <FormInput
-                                    style={
-                                        confirmPasswordError ? styles.errorInput : styles.validInput
-                                    }
+                                    style={passwordError ? styles.errorInput : styles.validInput}
                                     placeholder="Confirm password"
                                     autoCapitalize="none"
                                     returnKeyType="done"
                                     textContentType="none"
                                     onChangeText={this.handleConfirmPassword.bind(this)}
-                                    onFocus={this.clearConfirmPasswordError.bind(this)}
+                                    onFocus={this.clearPasswordError.bind(this)}
                                     secureTextEntry={confirmPasswordHidden}
                                     value={confirmPassword}
                                     rightIcon={
@@ -468,9 +444,7 @@ class SignUpScreen extends Component {
                                         </TouchableOpacity>
                                     }
                                 />
-                                <ErrorMessage
-                                    error={confirmPasswordError ? confirmPasswordError : ' '}
-                                />
+                                <ErrorMessage error={passwordError ? passwordError : ' '} />
                             </View>
                             <View style={styles.box}>
                                 <AuthButton

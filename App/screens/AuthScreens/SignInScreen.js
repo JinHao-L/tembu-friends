@@ -310,6 +310,10 @@ class SignInScreen extends Component {
                                     }
                                 />
                                 <MainText />
+                                <ErrorMessage
+                                    error={generalError ? generalError : ' '}
+                                    style={{ textAlign: 'center' }}
+                                />
                             </View>
 
                             <View style={styles.box}>
@@ -326,10 +330,6 @@ class SignInScreen extends Component {
                                 >
                                     Log In
                                 </AuthButton>
-                                <ErrorMessage
-                                    error={generalError ? generalError : ' '}
-                                    style={{ textAlign: 'center' }}
-                                />
                             </View>
                         </View>
 

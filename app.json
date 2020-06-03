@@ -24,13 +24,17 @@
         "ios": {
             "bundleIdentifier": "com.nus.tembufriends",
             "buildNumber": "1.0.0",
-            "supportsTablet": true
+            "supportsTablet": true,
+            "infoPlist": {
+                "NSCameraUsageDescription": "Give Tembu Friends permission to save photo"
+            },
+            "config": {}
         },
         "android": {
             "package": "com.nus.tembufriends",
             "versionCode": 1,
             "googleServicesFile": "",
-            "permissions": []
+            "permissions": ["CAMERA", "WRITE_EXTERNAL_STORAGE", "READ_INTERNAL_STORAGE"]
         },
         "web": {
             "favicon": "./assets/images/favicon.png"

@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import HomeNavigator from './HomeNavigator';
+import HomeTabs from './HomeTabs';
 import AuthNavigator from './AuthNavigator';
 import { LoadingScreen } from '../screens/index';
 import { withFirebase } from '../config/Firebase';
-import { NavigationContainer } from '@react-navigation/native';
 
 const RootStack = createStackNavigator();
 
@@ -101,7 +101,7 @@ class RootNavigator extends Component {
                             }}
                         />
                     ) : loading.isUserSignedIn ? (
-                        <RootStack.Screen name="App" component={HomeNavigator} />
+                        <RootStack.Screen name="App" component={HomeTabs} />
                     ) : (
                         <RootStack.Screen name="Auth" component={AuthNavigator} />
                     )}
