@@ -3,8 +3,7 @@ import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from '
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
-import { Popup, Root } from '../../components/Popup';
+import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
 
 class ForgetPassword extends Component {
     state = {
@@ -19,6 +18,7 @@ class ForgetPassword extends Component {
         isLoading: false,
         keyboardShown: false,
         keyboardHeight: 0,
+        resetSuccessPopup: false,
     };
 
     clearInputs() {
@@ -61,10 +61,7 @@ class ForgetPassword extends Component {
     }
 
     onResetSuccess() {
-        this.emailSentPopup();
-        this.setState({
-            nusEmail: '',
-        });
+        this.toggleResetSuccessPopup();
     }
 
     onResetFailure(error) {
@@ -128,18 +125,31 @@ class ForgetPassword extends Component {
         return this.resetPassword.bind(this)();
     }
 
-    emailSentPopup = () => {
-        Popup.show({
-            type: 'Success',
-            title: 'Email link sent',
-            body:
-                'We sent an email to ' +
-                this.state.nusEmail +
-                ' with a link to get back into your account.',
-            showButton: true,
-            buttonText: 'OK',
-            autoClose: false,
-            verticalOffset: 50,
+    renderResetSuccessPopup = () => {
+        return (
+            <Popup
+                type={'Success'}
+                isVisible={this.state.resetSuccessPopup}
+                title={'Email link sent'}
+                body={
+                    'We sent an email to\n' +
+                    this.state.nusEmail +
+                    '\nwith a link to get back into your account.'
+                }
+                buttonText={'OK'}
+                callback={() => {
+                    this.toggleResetSuccessPopup();
+                    this.setState({
+                        nusEmail: '',
+                    });
+                }}
+            />
+        );
+    };
+
+    toggleResetSuccessPopup = () => {
+        this.setState({
+            resetSuccessPopup: !this.state.resetSuccessPopup,
         });
     };
 
@@ -147,7 +157,7 @@ class ForgetPassword extends Component {
         const { nusEmail, emailError, generalError, isLoading, keyboardShown } = this.state;
 
         return (
-            <Root
+            <View
                 style={[
                     styles.container,
                     {
@@ -158,6 +168,7 @@ class ForgetPassword extends Component {
                     },
                 ]}
             >
+                {this.renderResetSuccessPopup()}
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         <View style={styles.textContainer}>
@@ -211,7 +222,7 @@ class ForgetPassword extends Component {
                         )}
                     </View>
                 </TouchableWithoutFeedback>
-            </Root>
+            </View>
         );
     }
 }

@@ -1,20 +1,20 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Colors } from '../../constants';
+import AppLogo from '../../components/AppLogo';
 
-function LoadingScreen({ navigation, route }) {
-    const { isUserLoading, isAssetsLoading } = route.params.children;
-
-    navigation.setOptions({
-        headerShown: false,
-    });
+function LoadingScreen(loading) {
+    const { isUserLoading, isAssetsLoading } = loading;
 
     return (
         <View style={styles.container}>
-            <ActivityIndicator size="large" />
-            <Text>Fetching resources... {isAssetsLoading ? '' : 'Done'}</Text>
-            <Text>Fetching user data... {isUserLoading ? '' : 'Done'}</Text>
-            {/*<Text>{isUserSignedIn ? 'Signing you in...' : 'Bringing you to login page...'}</Text>*/}
+            <AppLogo style={styles.logo} />
+            <View style={styles.text}>
+                <ActivityIndicator size="small" />
+                <Text>Fetching resources...{isAssetsLoading ? '' : ' Done'}</Text>
+                <Text>Fetching user data...{isUserLoading ? '' : ' Done'}</Text>
+                {isUserLoading && isAssetsLoading && <Text>Signing you in</Text>}
+            </View>
         </View>
     );
 }
@@ -22,10 +22,16 @@ function LoadingScreen({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
+        backgroundColor: Colors.appWhite,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.appWhite,
+    },
+    logo: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    text: {
+        bottom: 5,
     },
 });
 

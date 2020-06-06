@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
 import { withFirebase } from '../../config/Firebase';
-import { Root, Popup } from '../../components/index';
+import { Popup } from '../../components';
 import { updateProfilePicture } from '../../redux';
 
 const mapStateToProps = (state) => {
@@ -20,6 +20,8 @@ class ProfileEditScreen extends Component {
     state = {
         imgURI: this.props.userData.profilePicture,
         isNewPicture: false,
+        failurePopupVisible: false,
+        successPopupVisible: false,
     };
 
     onPickImagePress = async () => {
@@ -65,11 +67,11 @@ class ProfileEditScreen extends Component {
                 .then((downloadURL) => {
                     console.log('URL: ' + downloadURL);
                     this.props.updateProfilePicture(this.props.userData.uid, downloadURL);
-                    this.successPopup();
+                    this.toggleSuccessPopup();
                     console.log('Success');
                 })
                 .catch((err) => {
-                    this.failurePopup();
+                    this.toggleFailurePopup();
                     console.log('upload failed: ' + err.message);
                 });
         } else {
@@ -81,43 +83,60 @@ class ProfileEditScreen extends Component {
         this.props.navigation.goBack();
     };
 
-    successPopup = () => {
-        Popup.show({
-            type: 'Success',
-            title: 'Upload Success',
-            body: 'Press back to return to profile screen',
-            showButton: true,
-            buttonText: 'Back',
-            autoClose: false,
-            callback: () => {
-                Popup.hide();
-                this.goBack();
-            },
-            verticalOffset: 50,
+    toggleSuccessPopup = () => {
+        this.setState({
+            successPopupVisible: !this.state.successPopupVisible,
         });
     };
 
-    failurePopup = () => {
-        Popup.show({
-            type: 'Failure',
-            title: 'Upload Failed',
-            body: 'Please try again in a few minutes',
-            showButton: true,
-            buttonText: 'Close',
-            autoClose: false,
-            verticalOffset: 50,
+    toggleFailurePopup = () => {
+        this.setState({
+            failurePopupVisible: !this.state.failurePopupVisible,
         });
+    };
+
+    renderSuccessPopup = () => {
+        return (
+            <Popup
+                type={'Success'}
+                isVisible={this.state.successPopupVisible}
+                title={'Upload Success'}
+                body={'Press back to return to profile screen\n Close to continue editing'}
+                additionalButtonText={'Back'}
+                additionalButtonCall={() => {
+                    this.toggleSuccessPopup();
+                    this.goBack();
+                }}
+                buttonText={'Close'}
+                callback={this.toggleSuccessPopup}
+            />
+        );
+    };
+
+    renderFailurePopup = () => {
+        return (
+            <Popup
+                type={'Failure'}
+                isVisible={this.state.failurePopupVisible}
+                title={'Upload Failed'}
+                body={'Please try again in a few seconds'}
+                buttonText={'Close'}
+                callback={this.toggleFailurePopup}
+            />
+        );
     };
 
     render() {
         return (
-            <Root style={styles.container}>
+            <View style={styles.container}>
+                {this.renderSuccessPopup()}
+                {this.renderFailurePopup()}
                 <View style={styles.imageContainer}>
                     <Image style={styles.image} source={{ uri: this.state.imgURI }} />
                 </View>
                 <Button title="Pick an image from camera roll" onPress={this.onPickImagePress} />
                 <Button title="Confirm" onPress={this.onConfirm} />
-            </Root>
+            </View>
         );
     }
 }

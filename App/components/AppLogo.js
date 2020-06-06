@@ -1,17 +1,14 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
-function AppLogo() {
-    return (
-        <Image
-            source={require('../assets/images/logo.png')}
-            style={{
-                width: 100,
-                height: 80,
-                resizeMode: 'contain',
-            }}
-        />
-    );
+function AppLogo({ style, containerStyle }) {
+    return <Image source={require('../assets/images/logo.png')} style={[styles.image, style]} />;
 }
+
+const styles = StyleSheet.create({
+    image: {
+        resizeMode: 'contain',
+    },
+});
 
 export default AppLogo;

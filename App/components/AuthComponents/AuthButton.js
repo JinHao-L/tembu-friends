@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { RectButton } from 'react-native-gesture-handler';
 import { Colors } from '../../constants';
 import { MainText } from '../MyAppText';
 
 const AuthButton = (property) => {
     const { style, onPress, loading, children, ...others } = property;
     return (
-        <TouchableOpacity
+        <RectButton
             {...others}
             style={[
                 styles.container,
@@ -23,7 +23,7 @@ const AuthButton = (property) => {
             ) : (
                 <MainText style={styles.text}> {children} </MainText>
             )}
-        </TouchableOpacity>
+        </RectButton>
     );
 };
 
