@@ -3,7 +3,7 @@ import { TextInput, StyleSheet, View } from 'react-native';
 import { MAIN_FONT } from '../MyAppText';
 import { Colors } from '../../constants';
 
-function FormInput({ style, iconColor, placeholder, rightIcon, onFocus, onBlur, ...rest }) {
+function FormInput({ style, placeholder, rightIcon, onFocus, onBlur, ...rest }) {
     const [focus, setFocus] = useState(false);
 
     return (

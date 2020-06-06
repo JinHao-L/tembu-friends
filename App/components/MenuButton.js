@@ -1,32 +1,52 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { RectButton } from 'react-native-gesture-handler';
+import { View, StyleSheet, Image, Platform } from 'react-native';
+import { BaseButton } from 'react-native-gesture-handler';
+import { Avatar } from 'react-native-elements';
 
 import { Colors } from '../constants';
 import { MainText } from './MyAppText';
 
 const MenuButton = (property) => {
-    const { type, link, style, onPress, children, textStyle, ...others } = property;
+    const {
+        type,
+        avatar,
+        avatarPlaceholder,
+        style,
+        borderStyle,
+        backgroundColor,
+        onPress,
+        children,
+        textStyle,
+        ...others
+    } = property;
     return (
-        <RectButton
-            style={[styles.container, style]}
-            onPress={onPress}
-            underlayColor={Colors.appGray}
-            rippleColor={Colors.appGray}
-            {...others}
-        >
-            <View style={styles.contents} accessible>
-                {link ? (
-                    <Image source={{ uri: link }} style={styles.profilePicture} />
-                ) : (
-                    <Image source={getImage(type)} style={styles.image} />
-                )}
+        <View style={[styles.outerContainer, borderStyle]}>
+            <BaseButton
+                style={[styles.container, style]}
+                onPress={onPress}
+                underlayColor={Colors.appGray}
+                rippleColor={Colors.appGray}
+                {...others}
+            >
+                <View style={styles.contents}>
+                    {avatar ? (
+                        <Avatar
+                            size="medium"
+                            rounded
+                            title={avatarPlaceholder}
+                            source={{ uri: avatar }}
+                            containerStyle={styles.profileContainer}
+                        />
+                    ) : type ? (
+                        <Image source={getImage(type)} style={styles.imageContainer} />
+                    ) : null}
 
-                <View style={styles.textContainer}>
-                    <MainText style={[styles.text, textStyle]}> {children} </MainText>
+                    <View style={styles.textContainer}>
+                        <MainText style={[styles.text, textStyle]}> {children} </MainText>
+                    </View>
                 </View>
-            </View>
-        </RectButton>
+            </BaseButton>
+        </View>
     );
 };
 
@@ -36,21 +56,36 @@ const getImage = (img) => {
             return require('../assets/images/FriendsIcon.png');
         case 'Settings':
             return require('../assets/images/SettingsIcon.png');
-        default:
+        case 'Default':
             return require('../assets/images/robot-prod.png');
     }
 };
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: 12,
+        borderRadius: 10,
+        ...Platform.select({
+            ios: {
+                shadowColor: Colors.appBlack,
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
+        height: 50,
+    },
     container: {
+        flex: 1,
         backgroundColor: Colors.appWhite,
-        height: 60,
-        borderRadius: 5,
         paddingHorizontal: 5,
         paddingVertical: 7,
-        marginBottom: 8,
         alignItems: 'flex-start',
         justifyContent: 'center',
+        borderRadius: 10,
     },
     contents: {
         flexDirection: 'row',
@@ -60,22 +95,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        fontSize: 15,
+        fontSize: 18,
         color: Colors.appBlack,
         textAlign: 'left',
         textAlignVertical: 'center',
     },
-    image: {
+    imageContainer: {
         height: 40,
         width: 40,
         resizeMode: 'contain',
-        margin: 10,
+        marginHorizontal: 10,
     },
-    profilePicture: {
-        height: 50,
-        width: 50,
-        resizeMode: 'cover',
-        borderRadius: 25,
+    profileContainer: {
         margin: 5,
     },
 });

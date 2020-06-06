@@ -8,12 +8,11 @@ import {
     Text,
     Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
-import { Popup, Root } from '../../components/Popup';
+import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
 
 const wordsOnly = /^[A-Za-z]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;
@@ -42,6 +41,7 @@ class SignUpScreen extends Component {
         confirmPasswordHidden: true,
         keyboardShown: false,
         keyboardHeight: 0,
+        emailSentPopup: false,
     };
 
     clearInputs() {
@@ -86,11 +86,8 @@ class SignUpScreen extends Component {
     }
 
     onSignUpSuccess() {
-        this.emailSentPopup();
+        this.toggleEmailSentPopup();
         this.setState({
-            firstName: '',
-            lastName: '',
-            nusEmail: '',
             password: '',
             confirmPassword: '',
         });
@@ -284,22 +281,34 @@ class SignUpScreen extends Component {
         return this.signUp.bind(this)();
     }
 
-    emailSentPopup = () => {
-        Popup.show({
-            type: 'Success',
-            title: 'Email link sent',
-            body:
-                'We sent an email to\n' +
-                this.state.nusEmail +
-                '\nwith a verification link to activate your account.',
-            showButton: true,
-            buttonText: 'OK',
-            autoClose: false,
-            verticalOffset: 50,
-            callback: () => {
-                Popup.hide();
-                this.props.navigation.navigate('SignIn');
-            },
+    renderEmailSentPopup = () => {
+        return (
+            <Popup
+                type={'Success'}
+                isVisible={this.state.emailSentPopup}
+                title={'Sign Up Success'}
+                body={
+                    'We sent an email to\n' +
+                    this.state.nusEmail +
+                    '\nwith a verification link to activate your account.'
+                }
+                buttonText={'OK'}
+                callback={() => {
+                    this.toggleEmailSentPopup();
+                    this.setState({
+                        firstName: '',
+                        lastName: '',
+                        nusEmail: '',
+                    });
+                    this.goToSignIn();
+                }}
+            />
+        );
+    };
+
+    toggleEmailSentPopup = () => {
+        this.setState({
+            emailSentPopup: !this.state.emailSentPopup,
         });
     };
 
@@ -324,7 +333,7 @@ class SignUpScreen extends Component {
         } = this.state;
 
         return (
-            <Root
+            <View
                 style={[
                     styles.container,
                     {
@@ -335,6 +344,7 @@ class SignUpScreen extends Component {
                     },
                 ]}
             >
+                {this.renderEmailSentPopup()}
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         {keyboardShown ? null : <View style={styles.header} />}
@@ -407,7 +417,7 @@ class SignUpScreen extends Component {
                                         <TouchableOpacity
                                             onPress={this.handlePasswordVisibility.bind(this)}
                                         >
-                                            <Ionicons
+                                            <Icon
                                                 name={passwordIcon}
                                                 size={28}
                                                 color={Colors.appGray}
@@ -435,7 +445,7 @@ class SignUpScreen extends Component {
                                                 this
                                             )}
                                         >
-                                            <Ionicons
+                                            <Icon
                                                 name={confirmPasswordIcon}
                                                 size={28}
                                                 color={Colors.appGray}
@@ -475,7 +485,7 @@ class SignUpScreen extends Component {
                         )}
                     </View>
                 </TouchableWithoutFeedback>
-            </Root>
+            </View>
         );
     }
 }

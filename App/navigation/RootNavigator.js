@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -79,7 +79,7 @@ class RootNavigator extends Component {
                 console.log('logo done')
             ),
             Font.loadAsync({
-                ...Ionicons.font,
+                ...Icon.font,
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
                 'Futura-Medium-BT': require('../assets/fonts/Futura-Medium-BT.ttf'),
             }).then(() => console.log('font done')),
@@ -88,26 +88,21 @@ class RootNavigator extends Component {
 
     render() {
         const { loading, timerCounting } = this.state;
-
-        return (
-            <NavigationContainer>
-                <RootStack.Navigator>
-                    {timerCounting || loading.isUserLoading || loading.isAssetsLoading ? (
-                        <RootStack.Screen
-                            name="Loading"
-                            component={LoadingScreen}
-                            initialParams={{
-                                children: loading,
-                            }}
-                        />
-                    ) : loading.isUserSignedIn ? (
-                        <RootStack.Screen name="App" component={HomeTabs} />
-                    ) : (
-                        <RootStack.Screen name="Auth" component={AuthNavigator} />
-                    )}
-                </RootStack.Navigator>
-            </NavigationContainer>
-        );
+        if (timerCounting || loading.isUserLoading || loading.isAssetsLoading) {
+            return <LoadingScreen loading />;
+        } else {
+            return (
+                <NavigationContainer>
+                    <RootStack.Navigator>
+                        {loading.isUserSignedIn ? (
+                            <RootStack.Screen name="App" component={HomeTabs} />
+                        ) : (
+                            <RootStack.Screen name="Auth" component={AuthNavigator} />
+                        )}
+                    </RootStack.Navigator>
+                </NavigationContainer>
+            );
+        }
     }
 }
 

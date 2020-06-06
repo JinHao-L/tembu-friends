@@ -8,7 +8,6 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-App/assets/images/temp/**
 App/config/Firebase/firebaseConfig.js
 
 # macOS

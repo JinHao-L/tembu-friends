@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
 import { Colors } from '../constants';
 import { withFirebase } from '../config/Firebase';
-import { MainText, MenuButton } from '../components';
-import { Popup, Root } from '../components/Popup';
+import { MainText, MenuButton, Popup } from '../components';
 
 const mapStateToProps = (state) => {
     return {
@@ -14,11 +14,10 @@ const mapStateToProps = (state) => {
 };
 
 class MenuScreen extends Component {
-    componentDidMount() {
-        this.props.navigation.setOptions({
-            headerShown: false,
-        });
-    }
+    state = {
+        testVisible: false,
+        signOutVisible: false,
+    };
 
     signOut = async () => {
         try {
@@ -36,100 +35,105 @@ class MenuScreen extends Component {
         this.props.navigation.navigate('Delete');
     };
 
-    testingPopup = () => {
-        Popup.show({
-            type: 'Testing',
-            title: 'Not available',
-            body: 'Under Maintenance... \nClosing in 5 seconds',
-            showButton: true,
-            buttonText: 'Close',
-            autoClose: true,
-            // because of bottom tab bar
-            verticalOffset: 50,
+    toggleTestingVisibility = () => {
+        this.setState({
+            testVisible: !this.state.testVisible,
         });
+    };
+
+    toggleSignOutVisibility = () => {
+        this.setState({
+            signOutVisible: !this.state.signOutVisible,
+        });
+    };
+
+    renderTestingPopup = () => {
+        return (
+            <Popup
+                type={'Testing'}
+                isVisible={this.state.testVisible}
+                title={'Not available'}
+                body={'Under Maintenance... \nAwait for our upcoming features'}
+                buttonText={'Close'}
+                callback={this.toggleTestingVisibility}
+            />
+        );
+    };
+
+    renderSignOutPopup = () => {
+        return (
+            <Popup
+                type={'Warning'}
+                isVisible={this.state.signOutVisible}
+                title={'Signing you out'}
+                body={'Are you sure?'}
+                additionalButtonText={'Sign out'}
+                additionalButtonCall={() => {
+                    this.toggleSignOutVisibility();
+                    this.signOut();
+                }}
+                buttonText={'Cancel'}
+                callback={this.toggleSignOutVisibility}
+            />
+        );
     };
 
     render() {
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <Root>
+                {this.renderTestingPopup()}
+                {this.renderSignOutPopup()}
+                <LinearGradient
+                    colors={[Colors.appGreen, Colors.appLightGreen]}
+                    style={styles.container}
+                >
                     <View style={styles.header}>
                         <MainText style={styles.title}>Menu</MainText>
                     </View>
-                    <ScrollView
-                        style={styles.container}
-                        contentContainerStyle={styles.contentContainer}
-                    >
-                        <View>
-                            <MenuButton
-                                type={'Profile'}
-                                link={this.props.userData.profilePicture}
-                                onPress={this.goToProfile}
-                            >
-                                <Text style={{ color: 'green' }}>
-                                    {this.props.userData.displayName}
-                                </Text>
-                                {'\n'}
-                                <Text style={{ fontSize: 15 }}> See your profile</Text>
-                            </MenuButton>
-                            <MenuButton type={'Friends'} onPress={this.testingPopup}>
-                                Friends
-                            </MenuButton>
-                            <MenuButton type={'Settings'} onPress={this.testingPopup}>
-                                Settings
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton style={styles.notAvailable} onPress={this.testingPopup}>
-                                Ipsum Lorem
-                            </MenuButton>
-                            <MenuButton
-                                type={'Settings'}
-                                style={styles.signOutButton}
-                                textStyle={{ color: 'white' }}
-                                onPress={this.signOut}
-                            >
-                                Sign Out
-                            </MenuButton>
-                            <MenuButton
-                                type={'Settings'}
-                                style={styles.signOutButton}
-                                textStyle={{ color: 'white' }}
-                                onPress={this.goToDelete}
-                            >
-                                Delete account
-                            </MenuButton>
-                        </View>
-                    </ScrollView>
-                </Root>
+                    <View style={styles.contentContainer}>
+                        <MenuButton
+                            type={'Profile'}
+                            avatar={this.props.userData.profilePicture}
+                            avatarPlaceholder={this.props.userData.displayName[0]}
+                            onPress={this.goToProfile}
+                            borderStyle={{ height: 60 }}
+                        >
+                            <Text style={{ color: 'green' }}>
+                                {this.props.userData.displayName}
+                            </Text>
+                            {'\n'}
+                            <Text style={{ fontSize: 13 }}> See your profile</Text>
+                        </MenuButton>
+                        <MenuButton type={'Friends'} onPress={this.toggleTestingVisibility}>
+                            Friends
+                        </MenuButton>
+                        <MenuButton type={'Default'} onPress={this.toggleTestingVisibility}>
+                            Scan QR Code
+                        </MenuButton>
+                        <MenuButton type={'Settings'} onPress={this.toggleTestingVisibility}>
+                            Settings
+                        </MenuButton>
+                        <MenuButton type={'Default'} onPress={this.toggleTestingVisibility}>
+                            Admin
+                        </MenuButton>
+                        <MenuButton
+                            style={styles.signOutButton}
+                            borderStyle={styles.signOutBorderStyle}
+                            textStyle={{ color: 'white' }}
+                            onPress={this.toggleSignOutVisibility}
+                        >
+                            Sign Out
+                        </MenuButton>
+                        <MenuButton
+                            style={styles.signOutButton}
+                            borderStyle={styles.signOutBorderStyle}
+                            textStyle={{ color: 'white' }}
+                            onPress={this.goToDelete}
+                        >
+                            Delete account
+                        </MenuButton>
+                    </View>
+                </LinearGradient>
             </SafeAreaView>
         );
     }
@@ -137,18 +141,16 @@ class MenuScreen extends Component {
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: '#248458',
         paddingBottom: 10,
         paddingTop: 20,
     },
     container: {
+        // backgroundColor: Colors.appLightGreen,
         flex: 1,
-        backgroundColor: Colors.appLightGreen,
     },
     contentContainer: {
         paddingTop: 15,
         // alignItems: 'center',
-        justifyContent: 'center',
         marginHorizontal: 30,
     },
     title: {
@@ -161,7 +163,12 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appDarkGray,
     },
     signOutButton: {
-        backgroundColor: 'red',
+        alignItems: 'center',
+        backgroundColor: Colors.appGreen,
+    },
+    signOutBorderStyle: {
+        borderWidth: 1,
+        borderColor: Colors.appGray,
     },
 });
 

@@ -8,12 +8,11 @@ import {
     Text,
     Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, LogoText, MainText } from '../../components';
-import { Popup, Root } from '../../components/Popup';
+import { AuthButton, FormInput, ErrorMessage, LogoText, MainText, Popup } from '../../components';
 
 class SignInScreen extends Component {
     state = {
@@ -33,6 +32,9 @@ class SignInScreen extends Component {
         keyboardShown: false,
         disabled: false,
         keyboardHeight: 0,
+        user: null,
+        emailSentPopup: false,
+        notVerifiedPopup: false,
     };
 
     clearInputs() {
@@ -154,14 +156,17 @@ class SignInScreen extends Component {
             const response = await this.props.firebase.signInWithEmail(nusEmail, password);
 
             if (response && response.user) {
-                if (response.user.userVerified) {
+                if (response.user.emailVerified) {
                     console.log('verified');
                     this.onSignInSuccess.bind(this)();
                 } else {
                     console.log('not verified');
-                    this.notVerifiedPopup(async () => {
-                        await response.user.sendEmailVerification();
-                    });
+                    this.setState(
+                        {
+                            user: response.user,
+                        },
+                        this.toggleNotVerifiedPopup
+                    );
                 }
             }
         } catch (error) {
@@ -180,21 +185,52 @@ class SignInScreen extends Component {
         return this.signIn.bind(this)();
     }
 
-    notVerifiedPopup = (sendLink) => {
-        Popup.show({
-            type: 'Failure',
-            title: 'Email Address Not Verified',
-            specialBodyCall: () => {
-                return (
+    toggleNotVerifiedPopup = () => {
+        this.setState({
+            notVerifiedPopup: !this.state.notVerifiedPopup,
+        });
+    };
+
+    toggleEmailSentPopup = () => {
+        this.setState({
+            emailSentPopup: !this.state.emailSentPopup,
+        });
+    };
+
+    renderEmailSentPopup = () => {
+        return (
+            <Popup
+                type={'Success'}
+                isVisible={this.state.emailSentPopup}
+                title={'Email link sent'}
+                body={
+                    'We sent an email to\n' +
+                    this.state.nusEmail +
+                    '\nwith a verification link to activate your account.'
+                }
+                buttonText={'OK'}
+                callback={this.toggleEmailSentPopup}
+            />
+        );
+    };
+
+    renderNotVerifiedPopup = () => {
+        return (
+            <Popup
+                type={'Failure'}
+                isVisible={this.state.notVerifiedPopup}
+                title={'Email Address Not Verified'}
+                body={
                     <Text>
                         Click the link in the email we sent to verify your email address.{' '}
                         <Text
                             onPress={() => {
                                 console.log('Init');
-                                sendLink().then(() => {
+                                this.state.user.sendEmailVerification().then(() => {
                                     this.props.firebase.signOut().then((r) => {
                                         console.log('Closed and opening next');
-                                        this.emailSentPopup();
+                                        this.toggleNotVerifiedPopup();
+                                        this.toggleEmailSentPopup();
                                         console.log('Done');
                                     });
                                 });
@@ -205,31 +241,14 @@ class SignInScreen extends Component {
                         </Text>{' '}
                         to resend it.
                     </Text>
-                );
-            },
-            showButton: true,
-            buttonText: 'OK',
-            autoClose: false,
-            verticalOffset: 50,
-            callback: () => {
-                this.props.firebase.signOut();
-                Popup.hide();
-            },
-        });
-    };
-
-    emailSentPopup = () => {
-        Popup.replace({
-            type: 'Success',
-            title: 'Email link sent',
-            body:
-                'We sent an email to\n' +
-                this.state.nusEmail +
-                '\nwith a verification link to activate your account.',
-            callback: () => {
-                Popup.hide();
-            },
-        });
+                }
+                buttonText={'OK'}
+                callback={() => {
+                    this.toggleNotVerifiedPopup();
+                    this.props.firebase.signOut();
+                }}
+            />
+        );
     };
 
     render() {
@@ -245,7 +264,7 @@ class SignInScreen extends Component {
             keyboardShown,
         } = this.state;
         return (
-            <Root
+            <View
                 style={[
                     styles.container,
                     {
@@ -256,6 +275,8 @@ class SignInScreen extends Component {
                     },
                 ]}
             >
+                {this.renderNotVerifiedPopup()}
+                {this.renderEmailSentPopup()}
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         {keyboardShown ? null : <View style={styles.header} />}
@@ -300,7 +321,7 @@ class SignInScreen extends Component {
                                         <TouchableOpacity
                                             onPress={this.handlePasswordVisibility.bind(this)}
                                         >
-                                            <Ionicons
+                                            <Icon
                                                 name={passwordIcon}
                                                 size={28}
                                                 color="lightgray"
@@ -350,7 +371,7 @@ class SignInScreen extends Component {
                         )}
                     </View>
                 </TouchableWithoutFeedback>
-            </Root>
+            </View>
         );
     }
 }
