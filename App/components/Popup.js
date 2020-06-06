@@ -17,7 +17,6 @@ function Popup({
     additionalButtonText,
     additionalButtonCall,
 }) {
-    console.log(body);
     return (
         <Overlay
             animationType={'fade'}
