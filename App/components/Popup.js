@@ -26,11 +26,19 @@ function Popup({
             overlayStyle={styles.container}
         >
             <View style={styles.message}>
-                <Image source={getImage(type)} resizeMode={'contain'} style={styles.image} />
-                <View style={styles.content}>
-                    <MainText style={styles.title}>{title}</MainText>
-                    <MainText style={styles.body}>{body}</MainText>
-                </View>
+                {(type === 'Simple' && body) || (
+                    <View style={styles.message}>
+                        <Image
+                            source={getImage(type)}
+                            resizeMode={'contain'}
+                            style={styles.image}
+                        />
+                        <View style={styles.content}>
+                            <MainText style={styles.title}>{title}</MainText>
+                            <MainText style={styles.body}>{body}</MainText>
+                        </View>
+                    </View>
+                )}
                 <View style={styles.line} />
                 {additionalButtonCall && (
                     <Button

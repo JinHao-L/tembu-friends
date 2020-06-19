@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, SafeAreaView } from 'react-native';
+import { Text, ScrollView, StyleSheet, SafeAreaView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
@@ -33,6 +33,10 @@ class MenuScreen extends Component {
 
     goToDelete = () => {
         this.props.navigation.navigate('Delete');
+    };
+
+    goToAdmin = () => {
+        this.props.navigation.navigate('AdminNavi');
     };
 
     toggleTestingVisibility = () => {
@@ -90,35 +94,31 @@ class MenuScreen extends Component {
                     <View style={styles.header}>
                         <MainText style={styles.title}>Menu</MainText>
                     </View>
-                    <View style={styles.contentContainer}>
+                    <ScrollView style={styles.contentContainer}>
                         <MenuButton
                             type={'Profile'}
-                            avatar={this.props.userData.profilePicture}
-                            avatarPlaceholder={this.props.userData.displayName[0]}
+                            avatar={this.props.userData.profileImg || null}
+                            avatarPlaceholder={this.props.userData.firstName[0]}
                             onPress={this.goToProfile}
-                            borderStyle={{ height: 60 }}
                         >
-                            <Text style={{ color: 'green' }}>
-                                {this.props.userData.displayName}
-                            </Text>
+                            <Text style={{ color: 'green' }}>{this.props.userData.firstName}</Text>
                             {'\n'}
-                            <Text style={{ fontSize: 13 }}> See your profile</Text>
+                            <Text style={{ fontSize: 13 }}>See your profile</Text>
                         </MenuButton>
                         <MenuButton type={'Friends'} onPress={this.toggleTestingVisibility}>
                             Friends
                         </MenuButton>
-                        <MenuButton type={'Default'} onPress={this.toggleTestingVisibility}>
+                        <MenuButton type={'QRCode'} onPress={this.toggleTestingVisibility}>
                             Scan QR Code
                         </MenuButton>
                         <MenuButton type={'Settings'} onPress={this.toggleTestingVisibility}>
                             Settings
                         </MenuButton>
-                        <MenuButton type={'Default'} onPress={this.toggleTestingVisibility}>
+                        <MenuButton type={'Default'} onPress={this.goToAdmin}>
                             Admin
                         </MenuButton>
                         <MenuButton
                             style={styles.signOutButton}
-                            borderStyle={styles.signOutBorderStyle}
                             textStyle={{ color: 'white' }}
                             onPress={this.toggleSignOutVisibility}
                         >
@@ -126,13 +126,12 @@ class MenuScreen extends Component {
                         </MenuButton>
                         <MenuButton
                             style={styles.signOutButton}
-                            borderStyle={styles.signOutBorderStyle}
                             textStyle={{ color: 'white' }}
                             onPress={this.goToDelete}
                         >
                             Delete account
                         </MenuButton>
-                    </View>
+                    </ScrollView>
                 </LinearGradient>
             </SafeAreaView>
         );
@@ -145,7 +144,6 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     container: {
-        // backgroundColor: Colors.appLightGreen,
         flex: 1,
     },
     contentContainer: {
@@ -165,10 +163,6 @@ const styles = StyleSheet.create({
     signOutButton: {
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
-    },
-    signOutBorderStyle: {
-        borderWidth: 1,
-        borderColor: Colors.appGray,
     },
 });
 

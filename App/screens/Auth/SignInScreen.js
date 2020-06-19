@@ -287,55 +287,46 @@ class SignInScreen extends Component {
                         </View>
 
                         <View style={styles.form}>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={
-                                        errorHighlight || emailError
-                                            ? styles.errorInput
-                                            : styles.validInput
-                                    }
-                                    placeholder="NUS email address"
-                                    keyboardType="email-address"
-                                    returnKeyType="next"
-                                    textContentType="emailAddress"
-                                    autoCapitalize="none"
-                                    value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onFocus={this.clearError.bind(this)}
-                                    blurOnSubmit={false}
-                                />
-                                <ErrorMessage error={emailError ? emailError : ' '} />
-                            </View>
-                            <View>
-                                <FormInput
-                                    style={errorHighlight ? styles.errorInput : styles.validInput}
-                                    placeholder="Password"
-                                    autoCapitalize="none"
-                                    returnKeyType="done"
-                                    textContentType="newPassword"
-                                    onChangeText={this.handlePassword.bind(this)}
-                                    onFocus={this.clearError.bind(this)}
-                                    secureTextEntry={passwordHidden}
-                                    value={password}
-                                    rightIcon={
-                                        <TouchableOpacity
-                                            onPress={this.handlePasswordVisibility.bind(this)}
-                                        >
-                                            <Icon
-                                                name={passwordIcon}
-                                                size={28}
-                                                color="lightgray"
-                                                style={{ marginRight: 5 }}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <MainText />
-                                <ErrorMessage
-                                    error={generalError ? generalError : ' '}
-                                    style={{ textAlign: 'center' }}
-                                />
-                            </View>
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={errorHighlight || emailError}
+                                errorMessage={emailError}
+                                placeholder="NUS email address"
+                                keyboardType="email-address"
+                                returnKeyType="next"
+                                textContentType="emailAddress"
+                                autoCapitalize="none"
+                                value={nusEmail}
+                                onChangeText={this.handleEmail.bind(this)}
+                                onFocus={this.clearError.bind(this)}
+                                blurOnSubmit={false}
+                            />
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={errorHighlight}
+                                errorMessage={generalError}
+                                errorStyle={{ textAlign: 'center' }}
+                                placeholder="Password"
+                                autoCapitalize="none"
+                                returnKeyType="done"
+                                textContentType="newPassword"
+                                onChangeText={this.handlePassword.bind(this)}
+                                onFocus={this.clearError.bind(this)}
+                                secureTextEntry={passwordHidden}
+                                value={password}
+                                rightIcon={
+                                    <TouchableOpacity
+                                        onPress={this.handlePasswordVisibility.bind(this)}
+                                    >
+                                        <Icon
+                                            name={passwordIcon}
+                                            size={28}
+                                            color="lightgray"
+                                            style={{ marginRight: 5 }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                            />
 
                             <View style={styles.box}>
                                 <MainText
@@ -413,12 +404,6 @@ const styles = StyleSheet.create({
         marginBottom: 36,
         alignItems: 'center',
     },
-    validInput: {
-        borderColor: Colors.appGray,
-    },
-    errorInput: {
-        borderColor: Colors.appRed,
-    },
     box: {
         marginBottom: 3,
     },
@@ -426,6 +411,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     forgetPasswordText: {
+        marginTop: 5,
         fontSize: 15,
         fontWeight: '600',
         textAlign: 'right',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { connect } from 'react-redux';
 
@@ -35,7 +35,7 @@ class HomeTabs extends Component {
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }}>
                 {Platform.OS === 'ios' ? (
                     <StatusBar barStyle="dark-content" />
                 ) : (
@@ -88,7 +88,7 @@ class HomeTabs extends Component {
                         }}
                     />
                 </BottomTab.Navigator>
-            </View>
+            </SafeAreaView>
         );
     }
 }

@@ -7,6 +7,13 @@ export default {
     appDarkGray: '#A9A9A9',
     appRed: '#FF0000',
 
+    // house colors
+    shanHouse: '#A9A9A9',
+    oraHouse: '#248458',
+    gajaHouse: '#833B94',
+    tanchoHouse: '#FF0000',
+    ponyaHouse: '#F2D51A',
+
     // headerBackground: '#278F5F',
     // headerText: '#fff',
     //

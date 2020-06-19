@@ -31,18 +31,21 @@ const MenuButton = (property) => {
                 <View style={styles.contents}>
                     {avatar ? (
                         <Avatar
-                            size="medium"
                             rounded
                             title={avatarPlaceholder}
                             source={{ uri: avatar }}
                             containerStyle={styles.profileContainer}
                         />
                     ) : type ? (
-                        <Image source={getImage(type)} style={styles.imageContainer} />
+                        <Image
+                            source={getImage(type)}
+                            style={
+                                type === 'Profile' ? styles.profileContainer : styles.imageContainer
+                            }
+                        />
                     ) : null}
-
                     <View style={styles.textContainer}>
-                        <MainText style={[styles.text, textStyle]}> {children} </MainText>
+                        <MainText style={[styles.text, textStyle]}>{children}</MainText>
                     </View>
                 </View>
             </BaseButton>
@@ -52,10 +55,14 @@ const MenuButton = (property) => {
 
 const getImage = (img) => {
     switch (img) {
+        case 'Profile':
+            return require('../assets/images/DefaultProfile.png');
         case 'Friends':
             return require('../assets/images/FriendsIcon.png');
         case 'Settings':
             return require('../assets/images/SettingsIcon.png');
+        case 'QRCode':
+            return require('../assets/images/QRcode.png');
         case 'Default':
             return require('../assets/images/robot-prod.png');
     }
@@ -77,6 +84,9 @@ const styles = StyleSheet.create({
             },
         }),
         height: 50,
+        margin: 1,
+        borderWidth: 1,
+        borderColor: Colors.appGray,
     },
     container: {
         flex: 1,
@@ -101,13 +111,19 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
     },
     imageContainer: {
-        height: 40,
-        width: 40,
+        height: 30,
+        width: 30,
         resizeMode: 'contain',
-        marginHorizontal: 10,
+        marginVertical: 5,
+        marginLeft: 8,
+        marginRight: 10,
     },
     profileContainer: {
-        margin: 5,
+        height: 40,
+        width: 40,
+        marginVertical: 2,
+        marginLeft: 4,
+        marginRight: 6,
     },
 });
 

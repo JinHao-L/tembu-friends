@@ -14,7 +14,7 @@ import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
 
-const wordsOnly = /^[A-Za-z]+$/;
+const wordsOnly = /^[A-Za-z ]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;
 
 class SignUpScreen extends Component {
@@ -188,22 +188,13 @@ class SignUpScreen extends Component {
         try {
             const response = await this.props.firebase.signUpWithEmail(nusEmail, password);
             if (response && response.user) {
-                const imageUrl = await this.props.firebase.defaultImage();
-                const userData = {
-                    email: nusEmail,
-                    firstName,
-                    lastName,
-                    displayName: firstName + ' ' + lastName,
-                    groups: [],
-                    intro_msg: 'Hi, I am new to TembuFriends!',
-                    modules: [],
-                    profilePicture: imageUrl,
-                    uid: response.user.uid,
-                };
                 console.log('starting creation process');
-                await response.user.updateProfile({ displayName: firstName + ' ' + lastName });
+                await response.user.updateProfile({
+                    photoURL: lastName,
+                    displayName: firstName,
+                });
                 console.log('update display name');
-                await this.props.firebase.createNewUser(userData);
+                // await this.props.firebase.createNewUser(userData);
                 console.log('creating new user');
                 await response.user.sendEmailVerification();
                 console.log('send email verification');
@@ -354,108 +345,104 @@ class SignUpScreen extends Component {
 
                         <View style={styles.form}>
                             <View style={[styles.box, { flexDirection: 'row' }]}>
-                                <View style={{ flex: 1, flexDirection: 'column', marginRight: 5 }}>
-                                    <FormInput
-                                        style={
-                                            firstNameError ? styles.errorInput : styles.validInput
-                                        }
-                                        placeholder="First Name"
-                                        returnKeyType="next"
-                                        textContentType="name"
-                                        autoCapitalize="words"
-                                        value={firstName}
-                                        onChangeText={this.handleFirstName.bind(this)}
-                                        onFocus={this.clearFirstNameError.bind(this)}
-                                    />
-                                    <ErrorMessage error={firstNameError ? firstNameError : ' '} />
-                                </View>
-
-                                <View style={{ flex: 1, flexDirection: 'column', marginLeft: 5 }}>
-                                    <FormInput
-                                        style={
-                                            lastNameError ? styles.errorInput : styles.validInput
-                                        }
-                                        placeholder="Last Name"
-                                        returnKeyType="next"
-                                        textContentType="name"
-                                        autoCapitalize="words"
-                                        value={lastName}
-                                        onChangeText={this.handleLastName.bind(this)}
-                                        onFocus={this.clearLastNameError.bind(this)}
-                                    />
-                                    <ErrorMessage error={lastNameError ? lastNameError : ' '} />
-                                </View>
-                            </View>
-
-                            <View style={styles.box}>
                                 <FormInput
-                                    style={emailError ? styles.errorInput : styles.validInput}
-                                    placeholder="NUS email address"
-                                    keyboardType="email-address"
+                                    containerStyle={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        marginRight: 5,
+                                    }}
+                                    isError={firstNameError}
+                                    errorMessage={firstNameError}
+                                    placeholder="First Name"
                                     returnKeyType="next"
-                                    textContentType="emailAddress"
-                                    autoCapitalize="none"
-                                    value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onFocus={this.clearEmailError.bind(this)}
+                                    textContentType="name"
+                                    autoCapitalize="words"
+                                    value={firstName}
+                                    onChangeText={this.handleFirstName.bind(this)}
+                                    onFocus={this.clearFirstNameError.bind(this)}
                                 />
-                                <ErrorMessage error={emailError ? emailError : ' '} />
+
+                                <FormInput
+                                    containerStyle={{
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        marginLeft: 5,
+                                    }}
+                                    isError={lastNameError}
+                                    errorMessage={lastNameError}
+                                    placeholder="Last Name"
+                                    returnKeyType="next"
+                                    textContentType="name"
+                                    autoCapitalize="words"
+                                    value={lastName}
+                                    onChangeText={this.handleLastName.bind(this)}
+                                    onFocus={this.clearLastNameError.bind(this)}
+                                />
                             </View>
 
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={passwordError ? styles.errorInput : styles.validInput}
-                                    placeholder="Password"
-                                    autoCapitalize="none"
-                                    returnKeyType="next"
-                                    textContentType="none"
-                                    onChangeText={this.handlePassword.bind(this)}
-                                    onFocus={this.clearPasswordError.bind(this)}
-                                    secureTextEntry={passwordHidden}
-                                    value={password}
-                                    rightIcon={
-                                        <TouchableOpacity
-                                            onPress={this.handlePasswordVisibility.bind(this)}
-                                        >
-                                            <Icon
-                                                name={passwordIcon}
-                                                size={28}
-                                                color={Colors.appGray}
-                                                style={{ marginRight: 5 }}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <MainText />
-                            </View>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={passwordError ? styles.errorInput : styles.validInput}
-                                    placeholder="Confirm password"
-                                    autoCapitalize="none"
-                                    returnKeyType="done"
-                                    textContentType="none"
-                                    onChangeText={this.handleConfirmPassword.bind(this)}
-                                    onFocus={this.clearPasswordError.bind(this)}
-                                    secureTextEntry={confirmPasswordHidden}
-                                    value={confirmPassword}
-                                    rightIcon={
-                                        <TouchableOpacity
-                                            onPress={this.handleConfirmPasswordVisibility.bind(
-                                                this
-                                            )}
-                                        >
-                                            <Icon
-                                                name={confirmPasswordIcon}
-                                                size={28}
-                                                color={Colors.appGray}
-                                                style={{ marginRight: 5 }}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <ErrorMessage error={passwordError ? passwordError : ' '} />
-                            </View>
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={emailError}
+                                errorMessage={emailError}
+                                placeholder="NUS email address"
+                                keyboardType="email-address"
+                                returnKeyType="next"
+                                textContentType="emailAddress"
+                                autoCapitalize="none"
+                                value={nusEmail}
+                                onChangeText={this.handleEmail.bind(this)}
+                                onFocus={this.clearEmailError.bind(this)}
+                            />
+
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={passwordError}
+                                placeholder="Password"
+                                autoCapitalize="none"
+                                returnKeyType="next"
+                                textContentType="none"
+                                onChangeText={this.handlePassword.bind(this)}
+                                onFocus={this.clearPasswordError.bind(this)}
+                                secureTextEntry={passwordHidden}
+                                value={password}
+                                rightIcon={
+                                    <TouchableOpacity
+                                        onPress={this.handlePasswordVisibility.bind(this)}
+                                    >
+                                        <Icon
+                                            name={passwordIcon}
+                                            size={28}
+                                            color={Colors.appGray}
+                                            style={{ marginRight: 5 }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                            />
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={passwordError}
+                                errorMessage={passwordError}
+                                placeholder="Confirm password"
+                                autoCapitalize="none"
+                                returnKeyType="done"
+                                textContentType="none"
+                                onChangeText={this.handleConfirmPassword.bind(this)}
+                                onFocus={this.clearPasswordError.bind(this)}
+                                secureTextEntry={confirmPasswordHidden}
+                                value={confirmPassword}
+                                rightIcon={
+                                    <TouchableOpacity
+                                        onPress={this.handleConfirmPasswordVisibility.bind(this)}
+                                    >
+                                        <Icon
+                                            name={confirmPasswordIcon}
+                                            size={28}
+                                            color={Colors.appGray}
+                                            style={{ marginRight: 5 }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                            />
                             <View style={styles.box}>
                                 <AuthButton
                                     onPress={this.validateInputAndSignUp.bind(this)}
@@ -523,12 +510,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         marginBottom: 36,
         alignItems: 'center',
-    },
-    validInput: {
-        borderColor: Colors.appGray,
-    },
-    errorInput: {
-        borderColor: Colors.appRed,
     },
     box: {
         marginBottom: 5,

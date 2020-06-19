@@ -36,11 +36,6 @@ class ProfileScreen extends Component {
 
     componentDidMount() {
         this.props.navigation.setOptions({
-            // headerStyle: {
-            //     backgroundColor: Colors.appGreen,
-            // },
-            // headerTintColor: Colors.appWhite,
-            // headerTitleAlign: 'center',
             headerRight: () => (
                 <Button
                     onPress={this.goToImageEdit}
@@ -143,6 +138,7 @@ class ProfileScreen extends Component {
                                         {item.name}
                                     </MainText>
                                     <MainText>{item.message}</MainText>
+                                    <Button onPress={this.goToImageEdit} />
                                 </View>
                             </View>
                         )}
@@ -177,10 +173,8 @@ styles = StyleSheet.create({
     modules: {},
     wall: {},
     imageContainer: {
-        borderWidth: 2,
-        borderColor: Colors.appGreen,
-        marginHorizontal: 30,
-        marginVertical: 10,
+        borderWidth: 4,
+        borderColor: Colors.appWhite,
     },
     miniImageContainer: {
         borderWidth: 1,

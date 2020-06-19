@@ -7,77 +7,84 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeTabs from './HomeTabs';
 import AuthNavigator from './AuthNavigator';
-import { LoadingScreen } from '../screens/index';
 import { withFirebase } from '../config/Firebase';
+import AppLogo from '../components/AppLogo';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { Colors } from '../constants';
 
 const RootStack = createStackNavigator();
 
 class RootNavigator extends Component {
     state = {
-        loading: {
-            isUserLoading: true,
-            isAssetsLoading: true,
-            isUserSignedIn: false,
-        },
+        isUserLoading: true,
+        isAssetsLoading: true,
+        isUserSignedIn: false,
         timerCounting: true,
     };
 
     async componentDidMount() {
-        this._isMounted = true;
-        if (this._isMounted) {
-            console.log('Starting app');
-            try {
-                if (this.state.loading.isAssetsLoading) {
-                    await this.loadLocalAsync().then(() => {
-                        this.setState({ loading: { isAssetsLoading: false } });
+        console.log('Starting app');
+        try {
+            // let callback = null;
+            // let metadataRef = null;
+            await this.props.firebase.checkUserAuth((result) => {
+                // if (callback) {
+                //     metadataRef.off('value', callback);
+                // }
+                if (result && result.emailVerified) {
+                    console.log('emailVerified');
+                    this.setState({
+                        isUserLoading: false,
+                        isUserSignedIn: true,
+                    });
+                    // metadataRef = this.props.firebase
+                    //     .database()
+                    //     .ref('metadata/' + user.uid + '/refreshTime');
+                    // callback = (user) => {
+                    //     user.getIdToken(true);
+                    // };
+                    // metadataRef.on('value', callback);
+                } else {
+                    console.log('emailNotVerified');
+                    if (result) {
+                        this.props.firebase.signOut();
+                    }
+                    this.setState({
+                        isUserLoading: false,
+                        isUserSignedIn: false,
                     });
                 }
+            });
 
-                this.task = await this.props.firebase.checkUserAuth((result) => {
-                    if (result && result.emailVerified) {
-                        this.setState({
-                            user: result,
-                            loading: {
-                                isUserLoading: false,
-                                isUserSignedIn: true,
-                            },
-                        });
-                    } else {
-                        if (result) {
-                            this.props.firebase.signOut();
-                        }
-                        this.setState({
-                            user: null,
-                            loading: {
-                                isUserLoading: false,
-                                isUserSignedIn: false,
-                            },
-                        });
-                    }
+            if (this.state.isAssetsLoading) {
+                await this.loadLocalAsync().then(() => {
+                    this.setState({ isAssetsLoading: false });
                 });
-
-                this.timer = setTimeout(() => {
-                    this.setState({
-                        timerCounting: false,
-                    });
-                }, 3000);
-            } catch (error) {
-                console.log(error);
             }
+
+            this.timer = setTimeout(() => {
+                this.setState({
+                    timerCounting: false,
+                });
+            }, 3000);
+        } catch (error) {
+            console.log(error);
         }
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
-        if (this.task) this.task = null;
         if (this.timer) this.timer = null;
     }
 
     async loadLocalAsync() {
         return await Promise.all([
-            Asset.loadAsync([require('../assets/images/logo.png')]).then(() =>
-                console.log('logo done')
-            ),
+            Asset.loadAsync([
+                require('../assets/images/logo.png'),
+                require('../assets/images/robot-prod.png'),
+                require('../assets/images/success-icon.png'),
+                require('../assets/images/SettingsIcon.png'),
+                require('../assets/images/invalid-icon.png'),
+            ]).then(() => console.log('logo done')),
             Font.loadAsync({
                 ...Icon.font,
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
@@ -87,14 +94,24 @@ class RootNavigator extends Component {
     }
 
     render() {
-        const { loading, timerCounting } = this.state;
-        if (timerCounting || loading.isUserLoading || loading.isAssetsLoading) {
-            return <LoadingScreen loading />;
+        const { isUserLoading, isAssetsLoading, isUserSignedIn, timerCounting } = this.state;
+        if (timerCounting || isUserLoading || isAssetsLoading) {
+            return (
+                <View style={styles.container}>
+                    <AppLogo style={styles.logo} />
+                    <View style={styles.text}>
+                        <ActivityIndicator size="small" />
+                        <Text>Fetching resources...{isAssetsLoading ? '' : ' Done'}</Text>
+                        <Text>Fetching user data...{isUserLoading ? '' : ' Done'}</Text>
+                        {!isUserLoading && !isAssetsLoading && <Text>Signing you in</Text>}
+                    </View>
+                </View>
+            );
         } else {
             return (
                 <NavigationContainer>
                     <RootStack.Navigator>
-                        {loading.isUserSignedIn ? (
+                        {isUserSignedIn ? (
                             <RootStack.Screen name="App" component={HomeTabs} />
                         ) : (
                             <RootStack.Screen name="Auth" component={AuthNavigator} />
@@ -105,5 +122,22 @@ class RootNavigator extends Component {
         }
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.appWhite,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    logo: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    text: {
+        bottom: 5,
+        alignItems: 'center',
+    },
+});
 
 export default withFirebase(RootNavigator);

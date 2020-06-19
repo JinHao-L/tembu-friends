@@ -49,9 +49,6 @@ const Firebase = {
     },
 
     // firestore
-    createNewUser: (userData) => {
-        return firebase.firestore().collection('users').doc(`${userData.uid}`).set(userData);
-    },
     getMyData: () => {
         const uid = firebase.auth().currentUser.uid;
         return Firebase.getUserData(uid);
@@ -76,16 +73,31 @@ const Firebase = {
         let userData = firebase.firestore().collection('users').doc(`${uid}`);
         return userData.update(data);
     },
-    deleteUser: (uid) => {
-        return firebase.firestore().collection('users').doc(`${uid}`).delete();
+    getCourses: () => {
+        let data = firebase.firestore().collection('shared').doc('faculty');
+
+        return data
+            .get()
+            .then((doc) => {
+                if (!doc.exists) {
+                    console.log('Courses does not exist!');
+                } else {
+                    console.log('Courses data available');
+                    return doc.data();
+                }
+            })
+            .catch((err) => {
+                console.log('Error getting courses document', err);
+            });
+    },
+    updateModulesInfo: (data) => {
+        let ref = firebase.firestore().collection('shared').doc('mods');
+        return ref.delete();
     },
 
     // Storage
     getStorageRef: () => {
         return firebase.storage().ref();
-    },
-    defaultImage: () => {
-        return firebase.storage().ref().child('placeholder/profile.png').getDownloadURL();
     },
 };
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { Colors } from '../constants/index';
@@ -11,7 +11,7 @@ class HomeScreen extends Component {
     }
     render() {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <WebView
                     source={{ uri: 'https://tembusu.nus.edu.sg/' }}
                     style={{ width: Layout.window.width, flex: 1 }}
@@ -20,7 +20,7 @@ class HomeScreen extends Component {
                     domStorageEnabled={true}
                     javaScriptEnabled={true}
                 />
-            </View>
+            </SafeAreaView>
         );
     }
 }

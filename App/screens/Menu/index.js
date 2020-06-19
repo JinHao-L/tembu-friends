@@ -1,4 +1,4 @@
 export ProfileScreen from './ProfileScreen';
-export UserListScreen from './UserListScreen';
 export ProfileEditScreen from './ProfileEditScreen';
+export ModuleEditScreen from './ModuleEditScreen';
 export DeleteScreen from './DeleteScreen';

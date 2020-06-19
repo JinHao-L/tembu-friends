@@ -180,21 +180,20 @@ class ForgetPassword extends Component {
                         </View>
 
                         <View style={styles.form}>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={emailError ? styles.errorInput : styles.validInput}
-                                    leftIconName="ios-mail"
-                                    placeholder="NUS email address"
-                                    returnKeyType="done"
-                                    keyboardType="email-address"
-                                    textContentType="emailAddress"
-                                    autoCapitalize="none"
-                                    value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onFocus={this.clearError.bind(this)}
-                                />
-                                <ErrorMessage error={emailError ? emailError : ' '} />
-                            </View>
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={emailError}
+                                errorMessage={emailError}
+                                leftIconName="ios-mail"
+                                placeholder="NUS email address"
+                                returnKeyType="done"
+                                keyboardType="email-address"
+                                textContentType="emailAddress"
+                                autoCapitalize="none"
+                                value={nusEmail}
+                                onChangeText={this.handleEmail.bind(this)}
+                                onFocus={this.clearError.bind(this)}
+                            />
                             <View>
                                 <AuthButton
                                     onPress={this.validateInput.bind(this)}
@@ -264,22 +263,11 @@ const styles = StyleSheet.create({
         marginBottom: 36,
         alignItems: 'center',
     },
-    validInput: {
-        borderColor: Colors.appGray,
-    },
-    errorInput: {
-        borderColor: Colors.appRed,
-    },
     box: {
         marginTop: 10,
     },
     button: {
         marginTop: 10,
-    },
-    successMessage: {
-        color: Colors.appGreen,
-        textAlign: 'center',
-        fontSize: 16,
     },
     backLoginText: {
         position: 'absolute',

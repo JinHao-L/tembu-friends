@@ -146,7 +146,7 @@ class SignUpScreen extends Component {
             await user.reauthenticateWithCredential(credential);
 
             console.log('Deleting');
-            await this.props.firebase.deleteUser(user.uid);
+            // await this.props.firebase.deleteUser(user.uid);
             await user.delete();
 
             console.log('Cleaning Up');

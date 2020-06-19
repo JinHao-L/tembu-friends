@@ -23,22 +23,19 @@ export const fetchUserData = () => {
     };
 };
 
-const setProfilePicture = (uri) => {
+const updateUserProfile = (changes) => {
     return {
-        type: 'setProfilePicture',
-        value: uri,
+        type: 'updateUserProfile',
+        value: changes,
     };
 };
 
-export const updateProfilePicture = (uid, uri) => {
+export const updateProfile = (uid, changes) => {
     return function (dispatch) {
-        console.log(uri);
-        Firebase.updateUserData(uid, {
-            profilePicture: uri,
-        })
+        Firebase.updateUserData(uid, changes)
             .then(() => {
-                let actionSetProfilePicture = setProfilePicture(uri);
-                dispatch(actionSetProfilePicture);
+                let actionUpdateUserProfile = updateUserProfile(changes);
+                dispatch(actionUpdateUserProfile);
             })
             .catch((err) => {
                 console.log(err);

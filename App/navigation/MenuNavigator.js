@@ -4,12 +4,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
     ProfileScreen,
-    UserListScreen,
     ProfileEditScreen,
     DeleteScreen,
     MenuScreen,
+    ModuleEditScreen,
 } from '../screens';
+import AdminNavigator from './AdminNavigator';
 import { Colors } from '../constants';
+import { MAIN_FONT } from '../components';
 
 const MenuStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Menu';
@@ -23,7 +25,14 @@ function MenuNavigator() {
                     backgroundColor: Colors.appGreen,
                 },
                 headerTintColor: Colors.appWhite,
-                headerTitleAlign: 'center',
+                headerTitleAlign: 'left',
+                headerTitleStyle: {
+                    fontFamily: MAIN_FONT,
+                },
+                headerTitleContainerStyle: {
+                    left: 0,
+                    marginLeft: 40,
+                },
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
@@ -36,6 +45,16 @@ function MenuNavigator() {
                 name="ProfileEdit"
                 component={ProfileEditScreen}
                 options={{ headerTitle: 'Edit Profile' }}
+            />
+            <MenuStack.Screen
+                name="ModuleEdit"
+                component={ModuleEditScreen}
+                options={{ headerTitle: 'Edit Modules' }}
+            />
+            <MenuStack.Screen
+                name="AdminNavi"
+                component={AdminNavigator}
+                options={{ headerShown: false }}
             />
             <MenuStack.Screen
                 name="Delete"
