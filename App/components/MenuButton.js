@@ -29,20 +29,20 @@ const MenuButton = (property) => {
                 {...others}
             >
                 <View style={styles.contents}>
-                    {avatar ? (
+                    {avatar || type === 'Profile' ? (
                         <Avatar
                             rounded
+                            size={40}
                             title={avatarPlaceholder}
-                            source={{ uri: avatar }}
+                            source={
+                                avatar
+                                    ? { uri: avatar }
+                                    : require('../assets/images/DefaultProfile.png')
+                            }
                             containerStyle={styles.profileContainer}
                         />
                     ) : type ? (
-                        <Image
-                            source={getImage(type)}
-                            style={
-                                type === 'Profile' ? styles.profileContainer : styles.imageContainer
-                            }
-                        />
+                        <Image source={getImage(type)} style={styles.imageContainer} />
                     ) : null}
                     <View style={styles.textContainer}>
                         <MainText style={[styles.text, textStyle]}>{children}</MainText>
@@ -55,8 +55,6 @@ const MenuButton = (property) => {
 
 const getImage = (img) => {
     switch (img) {
-        case 'Profile':
-            return require('../assets/images/DefaultProfile.png');
         case 'Friends':
             return require('../assets/images/FriendsIcon.png');
         case 'Settings':
@@ -71,7 +69,7 @@ const getImage = (img) => {
 const styles = StyleSheet.create({
     outerContainer: {
         marginBottom: 12,
-        borderRadius: 10,
+        borderRadius: 11,
         ...Platform.select({
             ios: {
                 shadowColor: Colors.appBlack,
@@ -119,8 +117,6 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     profileContainer: {
-        height: 40,
-        width: 40,
         marginVertical: 2,
         marginLeft: 4,
         marginRight: 6,

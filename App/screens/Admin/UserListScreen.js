@@ -9,7 +9,7 @@ import { ListItem } from 'react-native-elements';
 class UserListScreen extends React.Component {
     state = {
         isLoading: true,
-        users: null,
+        users: [],
     };
 
     componentDidMount() {
@@ -45,9 +45,16 @@ class UserListScreen extends React.Component {
         />
     );
 
+    renderFooter = () => {
+        if (this.state.isLoading) {
+            return <ActivityIndicator />;
+        } else {
+            return null;
+        }
+    };
+
     render() {
-        const { isLoading, users } = this.state;
-        if (isLoading) return <ActivityIndicator size="large" color="#000ff" />;
+        const { users } = this.state;
 
         return (
             <FlatList
@@ -58,6 +65,7 @@ class UserListScreen extends React.Component {
                         <Text>{item.email}</Text>
                     </View>
                 )}
+                ListFooterComponent={this.renderFooter}
             />
         );
     }

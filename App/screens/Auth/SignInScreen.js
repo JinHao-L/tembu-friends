@@ -200,7 +200,7 @@ class SignInScreen extends Component {
     renderEmailSentPopup = () => {
         return (
             <Popup
-                type={'Success'}
+                imageType={'Success'}
                 isVisible={this.state.emailSentPopup}
                 title={'Email link sent'}
                 body={
@@ -217,7 +217,7 @@ class SignInScreen extends Component {
     renderNotVerifiedPopup = () => {
         return (
             <Popup
-                type={'Failure'}
+                imageType={'Failure'}
                 isVisible={this.state.notVerifiedPopup}
                 title={'Email Address Not Verified'}
                 body={

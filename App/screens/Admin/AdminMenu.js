@@ -5,7 +5,7 @@ import { MainText, MenuButton } from '../../components';
 import { Colors } from '../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 
-class AdminScreen extends Component {
+class AdminMenu extends Component {
     state = {};
 
     goToModules = () => {
@@ -78,4 +78,4 @@ styles = StyleSheet.create({
     },
 });
 
-export default AdminScreen;
+export default AdminMenu;

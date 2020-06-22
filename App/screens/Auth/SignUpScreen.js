@@ -275,7 +275,7 @@ class SignUpScreen extends Component {
     renderEmailSentPopup = () => {
         return (
             <Popup
-                type={'Success'}
+                imageType={'Success'}
                 isVisible={this.state.emailSentPopup}
                 title={'Sign Up Success'}
                 body={

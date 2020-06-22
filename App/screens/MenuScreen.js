@@ -28,7 +28,7 @@ class MenuScreen extends Component {
     };
 
     goToProfile = () => {
-        this.props.navigation.navigate('Profile');
+        this.props.navigation.navigate('MyProfile');
     };
 
     goToDelete = () => {
@@ -54,7 +54,7 @@ class MenuScreen extends Component {
     renderTestingPopup = () => {
         return (
             <Popup
-                type={'Testing'}
+                imageType={'Testing'}
                 isVisible={this.state.testVisible}
                 title={'Not available'}
                 body={'Under Maintenance... \nAwait for our upcoming features'}
@@ -67,7 +67,7 @@ class MenuScreen extends Component {
     renderSignOutPopup = () => {
         return (
             <Popup
-                type={'Warning'}
+                imageType={'Warning'}
                 isVisible={this.state.signOutVisible}
                 title={'Signing you out'}
                 body={'Are you sure?'}
@@ -118,14 +118,14 @@ class MenuScreen extends Component {
                             Admin
                         </MenuButton>
                         <MenuButton
-                            style={styles.signOutButton}
+                            style={styles.centralButton}
                             textStyle={{ color: 'white' }}
                             onPress={this.toggleSignOutVisibility}
                         >
                             Sign Out
                         </MenuButton>
                         <MenuButton
-                            style={styles.signOutButton}
+                            style={styles.centralButton}
                             textStyle={{ color: 'white' }}
                             onPress={this.goToDelete}
                         >
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     notAvailable: {
         backgroundColor: Colors.appDarkGray,
     },
-    signOutButton: {
+    centralButton: {
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
     },

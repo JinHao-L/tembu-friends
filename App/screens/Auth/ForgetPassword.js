@@ -128,7 +128,7 @@ class ForgetPassword extends Component {
     renderResetSuccessPopup = () => {
         return (
             <Popup
-                type={'Success'}
+                imageType={'Success'}
                 isVisible={this.state.resetSuccessPopup}
                 title={'Email link sent'}
                 body={

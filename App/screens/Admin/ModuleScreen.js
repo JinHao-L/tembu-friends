@@ -16,7 +16,7 @@ class ModuleScreen extends Component {
     componentDidMount() {
         const url = `https://api.nusmods.com/v2/${this.state.year}/moduleList.json`;
         this.setState({ isLoading: true });
-        return fetch(url)
+        fetch(url)
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log('Fetched');
@@ -58,9 +58,16 @@ class ModuleScreen extends Component {
     renderHeader = () => {
         return (
             <View>
-                <Button title={'Delete'} onPress={this.upload} />
+                <Button title={'Upload'} disabled={true} />
             </View>
         );
+    };
+    renderFooter = () => {
+        if (this.state.isLoading) {
+            return <ActivityIndicator />;
+        } else {
+            return null;
+        }
     };
 
     render() {
@@ -68,19 +75,14 @@ class ModuleScreen extends Component {
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                {isLoading ? (
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <ActivityIndicator />
-                    </View>
-                ) : (
-                    <FlatList
-                        data={data}
-                        ItemSeparatorComponent={this.renderSeparator}
-                        renderItem={({ item }) => this.renderItem(item)}
-                        ListHeaderComponent={this.renderHeader}
-                        keyExtractor={(item) => item.moduleCode}
-                    />
-                )}
+                <FlatList
+                    data={data}
+                    ItemSeparatorComponent={this.renderSeparator}
+                    renderItem={({ item }) => this.renderItem(item)}
+                    ListHeaderComponent={this.renderHeader}
+                    ListFooterComponent={this.renderFooter}
+                    keyExtractor={(item) => item.moduleCode}
+                />
             </SafeAreaView>
         );
     }

@@ -13,7 +13,7 @@ function Popup({
     body,
     buttonText,
     callback,
-    type,
+    imageType,
     additionalButtonText,
     additionalButtonCall,
 }) {
@@ -26,10 +26,10 @@ function Popup({
             overlayStyle={styles.container}
         >
             <View style={styles.message}>
-                {(type === 'Simple' && body) || (
+                {(imageType === 'Custom' && body) || (
                     <View style={styles.message}>
                         <Image
-                            source={getImage(type)}
+                            source={getImage(imageType)}
                             resizeMode={'contain'}
                             style={styles.image}
                         />
@@ -72,11 +72,10 @@ function getImage(type) {
             return require('../assets/images/invalid-icon.png');
         case 'Testing':
             return require('../assets/images/robot-dev.png');
-        //TODO: Find a warning picture
         case 'Warning':
-            return require('../assets/images/invalid-icon.png');
+            return require('../assets/images/warning-icon.png');
         default:
-            return require('../assets/images/robot-prod.png');
+            return null;
     }
 }
 

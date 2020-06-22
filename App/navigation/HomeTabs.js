@@ -45,6 +45,7 @@ class HomeTabs extends Component {
                     initialRouteName={INITIAL_ROUTE_NAME}
                     tabBarOptions={{
                         activeTintColor: Colors.appGreen,
+                        keyboardHidesTabBar: true,
                         showLabel: false,
                     }}
                     screenOptions={{

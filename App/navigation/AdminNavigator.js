@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { AdminScreen, ModuleScreen, UserListScreen } from '../screens';
+import { AdminMenu, ModuleScreen, UserListScreen } from '../screens';
 import { Colors } from '../constants';
 
 const AdminStack = createStackNavigator();
@@ -26,7 +26,7 @@ function AdminNavigator() {
         >
             <AdminStack.Screen
                 name="Admin"
-                component={AdminScreen}
+                component={AdminMenu}
                 options={{ headerShown: false }}
             />
             <AdminStack.Screen

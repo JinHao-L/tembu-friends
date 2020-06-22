@@ -1,24 +1,14 @@
 import React, { Component } from 'react';
-import {
-    View,
-    Image,
-    StyleSheet,
-    TextInput,
-    ScrollView,
-    TouchableOpacity,
-    Text,
-    FlatList,
-    ImageBackground,
-} from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView, Text, ImageBackground } from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors, Layout } from '../../constants';
-import { withFirebase } from '../../config/Firebase';
-import { MainText, Popup, RadioButton, MAIN_FONT } from '../../components';
-import { updateProfile } from '../../redux';
+import { Colors, Layout } from '../../../constants';
+import { withFirebase } from '../../../config/Firebase';
+import { MainText, Popup, RadioButton, MAIN_FONT } from '../../../components';
+import { updateProfile } from '../../../redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -30,19 +20,21 @@ const mapDispatchToProps = (dispatch) => {
 
 const wordsOnly = /^[A-Za-z ]+$/;
 
-class ProfileEditScreen extends Component {
+class ProfileEdit extends Component {
     state = {
         // Changeable:
         // bannerImg: undefined,
         // profileImg: undefined,
         // firstName: undefined,
         // lastName: undefined,
+        // role: undefined
         // major: undefined,
         // year: undefined,
         // house: undefined,
         // roomNumber: undefined,
         // aboutText: undefined,
-        // modules: undefined,
+        // moduleCodes: undefined,
+        // moduleNames: undefined,
 
         // Major options
         facultyOptions: null,
@@ -54,7 +46,9 @@ class ProfileEditScreen extends Component {
         failurePopupVisible: false,
         successPopupVisible: false,
         majorEditPopupVisible: false,
+        exitConfirmationPopupVisible: false,
         errorMessage: null,
+        unsavedEdits: false,
     };
 
     componentDidMount() {
@@ -66,6 +60,21 @@ class ProfileEditScreen extends Component {
                     type={'clear'}
                     titleStyle={{ color: Colors.appWhite }}
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
+                />
+            ),
+            headerLeft: () => (
+                <Button
+                    containerStyle={{ borderRadius: 28 }}
+                    titleStyle={{ color: Colors.appWhite }}
+                    buttonStyle={{ padding: 0, height: 28, width: 28 }}
+                    icon={{
+                        type: 'ionicon',
+                        name: 'ios-arrow-back',
+                        size: 28,
+                        color: Colors.appWhite,
+                    }}
+                    onPress={this.toggleExitConfirmationPopup}
+                    type={'clear'}
                 />
             ),
         });
@@ -81,7 +90,7 @@ class ProfileEditScreen extends Component {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [16, 9],
+            aspect: [25, 8],
             quality: 1,
         });
 
@@ -139,7 +148,7 @@ class ProfileEditScreen extends Component {
             hasError = true;
         }
         // TODO: Check about text for improper words
-        if (this.state.roomNumber && this.state.roomNumber.length !== 7) {
+        if (this.state.roomNumber !== undefined && this.state.roomNumber.length !== 7) {
             errorMessage += 'room number, ';
             hasError = true;
         }
@@ -156,16 +165,20 @@ class ProfileEditScreen extends Component {
             profileImg,
             firstName,
             lastName,
+            role,
             major,
             year,
             house,
             roomNumber,
             aboutText,
-            modules,
+            moduleCodes,
+            moduleNames,
         } = this.state;
 
         let promises = [];
         let changes = {};
+        let hasChanges = false;
+
         if (bannerImg) {
             let promise1 = this.uploadImage(bannerImg, 'banner')
                 .then(() => {
@@ -184,6 +197,7 @@ class ProfileEditScreen extends Component {
                     throw err;
                 });
             promises.push(promise1);
+            hasChanges = true;
         }
         if (profileImg) {
             let promise2 = this.uploadImage(profileImg, 'profile')
@@ -203,38 +217,56 @@ class ProfileEditScreen extends Component {
                     throw err;
                 });
             promises.push(promise2);
+            hasChanges = true;
         }
         if (firstName || lastName) {
             changes.firstName = firstName || this.props.userData.firstName;
             changes.lastName = lastName || this.props.userData.lastName;
             changes.displayName = changes.firstName + ' ' + changes.lastName;
+            hasChanges = true;
+        }
+        if (role !== undefined) {
+            changes.role = role;
+            hasChanges = true;
         }
         if (major !== undefined) {
             changes.major = major;
+            hasChanges = true;
         }
         if (year) {
             changes.year = year;
+            hasChanges = true;
         }
         if (house) {
             changes.house = house;
+            hasChanges = true;
         }
         if (roomNumber !== undefined) {
             changes.roomNumber = roomNumber;
+            hasChanges = true;
         }
         if (aboutText !== undefined) {
             changes.aboutText = aboutText;
+            hasChanges = true;
         }
-        if (modules !== undefined) {
-            changes.modules = modules;
+        if (moduleCodes !== undefined) {
+            changes.moduleCodes = moduleCodes;
+            changes.moduleNames = moduleNames;
+            hasChanges = true;
         }
-
-        Promise.all(promises)
-            .then(() => {
-                console.log(changes);
-                this.props.updateProfile(this.props.userData.uid, changes);
-                this.toggleSuccessPopup();
-            })
-            .catch((error) => this.toggleFailurePopup());
+        if (hasChanges) {
+            Promise.all(promises)
+                .then(() => {
+                    this.props.updateProfile(this.props.userData.uid, changes);
+                    this.toggleSuccessPopup();
+                })
+                .catch((error) => {
+                    console.log('Profile update error: ' + error.message);
+                    this.toggleFailurePopup();
+                });
+        } else {
+            this.toggleSuccessPopup();
+        }
     };
 
     goBackToProfile = () => {
@@ -242,9 +274,14 @@ class ProfileEditScreen extends Component {
     };
     goToModuleEdit = () => {
         this.props.navigation.navigate('ModuleEdit', {
-            modules: this.state.modules || this.props.userData.modules || [],
-            setModules: (myMods) => {
-                this.setState({ modules: myMods });
+            moduleCodes: this.state.moduleCodes || this.props.userData.moduleCodes || [],
+            moduleNames: this.state.moduleNames || this.props.userData.moduleNames || [],
+            setModules: (myModCodes, myModNames) => {
+                this.editsDetected();
+                this.setState({
+                    moduleCodes: myModCodes,
+                    moduleNames: myModNames,
+                });
             },
         });
     };
@@ -253,6 +290,7 @@ class ProfileEditScreen extends Component {
     toggleSuccessPopup = () => {
         this.setState({
             successPopupVisible: !this.state.successPopupVisible,
+            unsavedEdits: false,
         });
     };
     toggleFailurePopup = () => {
@@ -272,11 +310,20 @@ class ProfileEditScreen extends Component {
             majorEditPopupVisible: !this.state.majorEditPopupVisible,
         });
     };
+    toggleExitConfirmationPopup = () => {
+        if (this.state.unsavedEdits) {
+            this.setState({
+                exitConfirmationPopupVisible: !this.state.exitConfirmationPopupVisible,
+            });
+        } else {
+            this.goBackToProfile();
+        }
+    };
 
     renderSuccessPopup = () => {
         return (
             <Popup
-                type={'Success'}
+                imageType={'Success'}
                 isVisible={this.state.successPopupVisible}
                 title={'Upload Success'}
                 body={'Press back to return to profile screen. Close to continue editing.'}
@@ -293,7 +340,7 @@ class ProfileEditScreen extends Component {
     renderFailurePopup = () => {
         return (
             <Popup
-                type={'Failure'}
+                imageType={'Failure'}
                 isVisible={this.state.failurePopupVisible}
                 title={'Save Failed'}
                 body={this.state.errorMessage || 'Please try again in a few seconds.'}
@@ -305,7 +352,7 @@ class ProfileEditScreen extends Component {
     renderMajorEditPopup = () => {
         return (
             <Popup
-                type={'Simple'}
+                imageType={'Custom'}
                 isVisible={this.state.majorEditPopupVisible}
                 body={
                     <View>
@@ -404,6 +451,7 @@ class ProfileEditScreen extends Component {
                 }
                 additionalButtonText={'Save'}
                 additionalButtonCall={() => {
+                    this.editsDetected();
                     let major = this.state.major1;
                     if (this.state.majorType !== 'single' && this.state.major2) {
                         major += ' & ' + this.state.major2;
@@ -418,21 +466,48 @@ class ProfileEditScreen extends Component {
             />
         );
     };
+    renderExitConfirmationPopup = () => {
+        return (
+            <Popup
+                imageType={'Warning'}
+                isVisible={this.state.exitConfirmationPopupVisible}
+                title={'Unsaved changes'}
+                body={'You have made changes.\nAre you sure you want to leave?'}
+                additionalButtonText={'Yes'}
+                additionalButtonCall={() => {
+                    this.toggleExitConfirmationPopup();
+                    this.goBackToProfile();
+                }}
+                buttonText={'No'}
+                callback={this.toggleExitConfirmationPopup}
+            />
+        );
+    };
 
     // Inputs handler
+    editsDetected = () => {
+        if (!this.state.unsavedEdits) {
+            this.setState({ unsavedEdits: true });
+        }
+    };
     handleFirstName = (text) => {
+        this.editsDetected();
         this.setState({ firstName: text });
     };
     handleLastName = (text) => {
+        this.editsDetected();
         this.setState({ lastName: text });
     };
     handleYear = (value) => {
+        this.editsDetected();
         this.setState({ year: value });
     };
     handleHouse = (value) => {
+        this.editsDetected();
         this.setState({ house: value });
     };
     handleRoomNumber = (room) => {
+        this.editsDetected();
         if (room.length > 0 && room.charAt(0) !== '#') {
             room = '#' + room;
         }
@@ -450,7 +525,12 @@ class ProfileEditScreen extends Component {
         this.setState({ roomNumber: room });
     };
     handleAboutText = (text) => {
+        this.editsDetected();
         this.setState({ aboutText: text });
+    };
+    handleRole = (text) => {
+        this.editsDetected();
+        this.setState({ role: text });
     };
 
     render() {
@@ -460,19 +540,28 @@ class ProfileEditScreen extends Component {
             profileImg,
             firstName,
             lastName,
+            role,
             major,
             year,
             house,
             roomNumber,
             aboutText,
-            modules,
         } = this.state;
+        const moduleCodes =
+            this.state.moduleCodes !== undefined
+                ? this.state.moduleCodes
+                : userData.moduleCodes || [];
+        const moduleNames =
+            this.state.moduleNames !== undefined
+                ? this.state.moduleNames
+                : userData.moduleNames || [];
         return (
             <ScrollView style={styles.container}>
                 <View>
                     {this.renderSuccessPopup()}
                     {this.renderFailurePopup()}
                     {this.renderMajorEditPopup()}
+                    {this.renderExitConfirmationPopup()}
 
                     <View style={styles.images}>
                         <ImageBackground
@@ -482,7 +571,7 @@ class ProfileEditScreen extends Component {
                                     ? { uri: bannerImg }
                                     : userData.bannerImg
                                     ? { uri: userData.bannerImg }
-                                    : require('../../assets/images/DefaultBanner.png')
+                                    : require('../../../assets/images/DefaultBanner.png')
                             }
                         >
                             <Icon
@@ -505,7 +594,7 @@ class ProfileEditScreen extends Component {
                                     ? { uri: profileImg }
                                     : userData.profileImg
                                     ? { uri: userData.profileImg }
-                                    : require('../../assets/images/DefaultProfile.png')
+                                    : require('../../../assets/images/DefaultProfile.png')
                             }
                             showAccessory={true}
                             accessory={{
@@ -550,6 +639,18 @@ class ProfileEditScreen extends Component {
                             textContentType={'name'}
                             autoCapitalize={'words'}
                             onChangeText={this.handleLastName}
+                        />
+                    </View>
+                    <View style={styles.box}>
+                        <MainText style={styles.label}>Role</MainText>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={'Add your role in college'}
+                            placeholderTextColor={Colors.appGray}
+                            underlineColorAndroid="transparent"
+                            value={role !== undefined ? role : userData.role}
+                            autoCapitalize={'words'}
+                            onChangeText={this.handleRole}
                         />
                     </View>
                     <View style={styles.box}>
@@ -642,7 +743,7 @@ class ProfileEditScreen extends Component {
                             }
                             placeholderTextColor={Colors.appGray}
                             underlineColorAndroid="transparent"
-                            value={aboutText || userData.aboutText}
+                            value={aboutText !== undefined ? aboutText : userData.aboutText}
                             autoCapitalize={'sentences'}
                             onChangeText={this.handleAboutText}
                             autoCorrect={true}
@@ -658,7 +759,9 @@ class ProfileEditScreen extends Component {
                                 marginBottom: 5,
                             }}
                         >
-                            <MainText>Modules that I’ve taken in Tembusu</MainText>
+                            <MainText style={styles.text}>
+                                Modules that I’ve taken in Tembusu
+                            </MainText>
                             <Icon
                                 style={{ marginLeft: 'auto' }}
                                 size={20}
@@ -667,28 +770,30 @@ class ProfileEditScreen extends Component {
                                 color={Colors.appDarkGray}
                             />
                         </View>
-                        <FlatList
-                            data={modules || userData.modules}
-                            renderItem={({ item }) => (
+                        <View>
+                            {moduleCodes.length === 0 ? (
                                 <ListItem
-                                    title={`• ${item.moduleCode} ${item.title}`}
-                                    titleStyle={[styles.text, { fontSize: 13 }]}
-                                    containerStyle={{ padding: 0, paddingBottom: 2 }}
-                                />
-                            )}
-                            keyExtractor={(item) => item.moduleCode}
-                            ListEmptyComponent={() => (
-                                <MainText
-                                    style={{
+                                    title={'None'}
+                                    titleStyle={{
+                                        fontFamily: MAIN_FONT,
                                         color: Colors.appDarkGray,
                                         fontSize: 12,
                                         textAlign: 'center',
                                     }}
-                                >
-                                    None
-                                </MainText>
+                                    containerStyle={{ padding: 0, paddingBottom: 1 }}
+                                />
+                            ) : (
+                                moduleCodes.map((item, index) => (
+                                    <ListItem
+                                        key={item}
+                                        leftElement={<MainText>•</MainText>}
+                                        title={`${item} ${moduleNames[index]}`}
+                                        titleStyle={[styles.text, { fontSize: 13 }]}
+                                        containerStyle={{ padding: 0, paddingBottom: 1 }}
+                                    />
+                                ))
                             )}
-                        />
+                        </View>
                     </View>
                 </View>
             </ScrollView>
@@ -747,11 +852,12 @@ const styles = StyleSheet.create({
     },
     label: {
         width: '30%',
+        fontSize: 13,
     },
     input: {
         width: '70%',
         fontFamily: MAIN_FONT,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: '100',
         paddingHorizontal: 0,
         marginLeft: 15,
@@ -761,15 +867,15 @@ const styles = StyleSheet.create({
         // flex: 1,
         width: '70%',
         fontFamily: MAIN_FONT,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 'normal',
         flexWrap: 'wrap',
     },
     text: {
         fontFamily: MAIN_FONT,
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 'normal',
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(ProfileEditScreen));
+export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(ProfileEdit));

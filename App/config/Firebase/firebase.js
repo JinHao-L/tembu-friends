@@ -73,6 +73,7 @@ const Firebase = {
         let userData = firebase.firestore().collection('users').doc(`${uid}`);
         return userData.update(data);
     },
+
     getCourses: () => {
         let data = firebase.firestore().collection('shared').doc('faculty');
 
@@ -90,9 +91,12 @@ const Firebase = {
                 console.log('Error getting courses document', err);
             });
     },
-    updateModulesInfo: (data) => {
-        let ref = firebase.firestore().collection('shared').doc('mods');
-        return ref.delete();
+
+    getPostCollection: (uid) => {
+        return firebase
+            .firestore()
+            .collection(`posts/${uid}/userPosts`)
+            .orderBy('timePosted', 'desc');
     },
 
     // Storage

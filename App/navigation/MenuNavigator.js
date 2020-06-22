@@ -2,13 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {
-    ProfileScreen,
-    ProfileEditScreen,
-    DeleteScreen,
-    MenuScreen,
-    ModuleEditScreen,
-} from '../screens';
+import { MyProfile, ProfileEdit, DeleteScreen, MenuScreen, ModuleEdit } from '../screens';
 import AdminNavigator from './AdminNavigator';
 import { Colors } from '../constants';
 import { MAIN_FONT } from '../components';
@@ -25,6 +19,7 @@ function MenuNavigator() {
                     backgroundColor: Colors.appGreen,
                 },
                 headerTintColor: Colors.appWhite,
+                headerPressColorAndroid: Colors.appWhite,
                 headerTitleAlign: 'left',
                 headerTitleStyle: {
                     fontFamily: MAIN_FONT,
@@ -40,15 +35,19 @@ function MenuNavigator() {
             }}
         >
             <MenuStack.Screen name="Menu" component={MenuScreen} options={{ headerShown: false }} />
-            <MenuStack.Screen name="Profile" component={ProfileScreen} />
+            <MenuStack.Screen
+                name="MyProfile"
+                component={MyProfile}
+                options={{ headerTitle: 'My Profile' }}
+            />
             <MenuStack.Screen
                 name="ProfileEdit"
-                component={ProfileEditScreen}
+                component={ProfileEdit}
                 options={{ headerTitle: 'Edit Profile' }}
             />
             <MenuStack.Screen
                 name="ModuleEdit"
-                component={ModuleEditScreen}
+                component={ModuleEdit}
                 options={{ headerTitle: 'Edit Modules' }}
             />
             <MenuStack.Screen
