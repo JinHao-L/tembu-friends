@@ -49,6 +49,9 @@
         "prettier": "2.0.5",
         "pretty-quick": "^2.0.1"
     },
+    "resolutions": {
+        "logkitty": "^0.7.1"
+    },
     "husky": {
         "hooks": {
             "pre-commit": "pretty-quick --staged"
