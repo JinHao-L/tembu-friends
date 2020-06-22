@@ -157,8 +157,7 @@ class ModuleEdit extends Component {
                     selectedIndex={selectedIndex}
                     onPress={this.updateIndex}
                     textStyle={styles.titleStyle}
-                    containerStyle={{ height: 100 }}
-                    underlayColor={Colors.appGreen}
+                    selectedButtonStyle={{ backgroundColor: Colors.appGreen }}
                 />
                 {selectedIndex === 0 && (
                     <View style={styles.searchBarContainer}>
@@ -173,7 +172,6 @@ class ModuleEdit extends Component {
                             placeholderTextColor={Colors.appDarkGray}
                             inputStyle={styles.searchBarInput}
                             inputContainerStyle={styles.inputContentContainer}
-                            containerStyle={styles.inputContainer}
                             leftIcon={{
                                 type: 'material',
                                 size: 18,
@@ -301,7 +299,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         // borderRadius: 3,
         overflow: 'hidden',
-        minHeight: 30,
+        height: 40,
         backgroundColor: Colors.appGray,
     },
     leftIconContainerStyle: {

@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, ScrollView, Text, ImageBackground } from 'react-native';
-import { Picker } from '@react-native-community/picker';
+import {
+    View,
+    StyleSheet,
+    TextInput,
+    ScrollView,
+    Text,
+    ImageBackground,
+    Picker,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';

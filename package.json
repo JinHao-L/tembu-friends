@@ -12,8 +12,6 @@
         "preset": "jest-expo"
     },
     "dependencies": {
-        "@react-native-community/masked-view": "0.1.6",
-        "@react-native-community/picker": "^1.6.3",
         "@react-navigation/bottom-tabs": "^5.4.7",
         "@react-navigation/native": "^5.2.1",
         "@react-navigation/stack": "^5.2.16",

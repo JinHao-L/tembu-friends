@@ -364,13 +364,6 @@ class UserProfile extends Component {
                             **Private**
                         </MainText>
                     )}
-                    <Icon
-                        name={'delete'}
-                        size={18}
-                        color={Colors.appRed}
-                        containerStyle={{ alignSelf: 'flex-start', marginLeft: 'auto' }}
-                        onPress={() => this.deletePost(id)}
-                    />
                 </View>
                 <MainText>{body}</MainText>
             </View>
