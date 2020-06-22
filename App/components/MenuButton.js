@@ -44,6 +44,7 @@ const MenuButton = (property) => {
                     ) : type ? (
                         <Image source={getImage(type)} style={styles.imageContainer} />
                     ) : null}
+                    
                     <View style={styles.textContainer}>
                         <MainText style={[styles.text, textStyle]}>{children}</MainText>
                     </View>
