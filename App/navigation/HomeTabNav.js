@@ -66,6 +66,7 @@ class HomeTabNav extends Component {
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-search" />
                             ),
+                            unmountOnBlur: true,
                         }}
                     />
                     <BottomTab.Screen

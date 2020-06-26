@@ -63,7 +63,6 @@ function ExploreNav() {
                 component={ModuleEdit}
                 options={{ headerTitle: 'Edit Modules' }}
             />
-            <ExploreStack.Screen name="Friends" component={Friends} />
             <ExploreStack.Screen
                 name="UserProfile"
                 component={UserProfile}

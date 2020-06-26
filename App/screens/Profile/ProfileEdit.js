@@ -354,7 +354,13 @@ class ProfileEdit extends Component {
                 imageType={'Custom'}
                 isVisible={this.state.uploading}
                 body={
-                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                    <View
+                        style={{
+                            paddingVertical: 20,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
                         <ActivityIndicator size={'large'} />
                         <MainText>Saving your changes</MainText>
                     </View>

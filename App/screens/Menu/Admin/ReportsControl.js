@@ -8,7 +8,7 @@ import { withFirebase } from '../../../config/Firebase';
 
 class ReportsControl extends Component {
     state = {
-        isLoading: true,
+        isLoading: false,
         data: [],
     };
 
@@ -18,7 +18,7 @@ class ReportsControl extends Component {
 
     renderHeader = () => {
         return (
-            <View>
+            <View style={{ alignSelf: 'center' }}>
                 <MainText>Not implemented yet</MainText>
             </View>
         );

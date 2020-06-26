@@ -209,7 +209,6 @@ class PostCreate extends Component {
                     <View
                         style={{
                             paddingVertical: 20,
-                            flexDirection: 'row',
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}
@@ -328,99 +327,97 @@ class PostCreate extends Component {
     render() {
         const { myName, profileImg, receiverName, isPrivate, body, postImg } = this.state;
         return (
-            <ScrollView style={styles.container}>
-                <View>
-                    {this.renderDiscardPostPopup()}
-                    {this.renderFailurePopup()}
-                    {this.renderUploading()}
-                    {this.renderSuccessPopup()}
-                    {this.renderImageEdit()}
-                    <View style={styles.header}>
-                        <Avatar
-                            size={40}
-                            rounded
-                            title={myName[0]}
-                            source={
-                                profileImg
-                                    ? { uri: profileImg }
-                                    : require('../../../assets/images/default/profile.png')
-                            }
-                            containerStyle={styles.avatarStyle}
+            <View style={styles.container}>
+                {this.renderDiscardPostPopup()}
+                {this.renderFailurePopup()}
+                {this.renderUploading()}
+                {this.renderSuccessPopup()}
+                {this.renderImageEdit()}
+                <View style={styles.header}>
+                    <Avatar
+                        size={40}
+                        rounded
+                        title={myName[0]}
+                        source={
+                            profileImg
+                                ? { uri: profileImg }
+                                : require('../../../assets/images/default/profile.png')
+                        }
+                        containerStyle={styles.avatarStyle}
+                    />
+                    <MainText style={{ fontSize: 15, paddingTop: 5 }}>{myName}</MainText>
+                    {isPrivate ? (
+                        <Button
+                            containerStyle={styles.privatePostButtonContainer}
+                            buttonStyle={[
+                                styles.privatePostButton,
+                                { backgroundColor: Colors.appGreen },
+                            ]}
+                            title="Private"
+                            titleStyle={styles.privatePostButtonText}
+                            type={'solid'}
+                            onPress={this.togglePrivatePost}
                         />
-                        <MainText style={{ fontSize: 15, paddingTop: 5 }}>{myName}</MainText>
-                        {isPrivate ? (
-                            <Button
-                                containerStyle={styles.privatePostButtonContainer}
-                                buttonStyle={[
-                                    styles.privatePostButton,
-                                    { backgroundColor: Colors.appGreen },
-                                ]}
-                                title="Private"
-                                titleStyle={styles.privatePostButtonText}
-                                type={'solid'}
-                                onPress={this.togglePrivatePost}
-                            />
-                        ) : (
-                            <Button
-                                containerStyle={styles.privatePostButtonContainer}
-                                buttonStyle={[
-                                    styles.privatePostButton,
-                                    {
-                                        borderColor: Colors.appGreen,
-                                        borderWidth: 1,
-                                    },
-                                ]}
-                                title="Make Private"
-                                titleStyle={[
-                                    styles.privatePostButtonText,
-                                    { color: Colors.appGreen },
-                                ]}
-                                type={'outline'}
-                                onPress={this.togglePrivatePost}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.content}>
-                        <TextInput
-                            style={styles.input}
-                            multiline={true}
-                            placeholder={
-                                postImg
-                                    ? 'Write something about this photo...'
-                                    : `Write a message to ${receiverName}...`
-                            }
-                            placeholderTextColor={Colors.appGray}
-                            textAlignVertical={'top'}
-                            underlineColorAndroid="transparent"
-                            value={body}
-                            autoCapitalize={'sentences'}
-                            onChangeText={this.handleText}
-                            autoCorrect={true}
+                    ) : (
+                        <Button
+                            containerStyle={styles.privatePostButtonContainer}
+                            buttonStyle={[
+                                styles.privatePostButton,
+                                {
+                                    borderColor: Colors.appGreen,
+                                    borderWidth: 1,
+                                },
+                            ]}
+                            title="Make Private"
+                            titleStyle={[styles.privatePostButtonText, { color: Colors.appGreen }]}
+                            type={'outline'}
+                            onPress={this.togglePrivatePost}
                         />
-                        {postImg ? (
-                            <TouchableOpacity onPress={this.toggleImageEdit}>
-                                <Image
-                                    source={{ uri: postImg }}
-                                    style={{
-                                        width: '100%',
-                                        aspectRatio: this.state.ratio,
-                                        resizeMode: 'contain',
-                                    }}
-                                />
-                            </TouchableOpacity>
-                        ) : (
-                            <TouchableOpacity
-                                onPress={this.chooseImg}
-                                style={styles.imgOptions}
-                                accessible
-                            >
-                                <Icon name={'attachment'} color={Colors.appGray} />
-                                <MainText style={{ color: Colors.appGray }}>Add an image</MainText>
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                    )}
                 </View>
-            </ScrollView>
+
+                <ScrollView style={styles.content}>
+                    <TextInput
+                        autoFocus={true}
+                        style={styles.input}
+                        multiline={true}
+                        placeholder={
+                            postImg
+                                ? 'Write something about this photo...'
+                                : `Write a message to ${receiverName}...`
+                        }
+                        placeholderTextColor={Colors.appGray}
+                        textAlignVertical={'top'}
+                        underlineColorAndroid="transparent"
+                        value={body}
+                        autoCapitalize={'sentences'}
+                        onChangeText={this.handleText}
+                        autoCorrect={true}
+                    />
+                    {postImg ? (
+                        <TouchableOpacity onPress={this.toggleImageEdit}>
+                            <Image
+                                source={{ uri: postImg }}
+                                style={{
+                                    width: '100%',
+                                    aspectRatio: this.state.ratio,
+                                    resizeMode: 'contain',
+                                    marginBottom: 5,
+                                }}
+                            />
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={this.chooseImg}
+                            style={styles.imgOptions}
+                            accessible
+                        >
+                            <Icon name={'attachment'} color={Colors.appGray} />
+                            <MainText style={{ color: Colors.appGray }}>Add an image</MainText>
+                        </TouchableOpacity>
+                    )}
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -459,6 +456,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Colors.appGray,
         borderRadius: 5,
+        marginBottom: 5,
+
         height: 50,
         width: '100%',
         alignItems: 'center',

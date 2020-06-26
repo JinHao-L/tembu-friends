@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import { View, FlatList, ActivityIndicator, Text, StyleSheet, SafeAreaView } from 'react-native';
 
 import { Colors } from '../../../constants';
 import { withFirebase } from '../../../config/Firebase';
@@ -8,7 +8,7 @@ import { MainText } from '../../../components';
 
 class UserListScreen extends React.Component {
     state = {
-        isLoading: true,
+        isLoading: false,
         users: [],
     };
 
@@ -46,14 +46,17 @@ class UserListScreen extends React.Component {
         />
     );
 
+    renderHeader = () => {
+        return (
+            <View style={{ alignSelf: 'center' }}>
+                <MainText>Not implemented yet</MainText>
+            </View>
+        );
+    };
+
     renderFooter = () => {
         if (this.state.isLoading) {
-            return (
-                <View>
-                    <MainText> Not implemented yet </MainText>
-                    <ActivityIndicator />
-                </View>
-            );
+            return <ActivityIndicator />;
         } else {
             return null;
         }
@@ -63,16 +66,16 @@ class UserListScreen extends React.Component {
         const { users } = this.state;
 
         return (
-            <FlatList
-                data={users}
-                renderItem={(item) => (
-                    <View style={styles.itemContainer}>
-                        <Text>{item.name}</Text>
-                        <Text>{item.email}</Text>
-                    </View>
-                )}
-                ListFooterComponent={this.renderFooter}
-            />
+            <SafeAreaView style={{ flex: 1 }}>
+                <FlatList
+                    data={users}
+                    ItemSeparatorComponent={this.renderSeparator}
+                    renderItem={({ item }) => this.renderUser(item)}
+                    ListHeaderComponent={this.renderHeader}
+                    ListFooterComponent={this.renderFooter}
+                    keyExtractor={(item) => item.moduleCode}
+                />
+            </SafeAreaView>
         );
     }
 }

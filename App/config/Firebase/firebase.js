@@ -112,6 +112,9 @@ const Firebase = {
     getPostCollection: (uid) => {
         return firebase.firestore().collection(`posts/${uid}/userPosts`);
     },
+    getUserCollection: () => {
+        return firebase.firestore().collection('users');
+    },
     deletePost: (uid, postId) => {
         return firebase.firestore().collection(`posts/${uid}/userPosts`).doc(`${postId}`).delete();
     },

@@ -11,14 +11,14 @@ const UserItem = ({
     subtext,
     onPress,
     style,
-    borderStyle,
+    outerContainerStyle,
     textStyle,
     subtextStyle,
     chevron,
     ...others
 }) => {
     return (
-        <View style={[styles.outerContainer, borderStyle]}>
+        <View style={[styles.outerContainer, outerContainerStyle]}>
             <BaseButton
                 style={[styles.container, style]}
                 onPress={onPress}
@@ -45,7 +45,6 @@ const UserItem = ({
                             <MainText style={[styles.subtext, subtextStyle]}>{subtext}</MainText>
                         )}
                     </View>
-                    <Icon {...chevronDefaultProps} containerStyle={{ alignSelf: 'right' }} />
                 </View>
             </BaseButton>
         </View>
@@ -74,13 +73,8 @@ const styles = StyleSheet.create({
                 elevation: 5,
             },
         }),
-        height: 50,
-        margin: 1,
-        borderWidth: 1,
-        borderColor: Colors.appGray,
     },
     container: {
-        flex: 1,
         backgroundColor: Colors.appWhite,
         paddingHorizontal: 5,
         paddingVertical: 7,
@@ -91,16 +85,16 @@ const styles = StyleSheet.create({
     contents: {
         flexDirection: 'row',
         alignItems: 'flex-end',
+        justifyContent: 'center',
     },
     textContainer: {
         justifyContent: 'center',
         flexDirection: 'column',
+        alignSelf: 'center',
     },
     text: {
         fontSize: 18,
         color: Colors.appGreen,
-        textAlign: 'left',
-        textAlignVertical: 'center',
     },
     imageContainer: {
         height: 30,
@@ -118,8 +112,6 @@ const styles = StyleSheet.create({
     subtext: {
         fontSize: 13,
         color: Colors.appBlack,
-        textAlign: 'left',
-        textAlignVertical: 'center',
     },
 });
 

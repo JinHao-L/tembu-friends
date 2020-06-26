@@ -27,49 +27,70 @@ const mapDispatchToProps = (dispatch) => {
 
 class UserProfile extends Component {
     state = {
-        profileData: null,
         friendToggled: false,
-        uid: this.props.route.params.user_uid,
 
         postsData: [],
         limit: 10,
         lastLoaded: null,
         loading: false,
         refreshing: false,
-        areFriends: this.props.userData.friends?.includes(this.props.route.params.user_uid),
         allPostsLoaded: false,
     };
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     componentDidMount() {
-        this.props.firebase.getUserData(this.state.uid).then((profileData) => {
-            if (profileData === undefined) {
-                console.log('user not found');
-                this.props.navigation.goBack();
-            } else {
-                this.setState(
-                    {
-                        profileData: profileData,
-                        statusColor: this.getStatusColor(profileData.statusType),
-                    },
-                    () => {
-                        this.retrievePosts().catch((error) => console.log(error));
+        const { userData, user_uid } = this.props.route.params;
+        if (userData) {
+            this.setState(
+                {
+                    profileData: userData,
+                    uid: userData.uid,
+                    statusColor: this.getStatusColor(userData.statusType),
+                    areFriends: this.props.userData.friends?.includes(userData.uid),
+                },
+                () => {
+                    this.retrievePosts().catch((error) => console.log(error));
+                }
+            );
+        } else {
+            this.props.firebase
+                .getUserData(user_uid)
+                .then((profileData) => {
+                    if (profileData === undefined) {
+                        console.log('user not found', user_uid);
+                        this.props.navigation.goBack();
+                    } else {
+                        this.setState(
+                            {
+                                profileData: profileData,
+                                uid: user_uid,
+                                statusColor: this.getStatusColor(profileData.statusType),
+                                areFriends: this.props.userData.friends?.includes(user_uid),
+                            },
+                            () => {
+                                this.retrievePosts().catch((error) => console.log(error));
+                            }
+                        );
                     }
-                );
-            }
-        });
+                })
+                .catch((error) => console.log('Failed to get user', error));
+        }
     }
 
     componentWillUnmount() {
         if (this.state.friendToggled) {
             const currFriendList = this.props.userData.friends || [];
-            let newList;
             if (currFriendList.includes(this.state.uid)) {
-                newList = currFriendList.filter((uid) => uid !== this.state.profileData.uid);
+                this.props.updateFriends(
+                    this.props.userData.uid,
+                    currFriendList.filter((uid) => uid !== this.state.profileData.uid)
+                );
             } else {
-                newList = [...currFriendList, this.state.profileData.uid];
+                this.props.updateFriends(this.props.userData.uid, [
+                    ...currFriendList,
+                    this.state.profileData.uid,
+                ]);
             }
-            this.props.updateFriends(this.props.userData.uid, newList);
         }
     }
 
@@ -97,76 +118,72 @@ class UserProfile extends Component {
         return this.retrievePosts();
     };
 
-    retrievePosts = async () => {
-        try {
-            this.setState({ refreshing: true, allPostsLoaded: false });
+    retrievePosts = () => {
+        this.setState({ refreshing: true, allPostsLoaded: false });
 
-            let initialQuery = await this.props.firebase
-                .getPostCollection(this.state.uid)
-                // .where('receiver_uid', '==', this.state.uid)
-                .orderBy('time_posted', 'desc')
-                .limit(this.state.limit);
-
-            let documentSnapshots = await initialQuery.get();
-            const documents = documentSnapshots.docs;
-
-            console.log('Retrieving Posts : visiting - ' + documents.length);
-            let postsData = documents.map((document) => document.data());
-            // .filter((doc) => doc.receiver_uid === this.state.uid);
-            let lastLoaded = postsData[postsData.length - 1].time_posted;
-
-            this.setState({
-                postsData: postsData,
-                lastLoaded: lastLoaded,
-                refreshing: false,
-                allPostsLoaded: documents.length === 0,
-            });
-        } catch (error) {
-            this.setState({ refreshing: false });
-            console.log(error);
-        }
-    };
-
-    retrieveMorePosts = async () => {
-        if (this.state.allPostsLoaded || this.state.loading || this.state.refreshing) {
-            return;
-        }
-        try {
-            this.setState({
-                loading: true,
-            });
-            console.log('Retrieving more posts : visiting');
-
-            let additionalQuery = await this.props.firebase
-                .getPostCollection(this.state.uid)
-                .orderBy('time_posted', 'desc')
-                // .where('receiver_uid', '==', this.state.uid)
-                .startAfter(this.state.lastLoaded)
-                .limit(this.state.limit);
-
-            let documentSnapshots = await additionalQuery.get();
-            const documents = documentSnapshots.docs;
-            if (documents.length !== 0) {
-                let postsData = documents.map((document) => document.data());
-                // .filter((doc) => doc.receiver_uid === this.state.uid);
-
+        return this.props.firebase
+            .getPostCollection(this.state.uid)
+            .orderBy('time_posted', 'desc')
+            .limit(this.state.limit)
+            .get()
+            .then((documentSnapshots) => documentSnapshots.docs)
+            .then((documents) => {
+                console.log('Retrieving Posts : visiting - ' + documents.length);
+                return documents.map((document) => document.data());
+            })
+            .then((postsData) => {
                 let lastLoaded = postsData[postsData.length - 1].time_posted;
 
                 this.setState({
-                    postsData: [...this.state.postsData, ...postsData],
+                    postsData: postsData,
                     lastLoaded: lastLoaded,
-                    loading: false,
+                    refreshing: false,
+                    allPostsLoaded: postsData.length === 0,
                 });
-            } else {
-                this.setState({
-                    allPostsLoaded: true,
-                    loading: false,
-                });
-            }
-        } catch (error) {
-            this.setState({ loading: false });
-            console.log(error);
+            })
+            .catch((error) => {
+                this.setState({ refreshing: false });
+                console.log(error);
+            });
+    };
+
+    retrieveMorePosts = () => {
+        if (this.state.allPostsLoaded || this.state.loading || this.state.refreshing) {
+            return;
         }
+        this.setState({
+            loading: true,
+        });
+
+        return this.props.firebase
+            .getPostCollection(this.state.uid)
+            .orderBy('time_posted', 'desc')
+            .startAfter(this.state.lastLoaded)
+            .limit(this.state.limit)
+            .get()
+            .then((documentSnapshots) => documentSnapshots.docs)
+            .then((documents) => {
+                console.log('Retrieving more posts : visiting', documents.length);
+                if (documents.length !== 0) {
+                    let postsData = documents.map((document) => document.data());
+                    let lastLoaded = postsData[postsData.length - 1].time_posted;
+
+                    this.setState({
+                        postsData: [...this.state.postsData, ...postsData],
+                        lastLoaded: lastLoaded,
+                        loading: false,
+                    });
+                } else {
+                    this.setState({
+                        allPostsLoaded: true,
+                        loading: false,
+                    });
+                }
+            })
+            .catch((error) => {
+                this.setState({ loading: false });
+                console.log(error);
+            });
     };
 
     toggleFriend = () => {

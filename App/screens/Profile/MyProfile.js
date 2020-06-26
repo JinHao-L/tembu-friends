@@ -52,71 +52,69 @@ class MyProfile extends Component {
         }
     }
 
-    retrievePosts = async () => {
-        try {
-            this.setState({ refreshing: true, allPostsLoaded: false });
+    retrievePosts = () => {
+        this.setState({ refreshing: true, allPostsLoaded: false });
 
-            let initialQuery = await this.props.firebase
-                .getPostCollection(this.props.userData.uid)
-                .orderBy('time_posted', 'desc')
-                .limit(this.state.limit);
+        return this.props.firebase
+            .getPostCollection(this.props.userData.uid)
+            .orderBy('time_posted', 'desc')
+            .limit(this.state.limit)
+            .get()
+            .then((documentSnapshots) => documentSnapshots.docs)
+            .then((documents) => {
+                console.log('Retrieving Posts : personal', documents.length);
+                return documents.map((document) => document.data());
+            })
+            .then((postsData) => {
+                let lastLoaded = postsData[postsData.length - 1].time_posted;
 
-            let documentSnapshots = await initialQuery.get();
-
-            const documents = documentSnapshots.docs;
-            console.log('Retrieving Posts : personal', documents.length);
-
-            let postsData = documents.map((document) => document.data());
-            let lastLoaded = postsData[postsData.length - 1].time_posted;
-
-            this.setState({
-                postsData: postsData,
-                lastLoaded: lastLoaded,
-                refreshing: false,
-                allPostsLoaded: documents.length === 0,
+                return this.setState({
+                    postsData: postsData,
+                    lastLoaded: lastLoaded,
+                    refreshing: false,
+                    allPostsLoaded: postsData.length === 0,
+                });
+            })
+            .catch((error) => {
+                this.setState({ refreshing: false });
+                console.log(error);
             });
-        } catch (error) {
-            this.setState({ refreshing: false });
-            console.log(error);
-        }
     };
 
-    retrieveMorePosts = async () => {
+    retrieveMorePosts = () => {
         if (this.state.allPostsLoaded || this.state.loading || this.state.refreshing) {
             return;
         }
-        try {
-            this.setState({
-                loading: true,
+        this.setState({
+            loading: true,
+        });
+
+        return this.props.firebase
+            .getPostCollection(this.props.userData.uid)
+            .orderBy('time_posted', 'desc')
+            .startAfter(this.state.lastLoaded)
+            .limit(this.state.limit)
+            .get()
+            .then((documentSnapshots) => documentSnapshots.docs)
+            .then((documents) => {
+                console.log('Retrieving more posts : personal', documents.length);
+                if (documents.length !== 0) {
+                    let postsData = documents.map((document) => document.data());
+                    let lastLoaded = postsData[postsData.length - 1].time_posted;
+
+                    this.setState({
+                        postsData: [...this.state.postsData, ...postsData],
+                        lastLoaded: lastLoaded,
+                        loading: false,
+                    });
+                } else {
+                    this.setState({ loading: false, allPostsLoaded: true });
+                }
+            })
+            .catch((error) => {
+                this.setState({ loading: false });
+                console.log(error);
             });
-
-            let additionalQuery = await this.props.firebase
-                .getPostCollection(this.props.userData.uid)
-                .orderBy('time_posted', 'desc')
-                .startAfter(this.state.lastLoaded)
-                .limit(this.state.limit);
-
-            let documentSnapshots = await additionalQuery.get();
-            const documents = documentSnapshots.docs;
-
-            console.log('Retrieving more posts : personal', documents.length);
-            if (documents.length !== 0) {
-                let postsData = documents.map((document) => document.data());
-                // .filter((doc) => doc.receiver_uid === this.props.userData.uid);
-                let lastLoaded = postsData[postsData.length - 1].time_posted;
-
-                this.setState({
-                    postsData: [...this.state.postsData, ...postsData],
-                    lastLoaded: lastLoaded,
-                    loading: false,
-                });
-            } else {
-                this.setState({ loading: false, allPostsLoaded: true });
-            }
-        } catch (error) {
-            this.setState({ loading: false });
-            console.log(error);
-        }
     };
 
     goToProfileEdit = () => {
@@ -124,7 +122,7 @@ class MyProfile extends Component {
     };
     goToOtherProfile = (uid) => {
         if (!uid || uid === 'deleted') {
-            console.log('User does not exist');
+            console.log('User does not exist', uid);
         } else {
             this.props.navigation.navigate('UserProfile', { user_uid: uid });
         }

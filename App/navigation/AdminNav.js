@@ -30,9 +30,9 @@ function AdminNav() {
                 options={{ headerShown: false }}
             />
             <AdminStack.Screen
-                name="Modules"
+                name="Reports"
                 component={ReportsControl}
-                options={{ headerTitle: 'Modules offered' }}
+                options={{ headerTitle: 'Reports' }}
             />
             <AdminStack.Screen name="Users" component={UserListScreen} />
         </AdminStack.Navigator>
