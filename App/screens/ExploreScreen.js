@@ -179,7 +179,7 @@ class ExploreScreen extends Component {
                     borderRadius: 10,
                 }}
             >
-                <MainText style={{ fontSize: 15 }}>Search examples</MainText>
+                <MainText style={{ fontSize: 15, borderBottomWidth: 1 }}>Search examples</MainText>
                 <View style={{ flexDirection: 'row' }}>
                     <View
                         style={{ flexDirection: 'column', alignItems: 'flex-end', paddingRight: 5 }}
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         overflow: 'hidden',
         height: 30,
-        backgroundColor: Colors.appGray,
+        backgroundColor: Colors.appWhite,
     },
     leftIconContainerStyle: {
         marginLeft: 8,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     labelStyle: {
-        color: Colors.appDarkGray,
+        // color: Colors.appDarkGray,
     },
     exampleStyle: {
         fontStyle: 'italic',

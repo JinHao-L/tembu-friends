@@ -80,7 +80,8 @@ class RootNavigator extends Component {
         return await Promise.all([
             Asset.loadAsync([
                 require('../assets/images/logo.png'),
-                require('../assets/images/banner.png'),
+                require('../assets/images/default/profile.png'),
+                require('../assets/images/default/banner.png'),
                 require('../assets/images/menu/robot-prod.png'),
                 require('../assets/images/menu/SettingsIcon.png'),
                 require('../assets/images/menu/QRcode.png'),

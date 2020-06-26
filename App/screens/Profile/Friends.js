@@ -63,6 +63,7 @@ class Friends extends Component {
         const { displayName, profileImg, uid, role } = userData;
         return (
             <UserItem
+                outerContainerStyle={{ borderWidth: 3, borderColor: Colors.appGreen }}
                 name={displayName}
                 subtext={role}
                 profileImg={profileImg}
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
-        paddingHorizontal: 10,
+        paddingHorizontal: 20,
     },
 });
 
