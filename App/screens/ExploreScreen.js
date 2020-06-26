@@ -179,21 +179,21 @@ class ExploreScreen extends Component {
                     borderRadius: 10,
                 }}
             >
-                <MainText>Search examples</MainText>
+                <MainText style={{ fontSize: 15 }}>Search examples</MainText>
                 <View style={{ flexDirection: 'row' }}>
                     <View
                         style={{ flexDirection: 'column', alignItems: 'flex-end', paddingRight: 5 }}
                     >
-                        <MainText>Search by name:</MainText>
-                        <MainText>Search by module:</MainText>
-                        <MainText>Search by role:</MainText>
-                        <MainText>Search by room:</MainText>
+                        <MainText style={styles.labelStyle}>Search by name:</MainText>
+                        <MainText style={styles.labelStyle}>Search by module:</MainText>
+                        <MainText style={styles.labelStyle}>Search by role:</MainText>
+                        <MainText style={styles.labelStyle}>Search by room:</MainText>
                     </View>
                     <View style={{ flexDirection: 'column', paddingLeft: 5 }}>
-                        <MainText>'John Doe'</MainText>
-                        <MainText>'mod:CS1101S'</MainText>
-                        <MainText>'role:Developer'</MainText>
-                        <MainText>'room:#00-000'</MainText>
+                        <MainText style={styles.exampleStyle}>'John Doe'</MainText>
+                        <MainText style={styles.exampleStyle}>'mod:CS1101S'</MainText>
+                        <MainText style={styles.exampleStyle}>'role:Developer'</MainText>
+                        <MainText style={styles.exampleStyle}>'room:#00-000'</MainText>
                     </View>
                 </View>
             </View>
@@ -322,6 +322,12 @@ const styles = StyleSheet.create({
     },
     rightIconContainerStyle: {
         marginRight: 8,
+    },
+    labelStyle: {
+        color: Colors.appDarkGray,
+    },
+    exampleStyle: {
+        fontStyle: 'italic',
     },
 });
 
