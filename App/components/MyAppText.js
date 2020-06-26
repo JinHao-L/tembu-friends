@@ -8,5 +8,5 @@ export function LogoText({ style, ...props }) {
 }
 
 export function MainText({ style, ...props }) {
-    return <Text {...props} style={[{ fontFamily: MAIN_FONT, fontSize: 12 }, style]} />;
+    return <Text {...props} style={[{ fontFamily: MAIN_FONT, fontSize: 13 }, style]} />;
 }

@@ -2,15 +2,23 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { MyProfile, ProfileEdit, DeleteScreen, MenuScreen, ModuleEdit } from '../screens';
-import AdminNavigator from './AdminNavigator';
+import { DeleteScreen, MenuScreen } from '../screens/Menu';
+import AdminNav from './AdminNav';
 import { Colors } from '../constants';
 import { MAIN_FONT } from '../components';
+import {
+    Friends,
+    ModuleEdit,
+    MyProfile,
+    PostCreate,
+    ProfileEdit,
+    UserProfile,
+} from '../screens/Profile';
 
 const MenuStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Menu';
 
-function MenuNavigator() {
+function MenuNav() {
     return (
         <MenuStack.Navigator
             initialRouteName={INITIAL_ROUTE_NAME}
@@ -23,6 +31,7 @@ function MenuNavigator() {
                 headerTitleAlign: 'left',
                 headerTitleStyle: {
                     fontFamily: MAIN_FONT,
+                    fontSize: 24,
                 },
                 headerTitleContainerStyle: {
                     left: 0,
@@ -35,6 +44,16 @@ function MenuNavigator() {
             }}
         >
             <MenuStack.Screen name="Menu" component={MenuScreen} options={{ headerShown: false }} />
+            <MenuStack.Screen
+                name="AdminNav"
+                component={AdminNav}
+                options={{ headerShown: false }}
+            />
+            <MenuStack.Screen
+                name="Delete"
+                component={DeleteScreen}
+                options={{ headerTitle: 'Deleting account' }}
+            />
             <MenuStack.Screen
                 name="MyProfile"
                 component={MyProfile}
@@ -50,18 +69,19 @@ function MenuNavigator() {
                 component={ModuleEdit}
                 options={{ headerTitle: 'Edit Modules' }}
             />
+            <MenuStack.Screen name="Friends" component={Friends} />
             <MenuStack.Screen
-                name="AdminNavi"
-                component={AdminNavigator}
-                options={{ headerShown: false }}
+                name="UserProfile"
+                component={UserProfile}
+                options={{ headerTitle: 'Profile' }}
             />
             <MenuStack.Screen
-                name="Delete"
-                component={DeleteScreen}
-                options={{ headerTitle: 'Deleting account' }}
+                name="PostCreate"
+                component={PostCreate}
+                options={{ headerTitle: 'Create Post' }}
             />
         </MenuStack.Navigator>
     );
 }
 
-export default MenuNavigator;
+export default MenuNav;

@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { withFirebase } from '../../config/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
+import * as firebase from 'firebase';
 
 const wordsOnly = /^[A-Za-z ]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;
@@ -129,6 +130,7 @@ class SignUpScreen extends Component {
             passwordHidden: !prevState.passwordHidden,
         }));
     }
+
     handleConfirmPasswordVisibility() {
         this.setState((prevState) => ({
             confirmPasswordIcon:
@@ -140,18 +142,22 @@ class SignUpScreen extends Component {
     handleFirstName(text) {
         this.setState({ firstName: text });
     }
+
     handleLastName(text) {
         this.setState({ lastName: text });
     }
+
     handleEmail(text) {
         this.setState({ nusEmail: text });
     }
+
     handlePassword(text) {
         this.setState({
             password: text,
             passwordError: '',
         });
     }
+
     handleConfirmPassword(text) {
         this.setState({ confirmPassword: text });
     }
@@ -162,18 +168,21 @@ class SignUpScreen extends Component {
             generalError: '',
         });
     }
+
     clearLastNameError() {
         this.setState({
             lastNameError: '',
             generalError: '',
         });
     }
+
     clearEmailError() {
         this.setState({
             emailError: '',
             generalError: '',
         });
     }
+
     clearPasswordError() {
         this.setState({
             passwordError: '',
@@ -185,28 +194,33 @@ class SignUpScreen extends Component {
         const { nusEmail, password, firstName, lastName } = this.state;
         this.setState({ isLoading: true });
 
-        try {
-            const response = await this.props.firebase.signUpWithEmail(nusEmail, password);
-            if (response && response.user) {
-                console.log('starting creation process');
-                await response.user.updateProfile({
-                    photoURL: lastName,
-                    displayName: firstName,
-                });
-                console.log('update display name');
-                // await this.props.firebase.createNewUser(userData);
-                console.log('creating new user');
-                await response.user.sendEmailVerification();
-                console.log('send email verification');
-                await this.props.firebase.signOut();
-                console.log('sign out');
+        this.props.firebase
+            .signUpWithEmail(nusEmail, password)
+            .then((response) => {
+                const userData = {
+                    uid: response.user.uid,
+                    email: nusEmail,
+                    firstName: firstName,
+                    lastName: lastName,
+                };
+                console.log('creating');
+                return this.props.firebase
+                    .createProfile(userData)
+                    .then(() => response.user.sendEmailVerification());
+            })
+            .then(() => {
+                this.props.firebase.signOut();
+                console.log('auto sign out');
+            })
+            .then(() => {
                 this.onSignUpSuccess.bind(this)();
-            }
-        } catch (error) {
-            this.onSignUpFailure.bind(this)(error);
-        } finally {
-            this.setState({ isLoading: false });
-        }
+            })
+            .catch((error) => {
+                this.onSignUpFailure.bind(this)(error);
+            })
+            .finally(() => {
+                this.setState({ isLoading: false });
+            });
     }
 
     validateInputAndSignUp() {

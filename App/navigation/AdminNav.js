@@ -2,13 +2,13 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { AdminMenu, ModuleScreen, UserListScreen } from '../screens';
+import { AdminMenu, ReportsControl, UserListScreen } from '../screens/Menu/Admin';
 import { Colors } from '../constants';
 
 const AdminStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Admin';
 
-function AdminNavigator() {
+function AdminNav() {
     return (
         <AdminStack.Navigator
             initialRouteName={INITIAL_ROUTE_NAME}
@@ -31,7 +31,7 @@ function AdminNavigator() {
             />
             <AdminStack.Screen
                 name="Modules"
-                component={ModuleScreen}
+                component={ReportsControl}
                 options={{ headerTitle: 'Modules offered' }}
             />
             <AdminStack.Screen name="Users" component={UserListScreen} />
@@ -39,4 +39,4 @@ function AdminNavigator() {
     );
 }
 
-export default AdminNavigator;
+export default AdminNav;

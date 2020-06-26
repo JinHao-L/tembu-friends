@@ -1,2 +1,2 @@
-export * from './Profile';
 export DeleteScreen from './DeleteScreen';
+export MenuScreen from './MenuScreen';

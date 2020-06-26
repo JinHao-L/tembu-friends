@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, StyleSheet, SafeAreaView, View } from 'react-native';
+import { Text, ScrollView, StyleSheet, SafeAreaView, View, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
-import { Colors } from '../constants';
-import { withFirebase } from '../config/Firebase';
-import { MainText, MenuButton, Popup } from '../components';
+import { Colors } from '../../constants';
+import { withFirebase } from '../../config/Firebase';
+import { MainText, MenuButton, Popup } from '../../components';
 
 const mapStateToProps = (state) => {
     return {
@@ -36,7 +36,11 @@ class MenuScreen extends Component {
     };
 
     goToAdmin = () => {
-        this.props.navigation.navigate('AdminNavi');
+        this.props.navigation.navigate('AdminNav');
+    };
+
+    goToFriends = () => {
+        this.props.navigation.navigate('Friends');
     };
 
     toggleTestingVisibility = () => {
@@ -83,6 +87,21 @@ class MenuScreen extends Component {
     };
 
     render() {
+        if (!this.props.userData) {
+            return (
+                <View
+                    style={[
+                        styles.container,
+                        {
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        },
+                    ]}
+                >
+                    <ActivityIndicator size={'large'} />
+                </View>
+            );
+        }
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 {this.renderTestingPopup()}
@@ -105,7 +124,7 @@ class MenuScreen extends Component {
                             {'\n'}
                             <Text style={{ fontSize: 13 }}>See your profile</Text>
                         </MenuButton>
-                        <MenuButton type={'Friends'} onPress={this.toggleTestingVisibility}>
+                        <MenuButton type={'Friends'} onPress={this.goToFriends}>
                             Friends
                         </MenuButton>
                         <MenuButton type={'QRCode'} onPress={this.toggleTestingVisibility}>

@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 
 import { fetchUserData } from '../redux';
 import { TabBarIcon } from '../components/index';
-import { HomeScreen, ExploreScreen, NotificationScreen } from '../screens/index';
-import MenuNavigator from './MenuNavigator';
+import { HomeScreen, NotificationScreen } from '../screens/index';
+import MenuNav from './MenuNav';
 import { Colors } from '../constants';
+import ExploreNav from './ExploreNav';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -24,7 +25,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-class HomeTabs extends Component {
+class HomeTabNav extends Component {
     constructor(props) {
         super(props);
         this.props.fetchUserData();
@@ -48,9 +49,6 @@ class HomeTabs extends Component {
                         keyboardHidesTabBar: true,
                         showLabel: false,
                     }}
-                    screenOptions={{
-                        unmountOnBlur: true,
-                    }}
                 >
                     <BottomTab.Screen
                         name="Home"
@@ -62,8 +60,8 @@ class HomeTabs extends Component {
                         }}
                     />
                     <BottomTab.Screen
-                        name="Explore"
-                        component={ExploreScreen}
+                        name="ExploreNav"
+                        component={ExploreNav}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-search" />
@@ -81,11 +79,12 @@ class HomeTabs extends Component {
                     />
                     <BottomTab.Screen
                         name="Menus"
-                        component={MenuNavigator}
+                        component={MenuNav}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-menu" />
                             ),
+                            unmountOnBlur: true,
                         }}
                     />
                 </BottomTab.Navigator>
@@ -94,4 +93,4 @@ class HomeTabs extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeTabs);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeTabNav);

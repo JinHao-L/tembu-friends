@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 
-import { MainText, MenuButton } from '../../components';
-import { Colors } from '../../constants';
+import { MainText, MenuButton } from '../../../components';
+import { Colors } from '../../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
 
 class AdminMenu extends Component {
     state = {};
 
-    goToModules = () => {
-        return this.props.navigation.navigate('Modules');
+    goToReports = () => {
+        return this.props.navigation.navigate('Reports');
     };
 
     goToUsers = () => {
@@ -29,7 +29,6 @@ class AdminMenu extends Component {
                     <View style={styles.contentContainer}>
                         <MenuButton
                             style={styles.adminButton}
-                            borderStyle={styles.adminBorderStyle}
                             textStyle={{ color: 'white' }}
                             onPress={this.goToUsers}
                         >
@@ -37,11 +36,10 @@ class AdminMenu extends Component {
                         </MenuButton>
                         <MenuButton
                             style={styles.adminButton}
-                            borderStyle={styles.adminBorderStyle}
                             textStyle={{ color: 'white' }}
-                            onPress={this.goToModules}
+                            onPress={this.goToReports}
                         >
-                            Modules
+                            Reports
                         </MenuButton>
                     </View>
                 </LinearGradient>
@@ -71,10 +69,6 @@ styles = StyleSheet.create({
     adminButton: {
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
-    },
-    adminBorderStyle: {
-        borderWidth: 1,
-        borderColor: Colors.appGray,
     },
 });
 

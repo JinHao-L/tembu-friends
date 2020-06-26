@@ -15,12 +15,12 @@
         "splash": {
             "image": "./App/assets/images/splash.png",
             "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "backgroundColor": "#ffff"
         },
         "updates": {
             "fallbackToCacheTimeout": 0
         },
-        "assetBundlePatterns": ["**/*"],
+        "assetBundlePatterns": ["assets/images/*"],
         "ios": {
             "bundleIdentifier": "com.nus.tembufriends",
             "buildNumber": "1.0.0",

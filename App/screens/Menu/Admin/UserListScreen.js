@@ -1,22 +1,22 @@
 import React from 'react';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-native';
 
-import { Colors } from '../../constants';
-import { withFirebase } from '../../config/Firebase';
+import { Colors } from '../../../constants';
+import { withFirebase } from '../../../config/Firebase';
 import { ListItem } from 'react-native-elements';
+import { MainText } from '../../../components';
 
-// Admin feature -- not done
 class UserListScreen extends React.Component {
     state = {
         isLoading: true,
         users: [],
     };
 
-    componentDidMount() {
-        this.updateUserList();
-    }
+    // componentDidMount() {
+    //     this.updateUserList();
+    // }
 
-    updateUserList = () =>
+    updateUserList = () => {
         this.props.firebase
             .firestore()
             .collection('users')
@@ -32,6 +32,7 @@ class UserListScreen extends React.Component {
                 this.setState({ isLoading: false, users: results });
             })
             .catch((err) => console.error(err));
+    };
 
     renderUser = ({ user }) => (
         <ListItem
@@ -47,7 +48,12 @@ class UserListScreen extends React.Component {
 
     renderFooter = () => {
         if (this.state.isLoading) {
-            return <ActivityIndicator />;
+            return (
+                <View>
+                    <MainText> Not implemented yet </MainText>
+                    <ActivityIndicator />
+                </View>
+            );
         } else {
             return null;
         }

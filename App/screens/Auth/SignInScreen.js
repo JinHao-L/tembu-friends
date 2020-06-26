@@ -225,13 +225,10 @@ class SignInScreen extends Component {
                         Click the link in the email we sent to verify your email address.{' '}
                         <Text
                             onPress={() => {
-                                console.log('Init');
                                 this.state.user.sendEmailVerification().then(() => {
                                     this.props.firebase.signOut().then((r) => {
-                                        console.log('Closed and opening next');
                                         this.toggleNotVerifiedPopup();
                                         this.toggleEmailSentPopup();
-                                        console.log('Done');
                                     });
                                 });
                             }}

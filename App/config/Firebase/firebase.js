@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/functions';
 import {
     API_KEY,
     AUTH_DOMAIN,
@@ -71,7 +72,23 @@ const Firebase = {
     },
     updateUserData: (uid, data) => {
         let userData = firebase.firestore().collection('users').doc(`${uid}`);
-        return userData.update(data);
+        let hasUpdates = false;
+        const updates = {};
+        if (data.profileImg || data.displayName) {
+            if (data.profileImg) {
+                updates.profileImg = data.profileImg;
+            }
+            if (data.displayName) {
+                updates.displayName = data.displayName;
+            }
+        }
+        return userData.update(data).then(() => {
+            if (hasUpdates) {
+                return firebase.auth().currentUser.updateProfile(updates);
+            } else {
+                return Promise.resolve();
+            }
+        });
     },
 
     getCourses: () => {
@@ -93,16 +110,20 @@ const Firebase = {
     },
 
     getPostCollection: (uid) => {
-        return firebase
-            .firestore()
-            .collection(`posts/${uid}/userPosts`)
-            .orderBy('timePosted', 'desc');
+        return firebase.firestore().collection(`posts/${uid}/userPosts`);
+    },
+    deletePost: (uid, postId) => {
+        return firebase.firestore().collection(`posts/${uid}/userPosts`).doc(`${postId}`).delete();
     },
 
     // Storage
     getStorageRef: () => {
         return firebase.storage().ref();
     },
+
+    // functions
+    createPost: firebase.functions().httpsCallable('createPost'),
+    createProfile: firebase.functions().httpsCallable('createProfile'),
 };
 
 export default Firebase;

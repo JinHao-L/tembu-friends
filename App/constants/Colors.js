@@ -3,6 +3,7 @@ export default {
     appWhite: '#FFFFFF',
     appGreen: '#248458',
     appLightGreen: '#34C080',
+    appLightGray: '#F1F1F1',
     appGray: '#D9D9D9',
     appDarkGray: '#A9A9A9',
     appRed: '#FF0000',
@@ -13,6 +14,11 @@ export default {
     gajaHouse: '#833B94',
     tanchoHouse: '#FF0000',
     ponyaHouse: '#F2D51A',
+
+    // Status
+    statusGreen: '#34C080',
+    statusYellow: '#F2D51A',
+    statusRed: '#FF0000',
 
     // headerBackground: '#278F5F',
     // headerText: '#fff',

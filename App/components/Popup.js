@@ -26,8 +26,14 @@ function Popup({
             overlayStyle={styles.container}
         >
             <View style={styles.message}>
-                {(imageType === 'Custom' && body) || (
-                    <View style={styles.message}>
+                {imageType === 'Custom' ? (
+                    <View>
+                        {title && <MainText style={styles.title}>{title}</MainText>}
+                        {title && <View style={styles.line} />}
+                        {body}
+                    </View>
+                ) : (
+                    <View>
                         <Image
                             source={getImage(imageType)}
                             resizeMode={'contain'}
@@ -39,7 +45,8 @@ function Popup({
                         </View>
                     </View>
                 )}
-                <View style={styles.line} />
+
+                {buttonText && <View style={styles.line} />}
                 {additionalButtonCall && (
                     <Button
                         title={additionalButtonText}
@@ -49,16 +56,18 @@ function Popup({
                         containerStyle={styles.buttonContainer}
                     />
                 )}
-                <Button
-                    title={buttonText}
-                    type={'clear'}
-                    titleStyle={styles.buttonText}
-                    onPress={callback}
-                    containerStyle={[
-                        styles.buttonContainer,
-                        { borderBottomEndRadius: 20, borderBottomStartRadius: 20 },
-                    ]}
-                />
+                {buttonText && (
+                    <Button
+                        title={buttonText}
+                        type={'clear'}
+                        titleStyle={styles.buttonText}
+                        onPress={callback}
+                        containerStyle={[
+                            styles.buttonContainer,
+                            { borderBottomEndRadius: 20, borderBottomStartRadius: 20 },
+                        ]}
+                    />
+                )}
             </View>
         </Overlay>
     );
@@ -67,13 +76,13 @@ function Popup({
 function getImage(type) {
     switch (type) {
         case 'Success':
-            return require('../assets/images/success-icon.png');
+            return require('../assets/images/popup/success-icon.png');
         case 'Failure':
-            return require('../assets/images/invalid-icon.png');
+            return require('../assets/images/popup/invalid-icon.png');
         case 'Testing':
-            return require('../assets/images/robot-dev.png');
+            return require('../assets/images/popup/robot-dev.png');
         case 'Warning':
-            return require('../assets/images/warning-icon.png');
+            return require('../assets/images/popup/warning-icon.png');
         default:
             return null;
     }
@@ -83,10 +92,9 @@ const styles = StyleSheet.create({
     container: {
         maxWidth: 400,
         width: 280 > width / 2 ? 280 : width / 2,
-        minHeight: 200,
         backgroundColor: Colors.appWhite,
         borderRadius: 20,
-        paddingBottom: 0,
+        paddingVertical: 0,
     },
     message: {
         alignItems: 'center',
@@ -95,6 +103,8 @@ const styles = StyleSheet.create({
         width: 150,
         height: 80,
         top: 10,
+        alignSelf: 'center',
+        marginTop: 5,
     },
     content: {
         paddingHorizontal: 30,
@@ -106,27 +116,35 @@ const styles = StyleSheet.create({
         borderRadius: 0,
     },
     title: {
-        fontWeight: '200',
+        fontWeight: '600',
         fontSize: 18,
         color: '#333',
         textAlign: 'center',
+        paddingVertical: 10,
+        justifyContent: 'center',
     },
     body: {
         fontSize: 15,
         textAlign: 'center',
         color: '#666',
-        marginTop: 10,
     },
     line: {
         width: 280 > width / 2 ? 280 : width / 2,
-        borderBottomColor: '#222',
-        borderWidth: 0.5,
+        borderBottomColor: Colors.appGray,
+        borderWidth: StyleSheet.hairlineWidth,
     },
     buttonText: {
         fontFamily: MAIN_FONT,
         fontSize: 18,
+        fontWeight: '600',
         color: '#222',
     },
 });
+
+export const Separator = ({ style }) => {
+    return <View style={[styles.line, style]} />;
+};
+
+Popup.Separator = Separator;
 
 export default Popup;

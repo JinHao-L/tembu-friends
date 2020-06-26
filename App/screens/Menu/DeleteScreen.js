@@ -7,11 +7,12 @@ import {
     Keyboard,
     Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../config/Firebase';
 import { Colors, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText } from '../../components';
+import { AuthButton, FormInput, MainText } from '../../components';
+import ErrorMessage from '../../components/Auth/ErrorMessage';
 
 class SignUpScreen extends Component {
     state = {
@@ -33,14 +34,27 @@ class SignUpScreen extends Component {
         keyboardShown: false,
     };
 
+    clearEmailError() {
+        this.setState({
+            emailError: '',
+        });
+    }
+    clearPasswordError() {
+        this.setState({
+            passwordError: '',
+        });
+    }
+    clearConfirmationError() {
+        this.setState({
+            confirmationError: '',
+        });
+    }
+
     clearInputs() {
         this.setState({
             nusEmail: '',
             password: '',
             confirmation: '',
-            emailError: '',
-            passwordError: '',
-            confirmationError: '',
         });
     }
 
@@ -53,13 +67,6 @@ class SignUpScreen extends Component {
             'keyboardDidHide',
             this._keyboardDidHide.bind(this)
         );
-        this.props.navigation.setOptions({
-            headerStyle: {
-                backgroundColor: Colors.appGreen,
-            },
-            headerTintColor: Colors.appWhite,
-            headerTitleAlign: 'center',
-        });
     }
 
     _keyboardDidShow(event) {
@@ -91,14 +98,17 @@ class SignUpScreen extends Component {
         let errorMessage = error.message;
 
         switch (errorCode) {
+            case 'auth/user-mismatch': // Indicates the email is invalid.
+                this.setState({ generalError: 'Wrong User' });
+                break;
             case 'auth/invalid-email': // Indicates the email is invalid.
                 this.setState({ emailError: 'Invalid email address' });
                 break;
-            case 'auth/too-many-requests': // Indicates that too many requests were made to a server method.
-                this.setState({ generalError: 'Server overloaded. Please try again later' });
+            case 'auth/user-not-found': // Indicates the email is invalid.
+                this.setState({ emailError: 'Invalid email address' });
                 break;
-            case 'auth/network-request-failed': // Indicates network error
-                this.setState({ generalError: 'Network error' });
+            case 'auth/wrong-password': // Indicates the email is invalid.
+                this.setState({ passwordError: 'Invalid password' });
                 break;
             default:
                 // Others
@@ -114,16 +124,12 @@ class SignUpScreen extends Component {
             passwordHidden: !prevState.passwordHidden,
         }));
     }
-
     handleEmail(text) {
-        this.setState({ nusEmail: text, emailError: '', generalError: '' });
+        this.setState({ nusEmail: text });
     }
     handlePassword(text) {
         this.setState({
             password: text,
-            passwordError: '',
-            confirmPasswordError: '',
-            generalError: '',
         });
     }
     handleConfirmation(text) {
@@ -230,59 +236,57 @@ class SignUpScreen extends Component {
                         </View>
 
                         <View style={styles.form}>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={emailError ? styles.errorInput : styles.validInput}
-                                    placeholder="NUS email address"
-                                    keyboardType="email-address"
-                                    returnKeyType="next"
-                                    textContentType="emailAddress"
-                                    autoCapitalize="none"
-                                    value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                />
-                                <ErrorMessage error={emailError ? emailError : ' '} />
-                            </View>
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={emailError}
+                                errorMessage={emailError}
+                                placeholder="NUS email address"
+                                keyboardType="email-address"
+                                returnKeyType="next"
+                                textContentType="emailAddress"
+                                autoCapitalize="none"
+                                value={nusEmail}
+                                onChangeText={this.handleEmail.bind(this)}
+                                onFocus={this.clearEmailError.bind(this)}
+                            />
 
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={passwordError ? styles.errorInput : styles.validInput}
-                                    placeholder="Password"
-                                    autoCapitalize="none"
-                                    returnKeyType="next"
-                                    textContentType="none"
-                                    onChangeText={this.handlePassword.bind(this)}
-                                    secureTextEntry={passwordHidden}
-                                    value={password}
-                                    rightIcon={
-                                        <TouchableOpacity
-                                            onPress={this.handlePasswordVisibility.bind(this)}
-                                        >
-                                            <Ionicons
-                                                name={passwordIcon}
-                                                size={28}
-                                                color="grey"
-                                                style={{ marginRight: 5 }}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <ErrorMessage error={passwordError ? passwordError : ' '} />
-                            </View>
-                            <View style={styles.box}>
-                                <FormInput
-                                    style={
-                                        confirmationError ? styles.errorInput : styles.validInput
-                                    }
-                                    placeholder="To confirm type 'DELETE'"
-                                    autoCapitalize="none"
-                                    returnKeyType="done"
-                                    textContentType="none"
-                                    onChangeText={this.handleConfirmation.bind(this)}
-                                    value={confirmation}
-                                />
-                                <ErrorMessage error={confirmationError ? confirmationError : ' '} />
-                            </View>
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={passwordError}
+                                errorMessage={passwordError}
+                                placeholder="Password"
+                                autoCapitalize="none"
+                                returnKeyType="next"
+                                textContentType="password"
+                                onChangeText={this.handlePassword.bind(this)}
+                                onFocus={this.clearPasswordError.bind(this)}
+                                secureTextEntry={passwordHidden}
+                                value={password}
+                                rightIcon={
+                                    <TouchableOpacity
+                                        onPress={this.handlePasswordVisibility.bind(this)}
+                                    >
+                                        <Icon
+                                            name={passwordIcon}
+                                            size={28}
+                                            color="grey"
+                                            style={{ marginRight: 5 }}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                            />
+                            <FormInput
+                                containerStyle={styles.box}
+                                isError={confirmationError}
+                                errorMessage={confirmationError}
+                                placeholder="To confirm type 'DELETE'"
+                                autoCapitalize="none"
+                                returnKeyType="done"
+                                textContentType="none"
+                                onChangeText={this.handleConfirmation.bind(this)}
+                                onFocus={this.clearConfirmationError.bind(this)}
+                                value={confirmation}
+                            />
                             <View style={styles.box}>
                                 <AuthButton
                                     onPress={this.validateInputAndDelete.bind(this)}
@@ -291,14 +295,17 @@ class SignUpScreen extends Component {
                                 >
                                     DELETE
                                 </AuthButton>
-                                <ErrorMessage error={generalError ? generalError : ' '} />
+                                <ErrorMessage
+                                    style={{ textAlign: 'center' }}
+                                    error={generalError ? generalError : ' '}
+                                />
                             </View>
                         </View>
 
                         {keyboardShown ? (
                             <View style={{ flex: 0.5 }} />
                         ) : (
-                            <View style={{ flex: 1.5 }} />
+                            <View style={{ flex: 1 }} />
                         )}
                     </View>
                 </TouchableWithoutFeedback>
@@ -336,34 +343,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginHorizontal: 40,
     },
-    nameContainer: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    validInput: {
-        borderColor: Colors.appGray,
-    },
-    errorInput: {
-        borderColor: Colors.appRed,
-    },
     box: {
         marginTop: 5,
     },
     button: {
         color: 'red',
         marginTop: 10,
-    },
-    haveAccountText: {
-        position: 'absolute',
-        bottom: 0,
-        fontWeight: '200',
-        fontSize: 15,
-        textAlign: 'center',
-        color: Colors.appBlack,
-        marginBottom: 20,
-    },
-    hyperlink: {
-        color: Colors.appGreen,
     },
 });
 

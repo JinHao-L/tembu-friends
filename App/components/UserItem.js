@@ -1,24 +1,22 @@
 import React from 'react';
 import { View, StyleSheet, Image, Platform } from 'react-native';
+import { Avatar, Icon } from 'react-native-elements';
 import { BaseButton } from 'react-native-gesture-handler';
-import { Avatar } from 'react-native-elements';
-
 import { Colors } from '../constants';
 import { MainText } from './MyAppText';
 
-const MenuButton = (property) => {
-    const {
-        type,
-        avatar,
-        avatarPlaceholder,
-        style,
-        borderStyle,
-        backgroundColor,
-        onPress,
-        children,
-        textStyle,
-        ...others
-    } = property;
+const UserItem = ({
+    name,
+    profileImg,
+    subtext,
+    onPress,
+    style,
+    borderStyle,
+    textStyle,
+    subtextStyle,
+    chevron,
+    ...others
+}) => {
     return (
         <View style={[styles.outerContainer, borderStyle]}>
             <BaseButton
@@ -29,41 +27,36 @@ const MenuButton = (property) => {
                 {...others}
             >
                 <View style={styles.contents}>
-                    {avatar || type === 'Profile' ? (
-                        <Avatar
-                            rounded
-                            size={40}
-                            title={avatarPlaceholder}
-                            source={
-                                avatar
-                                    ? { uri: avatar }
-                                    : require('../assets/images/default/profile.png')
-                            }
-                            containerStyle={styles.profileContainer}
-                        />
-                    ) : type ? (
-                        <Image source={getImage(type)} style={styles.imageContainer} />
-                    ) : null}
+                    <Avatar
+                        rounded
+                        size={40}
+                        title={name[0]}
+                        source={
+                            profileImg
+                                ? { uri: profileImg }
+                                : require('../assets/images/default/profile.png')
+                        }
+                        containerStyle={styles.profileContainer}
+                    />
+
                     <View style={styles.textContainer}>
-                        <MainText style={[styles.text, textStyle]}>{children}</MainText>
+                        <MainText style={[styles.text, textStyle]}>{name}</MainText>
+                        {subtext && (
+                            <MainText style={[styles.subtext, subtextStyle]}>{subtext}</MainText>
+                        )}
                     </View>
+                    <Icon {...chevronDefaultProps} containerStyle={{ alignSelf: 'right' }} />
                 </View>
             </BaseButton>
         </View>
     );
 };
 
-const getImage = (img) => {
-    switch (img) {
-        case 'Friends':
-            return require('../assets/images/menu/FriendsIcon.png');
-        case 'Settings':
-            return require('../assets/images/menu/SettingsIcon.png');
-        case 'QRCode':
-            return require('../assets/images/menu/QRcode.png');
-        case 'Default':
-            return require('../assets/images/menu/robot-prod.png');
-    }
+const chevronDefaultProps = {
+    type: Platform.OS === 'ios' ? 'ionicon' : 'material',
+    color: Colors.appGray,
+    name: Platform.OS === 'ios' ? 'ios-arrow-forward' : 'keyboard-arrow-right',
+    size: 16,
 };
 
 const styles = StyleSheet.create({
@@ -97,14 +90,15 @@ const styles = StyleSheet.create({
     },
     contents: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        alignItems: 'flex-end',
     },
     textContainer: {
         justifyContent: 'center',
+        flexDirection: 'column',
     },
     text: {
         fontSize: 18,
-        color: Colors.appBlack,
+        color: Colors.appGreen,
         textAlign: 'left',
         textAlignVertical: 'center',
     },
@@ -121,6 +115,12 @@ const styles = StyleSheet.create({
         marginLeft: 4,
         marginRight: 6,
     },
+    subtext: {
+        fontSize: 13,
+        color: Colors.appBlack,
+        textAlign: 'left',
+        textAlignVertical: 'center',
+    },
 });
 
-export default MenuButton;
+export default UserItem;

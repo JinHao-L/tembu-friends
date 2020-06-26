@@ -7,15 +7,16 @@ import {
     Text,
     ImageBackground,
     Picker,
+    ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors, Layout } from '../../../constants';
-import { withFirebase } from '../../../config/Firebase';
-import { MainText, Popup, RadioButton, MAIN_FONT } from '../../../components';
-import { updateProfile } from '../../../redux';
+import { Colors, Layout } from '../../constants';
+import { withFirebase } from '../../config/Firebase';
+import { MainText, Popup, RadioButton, MAIN_FONT } from '../../components';
+import { updateProfile } from '../../redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -56,6 +57,7 @@ class ProfileEdit extends Component {
         exitConfirmationPopupVisible: false,
         errorMessage: null,
         unsavedEdits: false,
+        uploading: false,
     };
 
     componentDidMount() {
@@ -97,7 +99,7 @@ class ProfileEdit extends Component {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [25, 8],
+            aspect: [3, 1],
             quality: 1,
         });
 
@@ -181,7 +183,9 @@ class ProfileEdit extends Component {
             moduleCodes,
             moduleNames,
         } = this.state;
-
+        this.setState({
+            uploading: true,
+        });
         let promises = [];
         let changes = {};
         let hasChanges = false;
@@ -265,13 +269,24 @@ class ProfileEdit extends Component {
             Promise.all(promises)
                 .then(() => {
                     this.props.updateProfile(this.props.userData.uid, changes);
+                    this.setState({
+                        uploading: false,
+                    });
                     this.toggleSuccessPopup();
                 })
                 .catch((error) => {
                     console.log('Profile update error: ' + error.message);
-                    this.toggleFailurePopup();
+                    this.setState(
+                        {
+                            uploading: true,
+                        },
+                        () => this.toggleFailurePopup()
+                    );
                 });
         } else {
+            this.setState({
+                uploading: false,
+            });
             this.toggleSuccessPopup();
         }
     };
@@ -326,7 +341,28 @@ class ProfileEdit extends Component {
             this.goBackToProfile();
         }
     };
+    toggleImageEdit = (type) => {
+        this.setState({
+            editImageVisible: !this.state.editImageVisible,
+            editImageType: type,
+        });
+    };
 
+    renderUploading = () => {
+        return (
+            <Popup
+                imageType={'Custom'}
+                isVisible={this.state.uploading}
+                body={
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size={'large'} />
+                        <MainText>Saving your changes</MainText>
+                    </View>
+                }
+                callback={null}
+            />
+        );
+    };
     renderSuccessPopup = () => {
         return (
             <Popup
@@ -361,6 +397,7 @@ class ProfileEdit extends Component {
             <Popup
                 imageType={'Custom'}
                 isVisible={this.state.majorEditPopupVisible}
+                title={'Major Selection'}
                 body={
                     <View>
                         <View
@@ -368,6 +405,7 @@ class ProfileEdit extends Component {
                                 flexDirection: 'row',
                                 flexWrap: 'wrap',
                                 justifyContent: 'center',
+                                marginVertical: 5,
                             }}
                         >
                             <RadioButton
@@ -389,8 +427,9 @@ class ProfileEdit extends Component {
                                 text={'Double Degree'}
                             />
                         </View>
-                        <View style={{ marginTop: 10 }}>
-                            <MainText> Major 1: </MainText>
+                        {this.state.majorType !== 'single' && <Popup.Separator />}
+                        <View style={{ marginTop: 5, paddingLeft: 10 }}>
+                            {this.state.majorType !== 'single' && <MainText> Major 1: </MainText>}
                             <Picker
                                 style={{ width: '100%' }}
                                 mode="dropdown"
@@ -421,8 +460,9 @@ class ProfileEdit extends Component {
                                 })}
                             </Picker>
                         </View>
+                        {this.state.majorType !== 'single' && <Popup.Separator />}
                         {this.state.majorType !== 'single' && (
-                            <View style={{ marginTop: 10 }}>
+                            <View style={{ marginTop: 5, paddingLeft: 10 }}>
                                 <MainText> Major 2: </MainText>
                                 <Picker
                                     style={{ width: '100%' }}
@@ -468,7 +508,7 @@ class ProfileEdit extends Component {
                     });
                     this.toggleMajorEditPopup();
                 }}
-                buttonText={'Close'}
+                buttonText={'Cancel'}
                 callback={this.toggleMajorEditPopup}
             />
         );
@@ -478,7 +518,7 @@ class ProfileEdit extends Component {
             <Popup
                 imageType={'Warning'}
                 isVisible={this.state.exitConfirmationPopupVisible}
-                title={'Unsaved changes'}
+                title={'Unsaved Changes'}
                 body={'You have made changes.\nAre you sure you want to leave?'}
                 additionalButtonText={'Yes'}
                 additionalButtonCall={() => {
@@ -487,6 +527,71 @@ class ProfileEdit extends Component {
                 }}
                 buttonText={'No'}
                 callback={this.toggleExitConfirmationPopup}
+            />
+        );
+    };
+    renderImageEdit = () => {
+        const type = this.state.editImageType;
+        return (
+            <Popup
+                imageType={'Custom'}
+                isVisible={this.state.editImageVisible}
+                title={'Edit Picture'}
+                body={
+                    <View>
+                        <Button
+                            title={'Change photo'}
+                            type={'clear'}
+                            titleStyle={{
+                                fontFamily: MAIN_FONT,
+                                fontSize: 15,
+                                color: Colors.appBlack,
+                            }}
+                            icon={{
+                                name: 'photo-library',
+                                color: Colors.appGreen,
+                                size: 25,
+                                containerStyle: { paddingHorizontal: 20 },
+                            }}
+                            buttonStyle={{ justifyContent: 'flex-start' }}
+                            containerStyle={{ borderRadius: 0 }}
+                            onPress={
+                                type === 'banner'
+                                    ? this.onChangeBannerImgPress
+                                    : this.onChangeProfileImgPress
+                            }
+                        />
+                        <Popup.Separator />
+                        <Button
+                            title={'Remove photo'}
+                            type={'clear'}
+                            titleStyle={{
+                                fontFamily: MAIN_FONT,
+                                fontSize: 15,
+                                color: Colors.appBlack,
+                            }}
+                            icon={{
+                                name: 'delete',
+                                color: Colors.appRed,
+                                size: 25,
+                                containerStyle: { paddingHorizontal: 20 },
+                            }}
+                            buttonStyle={{ justifyContent: 'flex-start' }}
+                            containerStyle={{ borderRadius: 0 }}
+                            onPress={() => {
+                                return type === 'banner'
+                                    ? this.setState({
+                                          bannerImg: '',
+                                      })
+                                    : this.setState({
+                                          profileImg: '',
+                                      });
+                            }}
+                        />
+                    </View>
+                }
+                buttonText={'Cancel'}
+                callback={this.toggleImageEdit}
             />
         );
     };
@@ -543,28 +648,23 @@ class ProfileEdit extends Component {
     render() {
         const { userData } = this.props;
         const {
-            bannerImg,
-            profileImg,
-            firstName,
-            lastName,
-            role,
-            major,
-            year,
-            house,
-            roomNumber,
-            aboutText,
+            bannerImg = userData.bannerImg,
+            profileImg = userData.profileImg,
+            firstName = userData.firstName,
+            lastName = userData.lastName,
+            role = userData.role,
+            major = userData.major || '',
+            year = userData.year || '',
+            house = userData.house || '',
+            roomNumber = userData.roomNumber,
+            aboutText = userData.aboutText,
+            moduleCodes = userData.moduleCodes || [],
+            moduleNames = userData.moduleNames || [],
         } = this.state;
-        const moduleCodes =
-            this.state.moduleCodes !== undefined
-                ? this.state.moduleCodes
-                : userData.moduleCodes || [];
-        const moduleNames =
-            this.state.moduleNames !== undefined
-                ? this.state.moduleNames
-                : userData.moduleNames || [];
         return (
             <ScrollView style={styles.container}>
                 <View>
+                    {this.renderUploading()}
                     {this.renderSuccessPopup()}
                     {this.renderFailurePopup()}
                     {this.renderMajorEditPopup()}
@@ -576,9 +676,7 @@ class ProfileEdit extends Component {
                             source={
                                 bannerImg
                                     ? { uri: bannerImg }
-                                    : userData.bannerImg
-                                    ? { uri: userData.bannerImg }
-                                    : require('../../../assets/images/DefaultBanner.png')
+                                    : require('../../assets/images/default/banner.png')
                             }
                         >
                             <Icon
@@ -599,9 +697,7 @@ class ProfileEdit extends Component {
                             source={
                                 profileImg
                                     ? { uri: profileImg }
-                                    : userData.profileImg
-                                    ? { uri: userData.profileImg }
-                                    : require('../../../assets/images/DefaultProfile.png')
+                                    : require('../../assets/images/default/profile.png')
                             }
                             showAccessory={true}
                             accessory={{
@@ -629,7 +725,7 @@ class ProfileEdit extends Component {
                             placeholder={'Add your first name'}
                             placeholderTextColor={Colors.appGray}
                             underlineColorAndroid="transparent"
-                            value={firstName !== undefined ? firstName : userData.firstName}
+                            value={firstName}
                             textContentType={'name'}
                             autoCapitalize={'words'}
                             onChangeText={this.handleFirstName}
@@ -642,7 +738,7 @@ class ProfileEdit extends Component {
                             placeholder={'Add your last name'}
                             placeholderTextColor={Colors.appGray}
                             underlineColorAndroid="transparent"
-                            value={lastName !== undefined ? lastName : userData.lastName}
+                            value={lastName}
                             textContentType={'name'}
                             autoCapitalize={'words'}
                             onChangeText={this.handleLastName}
@@ -655,7 +751,7 @@ class ProfileEdit extends Component {
                             placeholder={'Add your role in college'}
                             placeholderTextColor={Colors.appGray}
                             underlineColorAndroid="transparent"
-                            value={role !== undefined ? role : userData.role}
+                            value={role}
                             autoCapitalize={'words'}
                             onChangeText={this.handleRole}
                         />
@@ -663,20 +759,16 @@ class ProfileEdit extends Component {
                     <View style={styles.box}>
                         <MainText style={styles.label}>Major</MainText>
                         <MainText onPress={this.toggleMajorEditPopup} style={styles.input}>
-                            {major
-                                ? major
-                                : userData.major || (
-                                      <Text style={{ color: Colors.appGray }}>
-                                          Select your major
-                                      </Text>
-                                  )}
+                            {major || (
+                                <Text style={{ color: Colors.appGray }}>Select your major</Text>
+                            )}
                         </MainText>
                     </View>
                     <View style={[styles.box, { paddingRight: 0, height: 40 }]}>
                         <MainText style={styles.label}>Year of Study</MainText>
                         <Picker
                             itemStyle={styles.text}
-                            selectedValue={year !== undefined ? year : userData.year || ''}
+                            selectedValue={year}
                             style={styles.picker}
                             onValueChange={this.handleYear}
                             mode={'dropdown'}
@@ -697,7 +789,7 @@ class ProfileEdit extends Component {
                         <MainText style={styles.label}>House</MainText>
                         <Picker
                             itemStyle={styles.text}
-                            selectedValue={house !== undefined ? house : userData.house || ''}
+                            selectedValue={house}
                             style={styles.picker}
                             onValueChange={this.handleHouse}
                             mode={'dropdown'}
@@ -730,32 +822,37 @@ class ProfileEdit extends Component {
                             maxLength={7}
                             placeholderTextColor={Colors.appGray}
                             underlineColorAndroid="transparent"
-                            value={roomNumber !== undefined ? roomNumber : userData.roomNumber}
+                            value={roomNumber}
                             textContentType={'postalCode'}
                             keyboardType={'numeric'}
                             onChangeText={this.handleRoomNumber}
                         />
                     </View>
                     <View style={styles.box2}>
-                        <MainText style={[styles.text, { marginBottom: 5 }]}>About</MainText>
-                        <TextInput
-                            style={styles.aboutText}
-                            multiline={true}
-                            numberOfLines={4}
-                            placeholder={
-                                'You can share why you are here in Tembusu, ' +
-                                'Interest Groups/ Committees that you are in, ' +
-                                'or anything that you’re interested in! It’s a ' +
-                                'great way to introduce yourself to others!'
-                            }
-                            placeholderTextColor={Colors.appGray}
-                            underlineColorAndroid="transparent"
-                            value={aboutText !== undefined ? aboutText : userData.aboutText}
-                            autoCapitalize={'sentences'}
-                            onChangeText={this.handleAboutText}
-                            autoCorrect={true}
-                            textBreakStrategy={'highQuality'}
-                        />
+                        <MainText style={[styles.label, { marginBottom: 5, width: undefined }]}>
+                            About
+                        </MainText>
+                        <View style={styles.aboutTextContainer}>
+                            <TextInput
+                                style={styles.aboutText}
+                                multiline={true}
+                                numberOfLines={4}
+                                placeholder={
+                                    'You can share why you are here in Tembusu, ' +
+                                    'Interest Groups/ Committees that you are in, ' +
+                                    'or anything that you’re interested in! It’s a ' +
+                                    'great way to introduce yourself to others!'
+                                }
+                                placeholderTextColor={Colors.appGray}
+                                underlineColorAndroid="transparent"
+                                value={aboutText}
+                                autoCapitalize={'sentences'}
+                                onChangeText={this.handleAboutText}
+                                autoCorrect={true}
+                                textAlignVertical={'top'}
+                                textBreakStrategy={'simple'}
+                            />
+                        </View>
                     </View>
                     <View style={styles.box2}>
                         <View
@@ -766,7 +863,7 @@ class ProfileEdit extends Component {
                                 marginBottom: 5,
                             }}
                         >
-                            <MainText style={styles.text}>
+                            <MainText style={[styles.label, { width: undefined }]}>
                                 Modules that I’ve taken in Tembusu
                             </MainText>
                             <Icon
@@ -795,7 +892,7 @@ class ProfileEdit extends Component {
                                         key={item}
                                         leftElement={<MainText>•</MainText>}
                                         title={`${item} ${moduleNames[index]}`}
-                                        titleStyle={[styles.text, { fontSize: 13 }]}
+                                        titleStyle={styles.text}
                                         containerStyle={{ padding: 0, paddingBottom: 1 }}
                                     />
                                 ))
@@ -818,7 +915,7 @@ const styles = StyleSheet.create({
     },
     bannerImg: {
         width: Layout.window.width,
-        height: (Layout.window.width * 8) / 25,
+        height: Layout.window.width / 3,
         justifyContent: 'flex-end',
     },
     addBannerIcon: {
@@ -829,7 +926,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.appWhite,
         borderWidth: 4,
         position: 'absolute',
-        top: (Layout.window.width * 8) / 25 - 40,
+        top: Layout.window.width / 3 - 40,
         left: 20,
     },
     spacing: {
@@ -849,17 +946,21 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
-    aboutText: {
+    aboutTextContainer: {
         borderWidth: 1,
         borderColor: Colors.appGray,
         borderRadius: 5,
-        textAlignVertical: 'top',
         maxHeight: 80,
         paddingHorizontal: 5,
     },
+    aboutText: {
+        fontFamily: 'Montserrat-SemiBold',
+        fontSize: 13,
+        fontWeight: '100',
+    },
     label: {
         width: '30%',
-        fontSize: 13,
+        fontSize: 15,
     },
     input: {
         width: '70%',
@@ -881,7 +982,6 @@ const styles = StyleSheet.create({
     text: {
         fontFamily: MAIN_FONT,
         fontSize: 13,
-        fontWeight: 'normal',
     },
 });
 

@@ -5,8 +5,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import HomeTabs from './HomeTabs';
-import AuthNavigator from './AuthNavigator';
+import HomeTabNav from './HomeTabNav';
+import AuthNav from './AuthNav';
 import { withFirebase } from '../config/Firebase';
 import AppLogo from '../components/AppLogo';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
@@ -80,10 +80,10 @@ class RootNavigator extends Component {
         return await Promise.all([
             Asset.loadAsync([
                 require('../assets/images/logo.png'),
-                require('../assets/images/robot-prod.png'),
-                require('../assets/images/success-icon.png'),
-                require('../assets/images/SettingsIcon.png'),
-                require('../assets/images/invalid-icon.png'),
+                require('../assets/images/menu/robot-prod.png'),
+                require('../assets/images/popup/success-icon.png'),
+                require('../assets/images/menu/SettingsIcon.png'),
+                require('../assets/images/popup/invalid-icon.png'),
             ]).then(() => console.log('logo done')),
             Font.loadAsync({
                 ...Icon.font,
@@ -112,9 +112,9 @@ class RootNavigator extends Component {
                 <NavigationContainer>
                     <RootStack.Navigator>
                         {isUserSignedIn ? (
-                            <RootStack.Screen name="App" component={HomeTabs} />
+                            <RootStack.Screen name="App" component={HomeTabNav} />
                         ) : (
-                            <RootStack.Screen name="Auth" component={AuthNavigator} />
+                            <RootStack.Screen name="Auth" component={AuthNav} />
                         )}
                     </RootStack.Navigator>
                 </NavigationContainer>
