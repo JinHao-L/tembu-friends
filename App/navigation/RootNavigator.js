@@ -80,10 +80,18 @@ class RootNavigator extends Component {
         return await Promise.all([
             Asset.loadAsync([
                 require('../assets/images/logo.png'),
+                require('../assets/images/banner.png'),
                 require('../assets/images/menu/robot-prod.png'),
-                require('../assets/images/popup/success-icon.png'),
                 require('../assets/images/menu/SettingsIcon.png'),
+                require('../assets/images/menu/QRcode.png'),
+                require('../assets/images/menu/FriendsIcon.png'),
+
+                require('../assets/images/popup/success-icon.png'),
+                require('../assets/images/popup/warning-icon.png'),
                 require('../assets/images/popup/invalid-icon.png'),
+                require('../assets/images/popup/robot-dev.png'),
+
+                require('../assets/images/profile/verified-icon.png'),
             ]).then(() => console.log('logo done')),
             Font.loadAsync({
                 ...Icon.font,
