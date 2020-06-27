@@ -71,7 +71,7 @@ function MenuNav() {
             <MenuStack.Screen
                 name="PostCreate"
                 component={PostCreate}
-                options={{ headerTitle: 'Create Post' }}
+                options={{ headerTitle: 'Write Post' }}
             />
         </MenuStack.Navigator>
     );

@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     },
     line: {
         width: 280 > width / 2 ? 280 : width / 2,
-        borderBottomColor: Colors.appGray,
+        borderBottomColor: Colors.appLightGray,
         borderWidth: StyleSheet.hairlineWidth,
     },
     buttonText: {

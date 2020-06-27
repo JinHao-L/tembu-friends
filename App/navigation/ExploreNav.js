@@ -5,14 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { ExploreScreen } from '../screens';
 import { Colors } from '../constants';
 import { MAIN_FONT } from '../components';
-import {
-    Friends,
-    ModuleEdit,
-    MyProfile,
-    PostCreate,
-    ProfileEdit,
-    UserProfile,
-} from '../screens/Profile';
+import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../screens/Profile';
 
 const ExploreStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Explore';
@@ -71,7 +64,7 @@ function ExploreNav() {
             <ExploreStack.Screen
                 name="PostCreate"
                 component={PostCreate}
-                options={{ headerTitle: 'Create Post' }}
+                options={{ headerTitle: 'Write Post' }}
             />
         </ExploreStack.Navigator>
     );
