@@ -80,7 +80,7 @@ class ExploreScreen extends Component {
             })
             .then((userList) =>
                 this.setState({
-                    userList: userList,
+                    userList: userList.filter((user) => user.uid !== this.props.userData.uid),
                     loading: false,
                 })
             )
@@ -226,18 +226,15 @@ class ExploreScreen extends Component {
     };
     renderProfile = (userData) => {
         const { displayName, profileImg, uid, role } = userData;
-        if (uid === this.props.userData.uid) {
-            return null;
-        } else {
-            return (
-                <UserItem
-                    name={displayName}
-                    subtext={role}
-                    profileImg={profileImg}
-                    onPress={() => this.goToProfile(userData)}
-                />
-            );
-        }
+
+        return (
+            <UserItem
+                name={displayName}
+                subtext={role}
+                profileImg={profileImg}
+                onPress={() => this.goToProfile(userData)}
+            />
+        );
     };
     renderRightIcon = () => {
         const { loading } = this.state;

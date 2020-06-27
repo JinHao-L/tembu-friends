@@ -81,6 +81,9 @@ class RootNavigator extends Component {
                 require('../assets/images/popup/robot-dev.png'),
 
                 require('../assets/images/profile/verified-icon.png'),
+                require('../assets/images/profile/house-icon.png'),
+                require('../assets/images/profile/job-icon.png'),
+                require('../assets/images/profile/study-icon.png'),
             ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
                 ...Icon.font,

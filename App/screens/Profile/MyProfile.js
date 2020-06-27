@@ -124,7 +124,7 @@ class MyProfile extends Component {
         if (!uid || uid === 'deleted') {
             console.log('User does not exist', uid);
         } else {
-            this.props.navigation.navigate('UserProfile', { user_uid: uid });
+            this.props.navigation.push('UserProfile', { user_uid: uid });
         }
     };
 
