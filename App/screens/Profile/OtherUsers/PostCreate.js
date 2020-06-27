@@ -99,6 +99,8 @@ class PostCreate extends Component {
                     body: this.state.body,
                     is_private: this.state.isPrivate,
                     receiver_uid: this.state.receiverUid,
+                    sender_img: this.state.profileImg,
+                    sender_name: this.state.myName,
                     imgUrl: url,
                     imgRatio: this.state.ratio,
                 };
@@ -106,7 +108,6 @@ class PostCreate extends Component {
             })
             .then(() => this.toggleSuccessPopup())
             .catch((error) => {
-                console.log('ERRORR');
                 console.log(error);
                 return this.toggleFailurePopup();
             });
@@ -273,7 +274,7 @@ class PostCreate extends Component {
                             }}
                             buttonStyle={{ justifyContent: 'flex-start' }}
                             containerStyle={{ borderRadius: 0 }}
-                            onPress={this.chooseImg}
+                            onPress={() => this.chooseImg().then(this.toggleImageEdit)}
                         />
                         <Popup.Separator />
                         <Button
@@ -292,11 +293,12 @@ class PostCreate extends Component {
                             }}
                             buttonStyle={{ justifyContent: 'flex-start' }}
                             containerStyle={{ borderRadius: 0 }}
-                            onPress={() =>
+                            onPress={() => {
                                 this.setState({
                                     postImg: '',
-                                })
-                            }
+                                });
+                                this.toggleImageEdit();
+                            }}
                         />
                     </View>
                 }

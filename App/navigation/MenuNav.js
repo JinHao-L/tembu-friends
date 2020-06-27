@@ -2,18 +2,11 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { DeleteScreen, MenuScreen } from '../screens/Menu';
+import { Friends, DeleteScreen, MenuScreen } from '../screens/Menu';
 import AdminNav from './AdminNav';
 import { Colors } from '../constants';
 import { MAIN_FONT } from '../components';
-import {
-    Friends,
-    ModuleEdit,
-    MyProfile,
-    PostCreate,
-    ProfileEdit,
-    UserProfile,
-} from '../screens/Profile';
+import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../screens/Profile';
 
 const MenuStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Menu';

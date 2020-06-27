@@ -25,27 +25,15 @@ class RootNavigator extends Component {
     async componentDidMount() {
         console.log('Starting app');
         try {
-            // let callback = null;
-            // let metadataRef = null;
             await this.props.firebase.checkUserAuth((result) => {
-                // if (callback) {
-                //     metadataRef.off('value', callback);
-                // }
                 if (result && result.emailVerified) {
-                    console.log('emailVerified');
+                    console.log('Email verified');
                     this.setState({
                         isUserLoading: false,
                         isUserSignedIn: true,
                     });
-                    // metadataRef = this.props.firebase
-                    //     .database()
-                    //     .ref('metadata/' + user.uid + '/refreshTime');
-                    // callback = (user) => {
-                    //     user.getIdToken(true);
-                    // };
-                    // metadataRef.on('value', callback);
                 } else {
-                    console.log('emailNotVerified');
+                    console.log('Email not verified');
                     if (result) {
                         this.props.firebase.signOut();
                     }
@@ -68,7 +56,7 @@ class RootNavigator extends Component {
                 });
             }, 3000);
         } catch (error) {
-            console.log(error);
+            console.log('Failed to start app', error);
         }
     }
 
@@ -93,12 +81,12 @@ class RootNavigator extends Component {
                 require('../assets/images/popup/robot-dev.png'),
 
                 require('../assets/images/profile/verified-icon.png'),
-            ]).then(() => console.log('logo done')),
+            ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
                 ...Icon.font,
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
                 'Futura-Medium-BT': require('../assets/fonts/Futura-Medium-BT.ttf'),
-            }).then(() => console.log('font done')),
+            }).then(() => console.log('Font Loaded')),
         ]);
     }
 
@@ -112,7 +100,13 @@ class RootNavigator extends Component {
                         <ActivityIndicator size="small" />
                         <Text>Fetching resources...{isAssetsLoading ? '' : ' Done'}</Text>
                         <Text>Fetching user data...{isUserLoading ? '' : ' Done'}</Text>
-                        {!isUserLoading && !isAssetsLoading && <Text>Signing you in</Text>}
+                        {!isUserLoading &&
+                            !isAssetsLoading &&
+                            (isUserSignedIn ? (
+                                <Text>Signing you in</Text>
+                            ) : (
+                                <Text>Proceed to login</Text>
+                            ))}
                     </View>
                 </View>
             );

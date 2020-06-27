@@ -41,7 +41,6 @@ class ForgetPassword extends Component {
     }
 
     _keyboardDidShow(event) {
-        console.log('Keyboard Shown');
         this.setState({
             keyboardShown: true,
             keyboardHeight: event.endCoordinates.height,
@@ -49,7 +48,6 @@ class ForgetPassword extends Component {
     }
 
     _keyboardDidHide() {
-        console.log('Keyboard Hidden');
         this.setState({
             keyboardShown: false,
         });

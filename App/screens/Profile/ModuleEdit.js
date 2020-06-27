@@ -62,7 +62,7 @@ class ModuleEdit extends Component {
                 this.allData = responseJson;
             })
             .catch((error) => {
-                console.log(error);
+                console.log('Fetching from nusmods failed', error);
             });
     };
 

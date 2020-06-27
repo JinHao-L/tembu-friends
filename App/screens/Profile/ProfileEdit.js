@@ -134,8 +134,8 @@ class ProfileEdit extends Component {
         const blob = await response.blob();
 
         let ref = this.props.firebase.getStorageRef().child(`${type}/` + this.props.userData.uid);
-        console.log('starting');
-        return ref.put(blob);
+        console.log('Uploading', type);
+        return ref.put(blob).then(() => ref);
     };
 
     validateInput = () => {
@@ -192,14 +192,15 @@ class ProfileEdit extends Component {
 
         if (bannerImg) {
             let promise1 = this.uploadImage(bannerImg, 'banner')
-                .then(() => {
-                    return this.props.firebase
-                        .getStorageRef()
-                        .child('banner/' + this.props.userData.uid)
-                        .getDownloadURL();
+                .then((ref) => {
+                    return ref.getDownloadURL();
+                    // return this.props.firebase
+                    //     .getStorageRef()
+                    //     .child('banner/' + this.props.userData.uid)
+                    //     .getDownloadURL();
                 })
                 .then((downloadURL) => {
-                    console.log('URL: ' + downloadURL);
+                    console.log('URL: ', downloadURL);
                     changes.bannerImg = downloadURL;
                     console.log('Banner upload success');
                 })
@@ -212,11 +213,12 @@ class ProfileEdit extends Component {
         }
         if (profileImg) {
             let promise2 = this.uploadImage(profileImg, 'profile')
-                .then(() => {
-                    return this.props.firebase
-                        .getStorageRef()
-                        .child('profile/' + this.props.userData.uid)
-                        .getDownloadURL();
+                .then((ref) => {
+                    return ref.getDownloadURL();
+                    // return this.props.firebase
+                    //     .getStorageRef()
+                    //     .child('profile/' + this.props.userData.uid)
+                    //     .getDownloadURL();
                 })
                 .then((downloadURL) => {
                     console.log('URL: ' + downloadURL);
@@ -341,12 +343,12 @@ class ProfileEdit extends Component {
             this.goBackToProfile();
         }
     };
-    toggleImageEdit = (type) => {
-        this.setState({
-            editImageVisible: !this.state.editImageVisible,
-            editImageType: type,
-        });
-    };
+    // toggleImageEdit = (type) => {
+    //     this.setState({
+    //         editImageVisible: !this.state.editImageVisible,
+    //         editImageType: type,
+    //     });
+    // };
 
     renderUploading = () => {
         return (
@@ -536,71 +538,71 @@ class ProfileEdit extends Component {
             />
         );
     };
-    renderImageEdit = () => {
-        const type = this.state.editImageType;
-        return (
-            <Popup
-                imageType={'Custom'}
-                isVisible={this.state.editImageVisible}
-                title={'Edit Picture'}
-                body={
-                    <View>
-                        <Button
-                            title={'Change photo'}
-                            type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
-                            icon={{
-                                name: 'photo-library',
-                                color: Colors.appGreen,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 20 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            onPress={
-                                type === 'banner'
-                                    ? this.onChangeBannerImgPress
-                                    : this.onChangeProfileImgPress
-                            }
-                        />
-                        <Popup.Separator />
-                        <Button
-                            title={'Remove photo'}
-                            type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
-                            icon={{
-                                name: 'delete',
-                                color: Colors.appRed,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 20 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            onPress={() => {
-                                return type === 'banner'
-                                    ? this.setState({
-                                          bannerImg: '',
-                                      })
-                                    : this.setState({
-                                          profileImg: '',
-                                      });
-                            }}
-                        />
-                    </View>
-                }
-                buttonText={'Cancel'}
-                callback={this.toggleImageEdit}
-            />
-        );
-    };
+    // renderImageEdit = () => {
+    //     const type = this.state.editImageType;
+    //     return (
+    //         <Popup
+    //             imageType={'Custom'}
+    //             isVisible={this.state.editImageVisible}
+    //             title={'Edit Picture'}
+    //             body={
+    //                 <View>
+    //                     <Button
+    //                         title={'Change photo'}
+    //                         type={'clear'}
+    //                         titleStyle={{
+    //                             fontFamily: MAIN_FONT,
+    //                             fontSize: 15,
+    //                             color: Colors.appBlack,
+    //                         }}
+    //                         icon={{
+    //                             name: 'photo-library',
+    //                             color: Colors.appGreen,
+    //                             size: 25,
+    //                             containerStyle: { paddingHorizontal: 20 },
+    //                         }}
+    //                         buttonStyle={{ justifyContent: 'flex-start' }}
+    //                         containerStyle={{ borderRadius: 0 }}
+    //                         onPress={
+    //                             type === 'banner'
+    //                                 ? this.onChangeBannerImgPress
+    //                                 : this.onChangeProfileImgPress
+    //                         }
+    //                     />
+    //                     <Popup.Separator />
+    //                     <Button
+    //                         title={'Remove photo'}
+    //                         type={'clear'}
+    //                         titleStyle={{
+    //                             fontFamily: MAIN_FONT,
+    //                             fontSize: 15,
+    //                             color: Colors.appBlack,
+    //                         }}
+    //                         icon={{
+    //                             name: 'delete',
+    //                             color: Colors.appRed,
+    //                             size: 25,
+    //                             containerStyle: { paddingHorizontal: 20 },
+    //                         }}
+    //                         buttonStyle={{ justifyContent: 'flex-start' }}
+    //                         containerStyle={{ borderRadius: 0 }}
+    //                         onPress={() => {
+    //                             return type === 'banner'
+    //                                 ? this.setState({
+    //                                       bannerImg: '',
+    //                                   })
+    //                                 : this.setState({
+    //                                       profileImg: '',
+    //                                   });
+    //                         }}
+    //                     />
+    //                 </View>
+    //             }
+    //             buttonText={'Cancel'}
+    //             callback={this.toggleImageEdit}
+    //         />
+    //     );
+    // };
 
     // Inputs handler
     editsDetected = () => {

@@ -116,13 +116,11 @@ class SignInScreen extends Component {
     }
 
     goToRegister() {
-        console.log('Go to sign up');
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignUp');
     }
 
     goToForgetPassword() {
-        console.log('Go to forget password');
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('ForgetPassword');
     }
@@ -157,10 +155,8 @@ class SignInScreen extends Component {
 
             if (response && response.user) {
                 if (response.user.emailVerified) {
-                    console.log('verified');
                     this.onSignInSuccess.bind(this)();
                 } else {
-                    console.log('not verified');
                     this.setState(
                         {
                             user: response.user,

@@ -22,6 +22,7 @@ class ExploreScreen extends Component {
             loading: false,
             userList: [],
             limit: 10,
+            searchStarted: false,
         };
     }
 
@@ -39,6 +40,7 @@ class ExploreScreen extends Component {
         this.searchBarRef.current.clear();
         this.setState({
             userList: [],
+            searchStarted: false,
         });
     };
 
@@ -51,7 +53,7 @@ class ExploreScreen extends Component {
             search = searchArr[1];
         }
         if (search) {
-            this.setState({ loading: true });
+            this.setState({ loading: true, searchStarted: true });
             if (code === 'name') {
                 return this.searchByName(search);
             } else if (code === 'mod') {
@@ -65,7 +67,7 @@ class ExploreScreen extends Component {
     };
     searchByName = (name) => {
         const name_title = this.toTitleCase(name);
-        console.log('Searching name', name_title);
+        console.log('Searching by name', name_title);
         return this.props.firebase
             .getUserCollection()
             .where('displayName', '>=', name_title)
@@ -73,7 +75,7 @@ class ExploreScreen extends Component {
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
-                console.log('Retrieving Users :' + documents.length);
+                console.log('Retrieving', documents.length, 'users');
                 return documents.map((document) => document.data());
             })
             .then((userList) =>
@@ -84,12 +86,12 @@ class ExploreScreen extends Component {
             )
             .catch((error) => {
                 this.setState({ loading: false });
-                console.log(error);
+                console.log('Search by name failed:', error);
             });
     };
     searchByMod = (module) => {
         const mod = module.toUpperCase();
-        console.log('Searching module', mod);
+        console.log('Searching module:', mod);
         return this.props.firebase
             .getUserCollection()
             .where('moduleCodes', 'array-contains', mod)
@@ -97,7 +99,7 @@ class ExploreScreen extends Component {
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
-                console.log('Retrieving Users :' + documents.length);
+                console.log('Retrieving', documents.length, 'users');
                 return documents.map((document) => document.data());
             })
             .then((userList) =>
@@ -108,12 +110,12 @@ class ExploreScreen extends Component {
             )
             .catch((error) => {
                 this.setState({ loading: false });
-                console.log(error);
+                console.log('Search by module failed:', error);
             });
     };
     searchByRole = (role) => {
         const role_title = this.toTitleCase(role);
-        console.log('Searching role', role_title);
+        console.log('Searching by role:', role_title);
         return this.props.firebase
             .getUserCollection()
             .where('role', '>=', role_title)
@@ -121,7 +123,7 @@ class ExploreScreen extends Component {
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
-                console.log('Retrieving Users :' + documents.length);
+                console.log('Retrieving', documents.length, 'users');
                 return documents.map((document) => document.data());
             })
             .then((userList) =>
@@ -132,11 +134,11 @@ class ExploreScreen extends Component {
             )
             .catch((error) => {
                 this.setState({ loading: false });
-                console.log(error);
+                console.log('Search by role failed:', error);
             });
     };
     searchByRoom = (room) => {
-        console.log('Searching room', room);
+        console.log('Searching by room:', room);
         return this.props.firebase
             .getUserCollection()
             .where('roomNumber', '>=', room)
@@ -144,7 +146,7 @@ class ExploreScreen extends Component {
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
-                console.log('Retrieving Users :' + documents.length);
+                console.log('Retrieving', documents.length, 'users');
                 return documents.map((document) => document.data());
             })
             .then((userList) =>
@@ -155,7 +157,7 @@ class ExploreScreen extends Component {
             )
             .catch((error) => {
                 this.setState({ loading: false });
-                console.log(error);
+                console.log('Search by room failed:', error);
             });
     };
 
@@ -200,16 +202,42 @@ class ExploreScreen extends Component {
         );
     };
 
+    renderEmpty = () => {
+        if (this.state.searchStarted) {
+            return (
+                <View
+                    style={{
+                        backgroundColor: Colors.appGray,
+                        paddingHorizontal: 5,
+                        paddingVertical: 7,
+                        alignItems: 'center',
+                        borderRadius: 10,
+                    }}
+                >
+                    <MainText style={{ color: Colors.appDarkGray }}>No results</MainText>
+                    <MainText style={{ color: Colors.appDarkGray }}>
+                        Did you use the correct prefix?
+                    </MainText>
+                </View>
+            );
+        } else {
+            return this.searchIntro();
+        }
+    };
     renderProfile = (userData) => {
         const { displayName, profileImg, uid, role } = userData;
-        return (
-            <UserItem
-                name={displayName}
-                subtext={role}
-                profileImg={profileImg}
-                onPress={() => this.goToProfile(userData)}
-            />
-        );
+        if (uid === this.props.userData.uid) {
+            return null;
+        } else {
+            return (
+                <UserItem
+                    name={displayName}
+                    subtext={role}
+                    profileImg={profileImg}
+                    onPress={() => this.goToProfile(userData)}
+                />
+            );
+        }
     };
     renderRightIcon = () => {
         const { loading } = this.state;
@@ -264,10 +292,11 @@ class ExploreScreen extends Component {
                             />
                         </View>
                         <FlatList
+                            contentContainerStyle={{ paddingHorizontal: 10 }}
                             data={userList}
                             renderItem={({ item }) => this.renderProfile(item)}
                             keyExtractor={(user) => user.uid}
-                            ListEmptyComponent={this.searchIntro}
+                            ListEmptyComponent={this.renderEmpty}
                         />
                     </View>
                 </LinearGradient>
@@ -286,7 +315,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         paddingTop: 5,
     },
     title: {

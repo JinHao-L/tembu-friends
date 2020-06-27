@@ -30,7 +30,7 @@ class MyProfile extends Component {
     state = {
         // Post retrieval
         postsData: [],
-        limit: 10,
+        limit: 5,
         lastLoaded: null,
         loading: false,
         refreshing: false,
@@ -43,7 +43,7 @@ class MyProfile extends Component {
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     componentDidMount() {
-        this.retrievePosts().catch((error) => console.log(error));
+        this.retrievePosts();
     }
 
     componentWillUnmount() {
@@ -365,13 +365,13 @@ class MyProfile extends Component {
             year = 'Y0',
             house = 'Undeclared',
             roomNumber = '',
-            friendsCount,
+            friends = [],
             aboutText = "Hello, I'm new to TembuFriends",
             moduleCodes = [],
             moduleNames = [],
             verified,
         } = this.props.userData;
-
+        const friendsCount = friends.length;
         return (
             <View>
                 <View style={styles.header}>
@@ -445,34 +445,28 @@ class MyProfile extends Component {
                         )}
                     </View>
                     <View style={styles.userDetails}>
-                        <Icon
-                            type={'simple-line-icon'}
-                            name={'briefcase'}
-                            size={15}
-                            color={Colors.appGreen}
-                            containerStyle={styles.icon}
+                        <Image
+                            source={require('../../assets/images/profile/job-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
                         <MainText style={{ fontSize: 15 }}>{role}</MainText>
                     </View>
                     <View style={styles.userDetails}>
-                        <Icon
-                            type={'simple-line-icon'}
-                            name={'book-open'}
-                            size={15}
-                            color={Colors.appGreen}
-                            containerStyle={styles.icon}
+                        <Image
+                            source={require('../../assets/images/profile/study-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
                         <MainText style={{ fontSize: 15 }}>
                             {major}, {year}
                         </MainText>
                     </View>
                     <View style={styles.userDetails}>
-                        <Icon
-                            type={'simple-line-icon'}
-                            name={'home'}
-                            size={15}
-                            color={Colors.appGreen}
-                            containerStyle={styles.icon}
+                        <Image
+                            source={require('../../assets/images/profile/house-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
                         <MainText style={{ fontSize: 15 }}>
                             {this.renderHouseText(house)} {roomNumber}
@@ -582,7 +576,7 @@ class MyProfile extends Component {
                     <Icon
                         name={'more-horiz'}
                         size={18}
-                        color={Colors.appRed}
+                        color={Colors.appGreen}
                         containerStyle={{ alignSelf: 'flex-start', marginLeft: 'auto' }}
                         onPress={() => this.togglePostOptions(post_id, index)}
                     />
@@ -632,7 +626,7 @@ class MyProfile extends Component {
                         ListHeaderComponent={this.renderHeader}
                         ListFooterComponent={this.renderFooter}
                         onEndReached={this.retrieveMorePosts}
-                        onEndReachedThreshold={0}
+                        onEndReachedThreshold={0.5}
                         refreshing={refreshing}
                         onRefresh={this.retrievePosts}
                         ListEmptyComponent={() => {
@@ -695,6 +689,8 @@ const styles = StyleSheet.create({
     icon: {
         marginLeft: 3,
         marginRight: 8,
+        width: 15,
+        height: 15,
     },
     box: {
         borderBottomWidth: 5,

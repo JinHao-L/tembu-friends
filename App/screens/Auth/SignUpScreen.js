@@ -67,7 +67,6 @@ class SignUpScreen extends Component {
     }
 
     _keyboardDidShow(event) {
-        console.log('Keyboard Shown');
         this.setState({
             keyboardShown: true,
             keyboardHeight: event.endCoordinates.height,
@@ -75,7 +74,6 @@ class SignUpScreen extends Component {
     }
 
     _keyboardDidHide() {
-        console.log('Keyboard Hidden');
         this.setState({
             keyboardShown: false,
         });
@@ -203,14 +201,14 @@ class SignUpScreen extends Component {
                     firstName: firstName,
                     lastName: lastName,
                 };
-                console.log('creating');
+                console.log('User created. Creating profile');
                 return this.props.firebase
                     .createProfile(userData)
                     .then(() => response.user.sendEmailVerification());
             })
             .then(() => {
                 this.props.firebase.signOut();
-                console.log('auto sign out');
+                console.log('Auto sign out');
             })
             .then(() => {
                 this.onSignUpSuccess.bind(this)();
@@ -282,7 +280,7 @@ class SignUpScreen extends Component {
             return null;
         }
 
-        console.log('VALID');
+        console.log('Inputs valid');
         return this.signUp.bind(this)();
     }
 

@@ -5,6 +5,7 @@ import { MainText, UserItem } from '../../components';
 import { withFirebase } from '../../config/Firebase';
 import { connect } from 'react-redux';
 import { Colors } from '../../constants';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const mapStateToProps = (state) => {
     return {
@@ -41,7 +42,7 @@ class Friends extends Component {
             )
             .catch((error) => {
                 this.setState({ loading: false });
-                console.log(error);
+                console.log('Get friends failed', error);
             });
     }
 
@@ -115,14 +116,19 @@ class Friends extends Component {
             );
         }
         return (
-            <SafeAreaView style={styles.container}>
-                <FlatList
-                    data={friendList}
-                    renderItem={({ item }) => this.renderProfile(item)}
-                    keyExtractor={(friend) => friend.uid}
-                    ListFooterComponent={this.renderFooter}
-                    ListEmptyComponent={this.renderEmpty}
-                />
+            <SafeAreaView style={{ flex: 1 }}>
+                <LinearGradient
+                    colors={[Colors.appGreen, Colors.appLightGreen]}
+                    style={styles.container}
+                >
+                    <FlatList
+                        data={friendList}
+                        renderItem={({ item }) => this.renderProfile(item)}
+                        keyExtractor={(friend) => friend.uid}
+                        ListFooterComponent={this.renderFooter}
+                        ListEmptyComponent={this.renderEmpty}
+                    />
+                </LinearGradient>
             </SafeAreaView>
         );
     }
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 25,
     },
 });
 

@@ -60,7 +60,7 @@ const Firebase = {
             .get()
             .then((doc) => {
                 if (!doc.exists) {
-                    console.log('No such document!');
+                    console.log('No such user data!', uid);
                 } else {
                     console.log('Document data available');
                     return doc.data();

@@ -17,8 +17,8 @@ export const fetchUserData = () => {
                 let actionSetUserData = setUserData(value);
                 dispatch(actionSetUserData);
             })
-            .catch((err) => {
-                console.log(err);
+            .catch((error) => {
+                console.log('Failed to fetch user data', error);
             });
     };
 };
@@ -37,8 +37,8 @@ export const updateProfile = (uid, changes) => {
                 let actionUpdateUserProfile = updateUserProfile(changes);
                 dispatch(actionUpdateUserProfile);
             })
-            .catch((err) => {
-                console.log(err);
+            .catch((error) => {
+                console.log('Failed to update user profile', error);
             });
     };
 };

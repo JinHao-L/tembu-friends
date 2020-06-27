@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, FlatList, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
 
 import { Colors } from '../../../constants';
 import { withFirebase } from '../../../config/Firebase';
@@ -66,7 +66,7 @@ class UserListScreen extends React.Component {
         const { users } = this.state;
 
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={styles.container}>
                 <FlatList
                     data={users}
                     ItemSeparatorComponent={this.renderSeparator}
@@ -82,9 +82,10 @@ class UserListScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         paddingHorizontal: 10,
         paddingVertical: 20,
-        backgroundColor: Colors.appLightGreen,
+        // backgroundColor: Colors.appWhite,
     },
     itemContainer: {
         paddingVertical: 10,

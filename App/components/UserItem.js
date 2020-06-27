@@ -61,7 +61,7 @@ const chevronDefaultProps = {
 const styles = StyleSheet.create({
     outerContainer: {
         marginBottom: 12,
-        borderRadius: 11,
+        borderRadius: 16,
         ...Platform.select({
             ios: {
                 shadowColor: Colors.appBlack,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         paddingVertical: 7,
         alignItems: 'flex-start',
         justifyContent: 'center',
-        borderRadius: 10,
+        borderRadius: 15,
     },
     contents: {
         flexDirection: 'row',

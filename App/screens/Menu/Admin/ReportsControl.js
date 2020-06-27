@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView, FlatList, ActivityIndicator, View } from 'react-native';
+import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
 import { ListItem, Button } from 'react-native-elements';
 
 import { Colors } from '../../../constants';
@@ -36,7 +36,7 @@ class ReportsControl extends Component {
         const { data } = this.state;
 
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={styles.container}>
                 <FlatList
                     data={data}
                     ItemSeparatorComponent={this.renderSeparator}
@@ -49,5 +49,14 @@ class ReportsControl extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+        // backgroundColor: Colors.appWhite,
+    },
+});
 
 export default withFirebase(ReportsControl);

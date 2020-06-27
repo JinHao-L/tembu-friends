@@ -23,7 +23,7 @@ class MenuScreen extends Component {
         try {
             await this.props.firebase.signOut();
         } catch (error) {
-            console.log(error);
+            console.log('Sign out fail', error);
         }
     };
 

@@ -1,7 +1,6 @@
 import Icon from 'react-native-vector-icons/Ionicons';
-import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Alert } from 'react-native';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 
 import { Colors } from '../constants/index';
@@ -24,20 +23,20 @@ function NotificationScreen() {
                 >
                     <OptionButton
                         icon="md-school"
-                        label="Testing Link 1"
-                        onPress={() => WebBrowser.openBrowserAsync('https://docs.expo.io')}
+                        label="New Friend Request"
+                        onPress={() => Alert.alert('Not implemented')}
                     />
 
                     <OptionButton
                         icon="md-compass"
-                        label="Testing Link 2"
-                        onPress={() => WebBrowser.openBrowserAsync('https://reactnavigation.org')}
+                        label="New Post"
+                        onPress={() => Alert.alert('Not implemented')}
                     />
 
                     <OptionButton
                         icon="ios-chatboxes"
-                        label="Testng Link 3"
-                        onPress={() => WebBrowser.openBrowserAsync('https://forums.expo.io')}
+                        label="New Comment"
+                        onPress={() => Alert.alert('Not implemented')}
                         isLastOption
                     />
                 </ScrollView>

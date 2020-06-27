@@ -70,7 +70,6 @@ class SignUpScreen extends Component {
     }
 
     _keyboardDidShow(event) {
-        console.log('Keyboard Shown');
         this.setState({
             keyboardShown: true,
             keyboardHeight: event.endCoordinates.height,
@@ -78,7 +77,6 @@ class SignUpScreen extends Component {
     }
 
     _keyboardDidHide() {
-        console.log('Keyboard Hidden');
         this.setState({
             keyboardShown: false,
         });
@@ -192,7 +190,7 @@ class SignUpScreen extends Component {
                 confirmationError: "Please write 'DELETE' to confirm deletion",
             });
         }
-        console.log('VALID');
+        console.log('Valid Input');
         if (!(emailError || passwordError || confirmationError)) {
             return this.delete.bind(this)();
         }

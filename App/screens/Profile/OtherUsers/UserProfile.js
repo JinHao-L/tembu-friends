@@ -30,7 +30,7 @@ class UserProfile extends Component {
         friendToggled: false,
 
         postsData: [],
-        limit: 10,
+        limit: 5,
         lastLoaded: null,
         loading: false,
         refreshing: false,
@@ -48,9 +48,7 @@ class UserProfile extends Component {
                     statusColor: this.getStatusColor(userData.statusType),
                     areFriends: this.props.userData.friends?.includes(userData.uid),
                 },
-                () => {
-                    this.retrievePosts().catch((error) => console.log(error));
-                }
+                () => this.retrievePosts()
             );
         } else {
             this.props.firebase
@@ -67,9 +65,7 @@ class UserProfile extends Component {
                                 statusColor: this.getStatusColor(profileData.statusType),
                                 areFriends: this.props.userData.friends?.includes(user_uid),
                             },
-                            () => {
-                                this.retrievePosts().catch((error) => console.log(error));
-                            }
+                            () => this.retrievePosts()
                         );
                     }
                 })
@@ -110,12 +106,8 @@ class UserProfile extends Component {
             profileImg: this.props.userData.profileImg,
             receiverName: this.state.profileData.firstName,
             receiverUid: this.state.uid,
-            refetch: this.refetch,
+            refetch: this.retrievePosts,
         });
-    };
-
-    refetch = async () => {
-        return this.retrievePosts();
     };
 
     retrievePosts = () => {
@@ -174,10 +166,7 @@ class UserProfile extends Component {
                         loading: false,
                     });
                 } else {
-                    this.setState({
-                        allPostsLoaded: true,
-                        loading: false,
-                    });
+                    this.setState({ loading: false, allPostsLoaded: true });
                 }
             })
             .catch((error) => {
@@ -256,12 +245,13 @@ class UserProfile extends Component {
             year = 'Y0',
             house = 'Undeclared',
             roomNumber = '',
-            friendsCount,
+            friends = [],
             aboutText = "Hello, I'm new to TembuFriends",
             moduleCodes = [],
             moduleNames = [],
             verified,
         } = this.state.profileData;
+        const friendsCount = friends.length;
         return (
             <View>
                 <View style={styles.header}>
@@ -353,34 +343,28 @@ class UserProfile extends Component {
                         )}
                     </View>
                     <View style={styles.userDetails}>
-                        <Icon
-                            type={'simple-line-icon'}
-                            name={'briefcase'}
-                            size={15}
-                            color={Colors.appGreen}
-                            containerStyle={styles.icon}
+                        <Image
+                            source={require('../../../assets/images/profile/job-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
                         <MainText style={{ fontSize: 15 }}>{role}</MainText>
                     </View>
                     <View style={styles.userDetails}>
-                        <Icon
-                            type={'simple-line-icon'}
-                            name={'book-open'}
-                            size={15}
-                            color={Colors.appGreen}
-                            containerStyle={styles.icon}
+                        <Image
+                            source={require('../../../assets/images/profile/study-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
                         <MainText style={{ fontSize: 15 }}>
                             {major}, {year}
                         </MainText>
                     </View>
                     <View style={styles.userDetails}>
-                        <Icon
-                            type={'simple-line-icon'}
-                            name={'home'}
-                            size={15}
-                            color={Colors.appGreen}
-                            containerStyle={styles.icon}
+                        <Image
+                            source={require('../../../assets/images/profile/house-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
                         <MainText style={{ fontSize: 15 }}>
                             {this.renderHouseText(house)} {roomNumber}
@@ -560,9 +544,9 @@ class UserProfile extends Component {
                         ListHeaderComponent={this.renderHeader}
                         ListFooterComponent={this.renderFooter}
                         onEndReached={this.retrieveMorePosts}
-                        onEndReachedThreshold={0}
+                        onEndReachedThreshold={0.5}
                         refreshing={refreshing}
-                        onRefresh={this.refetch}
+                        onRefresh={this.retrievePosts}
                         ListEmptyComponent={() => {
                             return <MainText style={styles.emptyText}>No Posts</MainText>;
                         }}
@@ -634,6 +618,8 @@ const styles = StyleSheet.create({
     icon: {
         marginLeft: 3,
         marginRight: 8,
+        width: 15,
+        height: 15,
     },
     box: {
         borderBottomWidth: 5,
