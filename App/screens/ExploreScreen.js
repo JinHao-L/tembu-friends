@@ -70,7 +70,9 @@ class ExploreScreen extends Component {
         console.log('Searching by name', name_title);
         return this.props.firebase
             .getUserCollection()
-            .where('displayName', '>=', name_title)
+            .orderBy('displayName', 'asc')
+            .startAt(name_title)
+            .endAt(name_title + '\uf8ff')
             .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
@@ -80,7 +82,7 @@ class ExploreScreen extends Component {
             })
             .then((userList) =>
                 this.setState({
-                    userList: userList.filter((user) => user.uid !== this.props.userData.uid),
+                    userList: userList,
                     loading: false,
                 })
             )
@@ -118,7 +120,9 @@ class ExploreScreen extends Component {
         console.log('Searching by role:', role_title);
         return this.props.firebase
             .getUserCollection()
-            .where('role', '>=', role_title)
+            .orderBy('role', 'asc')
+            .startAt(role_title)
+            .endAt(role_title + '\uf8ff')
             .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
@@ -138,10 +142,16 @@ class ExploreScreen extends Component {
             });
     };
     searchByRoom = (room) => {
-        console.log('Searching by room:', room);
+        let roomNumber = room;
+        if (roomNumber.charAt(0) !== '#') {
+            roomNumber = '#' + room;
+        }
+        console.log('Searching by room:', roomNumber);
         return this.props.firebase
             .getUserCollection()
-            .where('roomNumber', '>=', room)
+            .orderBy('roomNumber', 'asc')
+            .startAt(roomNumber)
+            .endAt(roomNumber + '\uf8ff')
             .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
