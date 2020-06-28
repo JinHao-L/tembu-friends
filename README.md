@@ -12,12 +12,12 @@ A social app for Tembusians (An Apollo-11 Project)
 -   Home page - linked to Tembu Page
 -   Profile page
 -   Profile editing
-
-## Upcoming features
-
 -   Posting capabilities
 -   Search feature
 -   Adding friends
+
+## Upcoming features
+
 -   Notifications
 -   QR generator and QR scanner
 -   Settings
@@ -29,6 +29,10 @@ A social app for Tembusians (An Apollo-11 Project)
 ## Existing bugs
 
 1.  Textstyle of picker is different from Text inputs (profile-edit)
+2.  View for iOS differs from Android
+    - Popup not showing
+    - Some buttons not responsive
+    - Header back title covers text
 
 ## Navigation flow
 
@@ -44,7 +48,7 @@ A social app for Tembusians (An Apollo-11 Project)
         ├── Explore Nav                         # Navigable content from explore feature
         │   ├── Search Profile                  # Initial route of explore tab
         │   │
-        │   └── Profile Nav (Other Profiles)    # Provide navigation to profile-related screen
+        │   └── Profile (My/Other Profiles)     # Provide navigation to profile-related screen
         │       ├── Visit Other Profiles        # Initial route
         │       │   └── Write Posts             # Only available when visiting other profile
         │       └── My Profile
@@ -64,7 +68,7 @@ A social app for Tembusians (An Apollo-11 Project)
         └── Menu Nav                            # Navigable content from explore feature
             ├── Menu Screen                     # Initial route
             │
-            ├── Profile Nav (My Profile)        # Called from My Profile button
+            ├── Profile (My Profile)        # Called from My Profile button
             |   |
             │   ├── My Profile
             │   │   └── Edit Profile
@@ -75,7 +79,7 @@ A social app for Tembusians (An Apollo-11 Project)
             │   │
             │   ├── Friends
             |   |
-            ├── Profile Nav (Friends)           # Called from Friends button
+            ├── Profile (Friends)           # Called from Friends button
             │
             ├── QR code
             │   ├── My QR                       # Not implemented yet
