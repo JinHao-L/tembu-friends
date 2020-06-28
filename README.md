@@ -6,9 +6,9 @@ A social app for Tembusians (An Apollo-11 Project)
 
 ## Implemented features
 
--   Authentication Flow complete
--   All navigation features complete
--   Menu bars, Pop-up UI complete
+-   Authentication Flow
+-   All navigation features
+-   Menu bars, Pop-up UI
 -   Home page - linked to Tembu Page
 -   Profile page
 -   Profile editing
