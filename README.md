@@ -2,7 +2,7 @@
 
 A social app for Tembusians (An Apollo-11 Project)
 
-![App Poster](https://i.imgur.com/a/dW1AvnF.png)
+![App Poster](https://i.imgur.com/S7d1Enz.png)
 
 ## Implemented features
 
