@@ -36,8 +36,8 @@ const Firebase = {
     signOut: () => {
         return firebase.auth().signOut();
     },
-    checkUserAuth: (user) => {
-        return firebase.auth().onAuthStateChanged(user);
+    checkUserAuth: (userObserver) => {
+        return firebase.auth().onAuthStateChanged(userObserver);
     },
     sendPasswordReset: (email) => {
         return firebase.auth().sendPasswordResetEmail(email);
@@ -68,6 +68,7 @@ const Firebase = {
             })
             .catch((err) => {
                 console.log('Error getting document', err);
+                return undefined;
             });
     },
     updateUserData: (uid, data) => {

@@ -30,20 +30,6 @@ const wordsOnly = /^[A-Za-z ]+$/;
 
 class ProfileEdit extends Component {
     state = {
-        // Changeable:
-        // bannerImg: undefined,
-        // profileImg: undefined,
-        // firstName: undefined,
-        // lastName: undefined,
-        // role: undefined
-        // major: undefined,
-        // year: undefined,
-        // house: undefined,
-        // roomNumber: undefined,
-        // aboutText: undefined,
-        // moduleCodes: undefined,
-        // moduleNames: undefined,
-
         // Major options
         facultyOptions: null,
         majorOptions1: [],
@@ -156,7 +142,7 @@ class ProfileEdit extends Component {
             errorMessage += 'last name, ';
             hasError = true;
         }
-        // TODO: Check about text for improper words
+
         if (this.state.roomNumber !== undefined && this.state.roomNumber.length !== 7) {
             errorMessage += 'room number, ';
             hasError = true;
@@ -343,12 +329,6 @@ class ProfileEdit extends Component {
             this.goBackToProfile();
         }
     };
-    // toggleImageEdit = (type) => {
-    //     this.setState({
-    //         editImageVisible: !this.state.editImageVisible,
-    //         editImageType: type,
-    //     });
-    // };
 
     renderUploading = () => {
         return (
@@ -376,7 +356,7 @@ class ProfileEdit extends Component {
             <Popup
                 imageType={'Success'}
                 isVisible={this.state.successPopupVisible}
-                title={'Upload Success'}
+                title={'Successfully Saved'}
                 body={'Press back to return to profile screen. Close to continue editing.'}
                 additionalButtonText={'My Profile'}
                 additionalButtonCall={() => {
@@ -538,71 +518,6 @@ class ProfileEdit extends Component {
             />
         );
     };
-    // renderImageEdit = () => {
-    //     const type = this.state.editImageType;
-    //     return (
-    //         <Popup
-    //             imageType={'Custom'}
-    //             isVisible={this.state.editImageVisible}
-    //             title={'Edit Picture'}
-    //             body={
-    //                 <View>
-    //                     <Button
-    //                         title={'Change photo'}
-    //                         type={'clear'}
-    //                         titleStyle={{
-    //                             fontFamily: MAIN_FONT,
-    //                             fontSize: 15,
-    //                             color: Colors.appBlack,
-    //                         }}
-    //                         icon={{
-    //                             name: 'photo-library',
-    //                             color: Colors.appGreen,
-    //                             size: 25,
-    //                             containerStyle: { paddingHorizontal: 20 },
-    //                         }}
-    //                         buttonStyle={{ justifyContent: 'flex-start' }}
-    //                         containerStyle={{ borderRadius: 0 }}
-    //                         onPress={
-    //                             type === 'banner'
-    //                                 ? this.onChangeBannerImgPress
-    //                                 : this.onChangeProfileImgPress
-    //                         }
-    //                     />
-    //                     <Popup.Separator />
-    //                     <Button
-    //                         title={'Remove photo'}
-    //                         type={'clear'}
-    //                         titleStyle={{
-    //                             fontFamily: MAIN_FONT,
-    //                             fontSize: 15,
-    //                             color: Colors.appBlack,
-    //                         }}
-    //                         icon={{
-    //                             name: 'delete',
-    //                             color: Colors.appRed,
-    //                             size: 25,
-    //                             containerStyle: { paddingHorizontal: 20 },
-    //                         }}
-    //                         buttonStyle={{ justifyContent: 'flex-start' }}
-    //                         containerStyle={{ borderRadius: 0 }}
-    //                         onPress={() => {
-    //                             return type === 'banner'
-    //                                 ? this.setState({
-    //                                       bannerImg: '',
-    //                                   })
-    //                                 : this.setState({
-    //                                       profileImg: '',
-    //                                   });
-    //                         }}
-    //                     />
-    //                 </View>
-    //             }
-    //             buttonText={'Cancel'}
-    //             callback={this.toggleImageEdit}
-    //         />
-    //     );
-    // };
 
     // Inputs handler
     editsDetected = () => {
@@ -717,10 +632,6 @@ class ProfileEdit extends Component {
                                 name: 'add-a-photo',
                                 color: Colors.appGreen,
                             }}
-                            // accessory={{
-                            //     source: require('../../assets/images/AddPhotoIcon.png'),
-                            //     size: 30,
-                            // }}
                             onAccessoryPress={this.onChangeProfileImgPress}
                         />
                     </View>

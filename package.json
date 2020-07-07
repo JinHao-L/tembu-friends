@@ -18,12 +18,10 @@
         "@react-navigation/stack": "^5.2.16",
         "expo": "^37.0.0",
         "expo-asset": "~8.1.5",
-        "expo-constants": "~9.0.0",
         "expo-font": "~8.1.0",
         "expo-image-picker": "~8.1.0",
         "expo-linear-gradient": "~8.1.0",
-        "expo-splash-screen": "^0.2.3",
-        "expo-web-browser": "~8.2.1",
+        "expo-permissions": "~8.1.0",
         "firebase": "7.9.0",
         "react": "16.9.0",
         "react-dom": "16.9.0",
@@ -46,7 +44,8 @@
         "husky": "^4.2.5",
         "jest-expo": "^37.0.0",
         "prettier": "2.0.5",
-        "pretty-quick": "^2.0.1"
+        "pretty-quick": "^2.0.1",
+        "react-native-testing-library": "^2.1.0"
     },
     "resolutions": {
         "logkitty": "^0.7.1"

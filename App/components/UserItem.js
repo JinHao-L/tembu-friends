@@ -41,9 +41,9 @@ const UserItem = ({
 
                     <View style={styles.textContainer}>
                         <MainText style={[styles.text, textStyle]}>{name}</MainText>
-                        {subtext && (
+                        {subtext ? (
                             <MainText style={[styles.subtext, subtextStyle]}>{subtext}</MainText>
-                        )}
+                        ) : null}
                     </View>
                 </View>
             </BaseButton>

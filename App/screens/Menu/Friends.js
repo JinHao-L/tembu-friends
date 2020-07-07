@@ -16,48 +16,36 @@ const mapStateToProps = (state) => {
 class Friends extends Component {
     state = {
         friendList: [],
-        loading: false,
     };
 
     componentDidMount() {
-        const friends = this.props.userData.friends;
-        if (friends.length === 0) {
+        const friendsDetails = this.props.userData.friendsDetails || [];
+        if (friendsDetails.length === 0) {
             return;
         }
-        this.setState({ loading: true });
-        return this.props.firebase
-            .getUserCollection()
-            .where('uid', 'in', friends)
-            .get()
-            .then((documentSnapshots) => documentSnapshots.docs)
-            .then((documents) => {
-                console.log('Retrieving Users :' + documents.length);
-                return documents.map((document) => document.data());
-            })
-            .then((userList) =>
-                this.setState({
-                    friendList: userList,
-                    loading: false,
-                })
-            )
-            .catch((error) => {
-                this.setState({ loading: false });
-                console.log('Get friends failed', error);
-            });
+        this.setState({
+            friendList: friendsDetails,
+        });
     }
 
-    goToProfile = (userData) => {
-        const { uid } = userData;
+    refresh = () => {
+        const friendsDetails = this.props.userData.friendsDetails || [];
+        this.setState({
+            friendList: friendsDetails,
+        });
+    };
+
+    goToProfile = (uid) => {
         if (!uid || uid === 'deleted') {
             console.log('User does not exist', uid);
         } else if (uid === this.props.userData.uid) {
             this.props.navigation.navigate('MyProfile');
         } else {
-            this.props.navigation.navigate('UserProfile', { userData: userData });
+            this.props.navigation.navigate('UserProfile', { user_uid: uid });
         }
     };
     goToExplore = () => {
-        return this.props.navigation.navigate('ExploreNav');
+        return this.props.navigation.navigate('Explore');
     };
 
     renderProfile = (userData) => {
@@ -68,7 +56,7 @@ class Friends extends Component {
                 name={displayName}
                 subtext={role}
                 profileImg={profileImg}
-                onPress={() => this.goToProfile(userData)}
+                onPress={() => this.goToProfile(uid)}
             />
         );
     };
@@ -98,7 +86,7 @@ class Friends extends Component {
 
     render() {
         const { userData } = this.props;
-        const { friendList } = this.state;
+        const { friendList, loading } = this.state;
 
         if (!userData.uid) {
             return (
@@ -122,11 +110,14 @@ class Friends extends Component {
                     style={styles.container}
                 >
                     <FlatList
+                        contentContainerStyle={{ paddingHorizontal: 25 }}
                         data={friendList}
                         renderItem={({ item }) => this.renderProfile(item)}
                         keyExtractor={(friend) => friend.uid}
                         ListFooterComponent={this.renderFooter}
                         ListEmptyComponent={this.renderEmpty}
+                        refreshing={false}
+                        onRefresh={this.refresh}
                     />
                 </LinearGradient>
             </SafeAreaView>
@@ -138,7 +129,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 10,
-        paddingHorizontal: 25,
     },
 });
 

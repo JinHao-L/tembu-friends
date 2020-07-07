@@ -1,29 +1,26 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    FlatList,
-    Text,
-    ActivityIndicator,
-    Image,
-    ScrollView,
-    SafeAreaView,
-    Alert,
-} from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { Avatar, Icon, Button, ListItem } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
-import { MAIN_FONT, MainText, Popup } from '../../components';
-import { Colors, Layout } from '../../constants';
+import { MAIN_FONT, MainText, Popup, ProfilePost, ProfileHeader } from '../../components';
+import { Colors } from '../../constants';
 import { withFirebase } from '../../config/Firebase';
-import { updateProfile } from '../../redux';
+import { fetchUserData, updateProfile } from '../../redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return { updateStatus: (uid, status) => dispatch(updateProfile(uid, { statusType: status })) };
+    return {
+        fetchUserData: () => {
+            dispatch(fetchUserData());
+        },
+        updateStatus: (uid, status) => {
+            dispatch(updateProfile(uid, { statusType: status }));
+        },
+    };
 };
 
 class MyProfile extends Component {
@@ -40,17 +37,17 @@ class MyProfile extends Component {
         postOptionsVisible: false,
         roomStatusPopupVisible: false,
     };
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     componentDidMount() {
         this.retrievePosts();
     }
 
-    componentWillUnmount() {
-        if (this.state.statusType && this.state.statusType !== this.props.userData.statusType) {
-            this.props.updateStatus(this.props.userData.uid, this.state.statusType);
-        }
-    }
+    onRefresh = () => {
+        console.log('Your profile refreshing');
+        this.setState({ refreshing: true });
+        this.props.fetchUserData();
+        this.retrievePosts();
+    };
 
     retrievePosts = () => {
         this.setState({ refreshing: true, allPostsLoaded: false });
@@ -128,42 +125,11 @@ class MyProfile extends Component {
         }
     };
 
-    formatDate = (timestamp) => {
-        if (timestamp) {
-            const dateTimeFormat = timestamp.toDate();
-            const day = dateTimeFormat.getDay();
-            const month = this.months[dateTimeFormat.getMonth()];
-
-            let hours = dateTimeFormat.getHours();
-            let minutes = dateTimeFormat.getMinutes();
-            const ampm = hours >= 12 ? ' PM' : ' AM';
-            hours = hours % 12 || 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            const time = hours + ':' + minutes + ampm;
-
-            return day + ' ' + month + ' at ' + time;
-        } else {
-            return null;
-        }
-    };
-
     handleStatus = (statusType) => {
-        this.setState({
-            statusType: statusType,
-        });
-        this.toggleRoomStatusPopup();
-    };
-    statusColor = () => {
-        switch (this.state.statusType || this.props.userData.statusType) {
-            case 'green':
-                return Colors.statusGreen;
-            case 'yellow':
-                return Colors.statusYellow;
-            case 'red':
-                return Colors.statusRed;
-            default:
-                return Colors.statusYellow;
+        if (statusType !== this.props.userData.statusType) {
+            this.props.updateStatus(this.props.userData.uid, statusType);
         }
+        this.toggleRoomStatusPopup();
     };
     deletePost = (postId, index) => {
         this.setState(
@@ -195,11 +161,17 @@ class MyProfile extends Component {
         });
     };
     togglePostOptions = (id, index) => {
-        this.setState({
-            postOptionsVisible: !this.state.postOptionsVisible,
-            postOptionsId: id,
-            postOptionsIndex: index,
-        });
+        if (id === undefined) {
+            this.setState({
+                postOptionsVisible: !this.state.postOptionsVisible,
+            });
+        } else {
+            this.setState({
+                postOptionsVisible: !this.state.postOptionsVisible,
+                postOptionsId: id,
+                postOptionsIndex: index,
+            });
+        }
     };
 
     renderRoomStatusPopup = () => {
@@ -298,7 +270,10 @@ class MyProfile extends Component {
                             buttonStyle={{ justifyContent: 'flex-start' }}
                             containerStyle={{ borderRadius: 0 }}
                             // TODO:
-                            onPress={() => Alert.alert('Work in progress', 'Not available')}
+                            onPress={() => {
+                                Alert.alert('Work in progress', 'Not available');
+                                this.togglePostOptions();
+                            }}
                         />
                         <Popup.Separator />
                         <Button
@@ -318,12 +293,13 @@ class MyProfile extends Component {
                             buttonStyle={{ justifyContent: 'flex-start' }}
                             containerStyle={{ borderRadius: 0 }}
                             // onPress={() => Alert.alert('Disabled', 'Disabled temporarily')}
-                            onPress={() =>
+                            onPress={() => {
                                 this.deletePost(
                                     this.state.postOptionsId,
                                     this.state.postOptionsIndex
-                                )
-                            }
+                                );
+                                this.togglePostOptions();
+                            }}
                         />
                     </View>
                 }
@@ -333,184 +309,25 @@ class MyProfile extends Component {
         );
     };
 
-    renderHouseText = (house) => {
-        let color = Colors.appBlack;
-        switch (house) {
-            case 'Shan':
-                color = Colors.shanHouse;
-                break;
-            case 'Ora':
-                color = Colors.oraHouse;
-                break;
-            case 'Gaja':
-                color = Colors.gajaHouse;
-                break;
-            case 'Tancho':
-                color = Colors.tanchoHouse;
-                break;
-            case 'Ponya':
-                color = Colors.ponyaHouse;
-                break;
-        }
-        return <Text style={{ color: color }}>{house}</Text>;
-    };
-
     renderHeader = () => {
-        const {
-            bannerImg,
-            profileImg,
-            displayName,
-            role = 'Resident',
-            major = 'Undeclared',
-            year = 'Y0',
-            house = 'Undeclared',
-            roomNumber = '',
-            friends = [],
-            aboutText = "Hello, I'm new to TembuFriends",
-            moduleCodes = [],
-            moduleNames = [],
-            verified,
-        } = this.props.userData;
-        const friendsCount = friends.length;
         return (
-            <View>
-                <View style={styles.header}>
-                    <Image
-                        style={styles.bannerImg}
-                        source={
-                            bannerImg
-                                ? { uri: bannerImg }
-                                : require('../../assets/images/default/banner.png')
-                        }
+            <ProfileHeader
+                userData={this.props.userData}
+                onAccessoryPress={this.toggleRoomStatusPopup}
+                button={
+                    <Button
+                        containerStyle={styles.editButtonContainer}
+                        buttonStyle={[
+                            styles.editButton,
+                            { borderColor: Colors.appGreen, borderWidth: 1 },
+                        ]}
+                        title="Edit Profile"
+                        titleStyle={[styles.editButtonText, { color: Colors.appGreen }]}
+                        type={'outline'}
+                        onPress={this.goToProfileEdit}
                     />
-
-                    <View
-                        style={{
-                            position: 'absolute',
-                            top: Layout.window.width / 3 - 40,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-end',
-                            width: '100%',
-                        }}
-                    >
-                        <Avatar
-                            size={80}
-                            containerStyle={styles.profileImg}
-                            rounded
-                            source={
-                                profileImg
-                                    ? { uri: profileImg }
-                                    : require('../../assets/images/default/profile.png')
-                            }
-                            showAccessory
-                            accessory={{
-                                color: this.statusColor(),
-                                size: 22,
-                                name: 'lens',
-                                style: {
-                                    backgroundColor: Colors.appWhite,
-                                    borderColor: Colors.appWhite,
-                                    overflow: 'hidden',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                },
-                            }}
-                            onAccessoryPress={this.toggleRoomStatusPopup}
-                        />
-                        <Button
-                            containerStyle={styles.editButtonContainer}
-                            buttonStyle={[
-                                styles.editButton,
-                                { borderColor: Colors.appGreen, borderWidth: 1 },
-                            ]}
-                            title="Edit Profile"
-                            titleStyle={[styles.editButtonText, { color: Colors.appGreen }]}
-                            type={'outline'}
-                            onPress={this.goToProfileEdit}
-                        />
-                    </View>
-                </View>
-                <View style={styles.spacing} />
-                <View style={[styles.box, { paddingTop: 0 }]}>
-                    <View style={styles.userDetails}>
-                        <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
-                            {displayName}
-                        </MainText>
-                        {verified && (
-                            <Image
-                                style={{ height: 18, width: 18, marginHorizontal: 5 }}
-                                source={require('../../assets/images/profile/verified-icon.png')}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/job-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>{role}</MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/study-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {major}, {year}
-                        </MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/house-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {this.renderHouseText(house)} {roomNumber}
-                            {roomNumber ? ' ' : ''}• {friendsCount}{' '}
-                            {friendsCount === 0 ? 'Friend' : 'Friends'}
-                        </MainText>
-                    </View>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>About</MainText>
-                    <MainText>{aboutText}</MainText>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
-                    <ScrollView style={{ maxHeight: 150 }}>
-                        {moduleCodes.length === 0 ? (
-                            <ListItem
-                                title={'None'}
-                                titleStyle={styles.emptyText}
-                                containerStyle={{ padding: 0 }}
-                            />
-                        ) : (
-                            moduleCodes.map((item, index) => (
-                                <ListItem
-                                    key={item}
-                                    leftElement={<MainText>•</MainText>}
-                                    title={`${item} ${moduleNames[index]}`}
-                                    titleStyle={{
-                                        fontFamily: MAIN_FONT,
-                                        fontSize: 13,
-                                    }}
-                                    containerStyle={{
-                                        padding: 0,
-                                        paddingBottom: 1,
-                                    }}
-                                />
-                            ))
-                        )}
-                    </ScrollView>
-                </View>
-                <View style={[styles.box, { borderBottomWidth: 0 }]}>
-                    <MainText style={styles.title}>Posts</MainText>
-                </View>
-            </View>
+                }
+            />
         );
     };
     renderFooter = () => {
@@ -520,80 +337,15 @@ class MyProfile extends Component {
             return null;
         }
     };
+
     renderPost = (post, index) => {
-        const {
-            body,
-            is_private,
-            //TODO: implement likes
-            likes,
-            sender_img,
-            sender_name,
-            sender_uid,
-            time_posted,
-            post_id,
-            imgUrl,
-            imgRatio,
-        } = post;
         return (
-            <View style={[styles.box, is_private && { backgroundColor: Colors.appLightGray }]}>
-                <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}>
-                    <Avatar
-                        size={35}
-                        rounded
-                        title={sender_name[0]}
-                        source={
-                            sender_img
-                                ? { uri: sender_img }
-                                : require('../../assets/images/default/profile.png')
-                        }
-                        containerStyle={{
-                            marginRight: 10,
-                            borderWidth: StyleSheet.hairlineWidth,
-                            borderColor: Colors.appGray,
-                        }}
-                        onPress={() => this.goToOtherProfile(sender_uid)}
-                    />
-                    <View style={{ flexDirection: 'column' }}>
-                        <MainText
-                            style={{ fontSize: 15 }}
-                            onPress={() => this.goToOtherProfile(sender_uid)}
-                        >
-                            {sender_name}
-                        </MainText>
-                        <MainText>{this.formatDate(time_posted)}</MainText>
-                    </View>
-                    {is_private && (
-                        <MainText
-                            style={{
-                                alignSelf: 'flex-end',
-                                marginLeft: 5,
-                                color: Colors.appDarkGray,
-                            }}
-                        >
-                            (Private)
-                        </MainText>
-                    )}
-                    <Icon
-                        name={'more-horiz'}
-                        size={18}
-                        color={Colors.appGreen}
-                        containerStyle={{ alignSelf: 'flex-start', marginLeft: 'auto' }}
-                        onPress={() => this.togglePostOptions(post_id, index)}
-                    />
-                </View>
-                <MainText>{body}</MainText>
-                {imgUrl ? (
-                    <Image
-                        source={{ uri: imgUrl }}
-                        style={{
-                            marginTop: 5,
-                            width: '100%',
-                            aspectRatio: imgRatio,
-                            resizeMode: 'contain',
-                        }}
-                    />
-                ) : null}
-            </View>
+            <ProfilePost
+                postDetails={post}
+                onUserPress={this.goToOtherProfile}
+                postOptionsVisible={true}
+                onPostOptionsPress={(id) => this.togglePostOptions(id, index)}
+            />
         );
     };
 
@@ -628,7 +380,7 @@ class MyProfile extends Component {
                         onEndReached={this.retrieveMorePosts}
                         onEndReachedThreshold={0.5}
                         refreshing={refreshing}
-                        onRefresh={this.retrievePosts}
+                        onRefresh={this.onRefresh}
                         ListEmptyComponent={() => {
                             return <MainText style={styles.emptyText}>No Posts</MainText>;
                         }}
@@ -643,18 +395,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.appWhite,
         flex: 1,
-    },
-    header: {},
-    bannerImg: {
-        width: Layout.window.width,
-        height: Layout.window.width / 3,
-        justifyContent: 'flex-end',
-    },
-    profileImg: {
-        backgroundColor: Colors.appWhite,
-        borderColor: Colors.appWhite,
-        borderWidth: 4,
-        marginLeft: 20,
     },
     editButtonContainer: {
         marginRight: 20,
@@ -671,34 +411,6 @@ const styles = StyleSheet.create({
     editButtonText: {
         fontFamily: MAIN_FONT,
         fontSize: 12,
-    },
-    spacing: {
-        height: 40,
-    },
-    userDetails: {
-        marginBottom: 2,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    title: {
-        fontFamily: MAIN_FONT,
-        fontSize: 15,
-        color: Colors.appGreen,
-        marginBottom: 2,
-    },
-    icon: {
-        marginLeft: 3,
-        marginRight: 8,
-        width: 15,
-        height: 15,
-    },
-    box: {
-        borderBottomWidth: 5,
-        borderColor: Colors.appGray,
-        backgroundColor: Colors.appWhite,
-        paddingHorizontal: 20,
-        paddingTop: 5,
-        paddingBottom: 10,
     },
     emptyText: {
         fontFamily: MAIN_FONT,

@@ -225,12 +225,9 @@ class SignUpScreen extends Component {
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
-                        {keyboardShown ? null : <View style={styles.header} />}
                         <View style={styles.titleContainer}>
-                            <MainText style={styles.title}> Deleting...</MainText>
-                            <MainText style={{ left: 40 }}>
-                                This is a feature for testing purposes
-                            </MainText>
+                            <MainText style={styles.title}>Deleting...</MainText>
+                            <MainText style={{ left: 40 }}>We are sorry to see you go</MainText>
                         </View>
 
                         <View style={styles.form}>
@@ -299,12 +296,6 @@ class SignUpScreen extends Component {
                                 />
                             </View>
                         </View>
-
-                        {keyboardShown ? (
-                            <View style={{ flex: 0.5 }} />
-                        ) : (
-                            <View style={{ flex: 1 }} />
-                        )}
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -328,15 +319,11 @@ const styles = StyleSheet.create({
         width: Layout.window.width,
         left: 35,
     },
-    header: {
-        flex: 0.5,
-    },
+    header: {},
     titleContainer: {
-        flex: 1,
         justifyContent: 'flex-end',
     },
     form: {
-        flex: 1,
         justifyContent: 'center',
         marginTop: 10,
         marginHorizontal: 40,

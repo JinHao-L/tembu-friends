@@ -28,19 +28,19 @@ class MenuScreen extends Component {
     };
 
     goToProfile = () => {
-        this.props.navigation.navigate('MyProfile');
+        this.props.navigation.push('MyProfile');
     };
 
     goToDelete = () => {
-        this.props.navigation.navigate('Delete');
+        this.props.navigation.push('Delete');
     };
 
     goToAdmin = () => {
-        this.props.navigation.navigate('AdminNav');
+        this.props.navigation.push('AdminNav');
     };
 
     goToFriends = () => {
-        this.props.navigation.navigate('Friends');
+        this.props.navigation.push('Friends');
     };
 
     toggleTestingVisibility = () => {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         paddingTop: 15,
         // alignItems: 'center',
-        marginHorizontal: 30,
+        paddingHorizontal: 30,
     },
     title: {
         textAlign: 'left',

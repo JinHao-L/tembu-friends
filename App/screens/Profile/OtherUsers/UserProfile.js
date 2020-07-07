@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
-import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import { Avatar, Icon, Button, ListItem } from 'react-native-elements';
+import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Avatar, Button } from 'react-native-elements';
 
-import { Colors, Layout } from '../../../constants';
-import { MainText, MAIN_FONT } from '../../../components';
+import { Colors } from '../../../constants';
+import { MainText, MAIN_FONT, ProfilePost, ProfileHeader } from '../../../components';
 import { withFirebase } from '../../../config/Firebase';
 import { connect } from 'react-redux';
 import { updateProfile } from '../../../redux';
@@ -22,13 +13,19 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return { updateFriends: (uid, friends) => dispatch(updateProfile(uid, { friends: friends })) };
+    return {
+        updateFriends: (uid, friends, friendsDetails) =>
+            dispatch(
+                updateProfile(uid, {
+                    friends: friends,
+                    friendsDetails: friendsDetails,
+                })
+            ),
+    };
 };
 
 class UserProfile extends Component {
     state = {
-        friendToggled: false,
-
         postsData: [],
         limit: 5,
         lastLoaded: null,
@@ -36,7 +33,6 @@ class UserProfile extends Component {
         refreshing: false,
         allPostsLoaded: false,
     };
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     componentDidMount() {
         const { userData, user_uid } = this.props.route.params;
@@ -45,48 +41,12 @@ class UserProfile extends Component {
                 {
                     profileData: userData,
                     uid: userData.uid,
-                    statusColor: this.getStatusColor(userData.statusType),
                     areFriends: this.props.userData.friends?.includes(userData.uid),
                 },
                 () => this.retrievePosts()
             );
         } else {
-            this.props.firebase
-                .getUserData(user_uid)
-                .then((profileData) => {
-                    if (profileData === undefined) {
-                        console.log('user not found', user_uid);
-                        this.props.navigation.goBack();
-                    } else {
-                        this.setState(
-                            {
-                                profileData: profileData,
-                                uid: user_uid,
-                                statusColor: this.getStatusColor(profileData.statusType),
-                                areFriends: this.props.userData.friends?.includes(user_uid),
-                            },
-                            () => this.retrievePosts()
-                        );
-                    }
-                })
-                .catch((error) => console.log('Failed to get user', error));
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.state.friendToggled) {
-            const currFriendList = this.props.userData.friends || [];
-            if (currFriendList.includes(this.state.uid)) {
-                this.props.updateFriends(
-                    this.props.userData.uid,
-                    currFriendList.filter((uid) => uid !== this.state.profileData.uid)
-                );
-            } else {
-                this.props.updateFriends(this.props.userData.uid, [
-                    ...currFriendList,
-                    this.state.profileData.uid,
-                ]);
-            }
+            this.getUser(user_uid);
         }
     }
 
@@ -110,6 +70,34 @@ class UserProfile extends Component {
         });
     };
 
+    getUser = (uid) => {
+        return this.props.firebase
+            .getUserData(uid)
+            .then((profileData) => {
+                if (profileData === undefined) {
+                    console.log('User not found', uid);
+                    this.props.navigation.goBack();
+                } else {
+                    this.setState(
+                        {
+                            uid: uid,
+                            profileData: profileData,
+                            areFriends: this.props.userData.friends?.includes(uid),
+                        },
+                        () => this.retrievePosts()
+                    );
+                }
+            })
+            .catch((error) => console.log('Failed to get user', error));
+    };
+
+    onRefresh = () => {
+        console.log('User refreshing');
+        this.setState({ refreshing: true });
+        this.getUser(this.state.uid);
+        return this.retrievePosts;
+    };
+
     retrievePosts = () => {
         this.setState({ refreshing: true, allPostsLoaded: false });
 
@@ -125,6 +113,9 @@ class UserProfile extends Component {
             })
             .then((postsData) => {
                 let lastLoaded = postsData[postsData.length - 1].time_posted;
+                postsData = postsData.filter(
+                    (post) => !(post.is_private && post.sender_uid !== this.props.userData.uid)
+                );
 
                 this.setState({
                     postsData: postsData,
@@ -159,6 +150,9 @@ class UserProfile extends Component {
                 if (documents.length !== 0) {
                     let postsData = documents.map((document) => document.data());
                     let lastLoaded = postsData[postsData.length - 1].time_posted;
+                    postsData = postsData.filter(
+                        (post) => !(post.is_private && post.sender_uid !== this.props.userData.uid)
+                    );
 
                     this.setState({
                         postsData: [...this.state.postsData, ...postsData],
@@ -175,267 +169,121 @@ class UserProfile extends Component {
             });
     };
 
-    toggleFriend = () => {
-        this.setState({
-            friendToggled: !this.state.friendToggled,
-        });
+    addFriend = () => {
+        this.setState(
+            {
+                areFriends: true,
+            },
+            () => {
+                const currFriendList = this.props.userData.friends || [];
+                const currFriendDetails = this.props.userData.friendsDetails || [];
+                const userDetails = {
+                    uid: this.state.profileData.uid,
+                    displayName: this.state.profileData.displayName,
+                    profileImg: this.state.profileData.profileImg || '',
+                    role: this.state.profileData.role || '',
+                };
+                this.props.updateFriends(
+                    this.props.userData.uid,
+                    [this.state.profileData.uid, ...currFriendList],
+                    [userDetails, ...currFriendDetails]
+                );
+            }
+        );
     };
-    formatDate = (timestamp) => {
-        if (timestamp) {
-            const dateTimeFormat = timestamp.toDate();
-            const day = dateTimeFormat.getDay();
-            const month = this.months[dateTimeFormat.getMonth()];
+    removeFriend = () => {
+        this.setState(
+            {
+                areFriends: false,
+            },
+            () => {
+                const currFriendList = this.props.userData.friends || [];
+                const currFriendDetails = this.props.userData.friendsDetails || [];
 
-            let hours = dateTimeFormat.getHours();
-            let minutes = dateTimeFormat.getMinutes();
-            const ampm = hours >= 12 ? ' PM' : ' AM';
-            hours = hours % 12 || 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            const time = hours + ':' + minutes + ampm;
-
-            return day + ' ' + month + ' at ' + time;
-        } else {
-            return null;
-        }
-    };
-    getStatusColor = (type) => {
-        switch (type) {
-            case 'green':
-                return Colors.statusGreen;
-            case 'yellow':
-                return Colors.statusYellow;
-            case 'red':
-                return Colors.statusRed;
-            default:
-                return Colors.statusYellow;
-        }
-    };
-
-    renderHouseText = (house) => {
-        let color = Colors.appBlack;
-        switch (house) {
-            case 'Shan':
-                color = Colors.shanHouse;
-                break;
-            case 'Ora':
-                color = Colors.oraHouse;
-                break;
-            case 'Gaja':
-                color = Colors.gajaHouse;
-                break;
-            case 'Tancho':
-                color = Colors.tanchoHouse;
-                break;
-            case 'Ponya':
-                color = Colors.ponyaHouse;
-                break;
-        }
-        return <Text style={{ color: color }}>{house}</Text>;
+                this.props.updateFriends(
+                    this.props.userData.uid,
+                    currFriendList.filter((uid) => uid !== this.state.profileData.uid),
+                    currFriendDetails.filter(
+                        (userDetails) => userDetails.uid !== this.state.profileData.uid
+                    )
+                );
+            }
+        );
     };
 
     renderHeader = () => {
-        const { friendToggled, areFriends } = this.state;
-        const {
-            bannerImg,
-            profileImg,
-            firstName,
-            displayName,
-            role = 'Resident',
-            major = 'Undeclared',
-            year = 'Y0',
-            house = 'Undeclared',
-            roomNumber = '',
-            friends = [],
-            aboutText = "Hello, I'm new to TembuFriends",
-            moduleCodes = [],
-            moduleNames = [],
-            verified,
-        } = this.state.profileData;
-        const friendsCount = friends.length;
+        const { areFriends } = this.state;
         return (
-            <View>
-                <View style={styles.header}>
-                    <Image
-                        style={styles.bannerImg}
-                        source={
-                            bannerImg
-                                ? { uri: bannerImg }
-                                : require('../../../assets/images/default/banner.png')
-                        }
-                    />
-
-                    <View
-                        style={{
-                            position: 'absolute',
-                            top: Layout.window.width / 3 - 40,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'flex-end',
-                            width: '100%',
-                        }}
-                    >
-                        <Avatar
-                            size={80}
-                            containerStyle={styles.profileImg}
-                            rounded
-                            source={
-                                profileImg
-                                    ? { uri: profileImg }
-                                    : require('../../../assets/images/default/profile.png')
-                            }
-                            showAccessory
-                            accessory={{
-                                color: this.state.statusColor,
-                                size: 22,
-                                name: 'lens',
-                                style: {
-                                    backgroundColor: Colors.appWhite,
-                                    borderColor: Colors.appWhite,
-                                    overflow: 'hidden',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
+            <ProfileHeader
+                userData={this.state.profileData}
+                button={
+                    areFriends ? (
+                        <Button
+                            containerStyle={styles.friendButtonContainer}
+                            buttonStyle={[
+                                styles.friendButton,
+                                { backgroundColor: Colors.appGreen },
+                            ]}
+                            title="Friends"
+                            titleStyle={styles.friendButtonText}
+                            type={'solid'}
+                            onPress={this.removeFriend}
+                        />
+                    ) : (
+                        <Button
+                            containerStyle={styles.friendButtonContainer}
+                            buttonStyle={[
+                                styles.friendButton,
+                                {
+                                    borderColor: Colors.appGreen,
+                                    borderWidth: 1,
                                 },
-                            }}
+                            ]}
+                            title="Add Friend"
+                            titleStyle={[styles.friendButtonText, { color: Colors.appGreen }]}
+                            type={'outline'}
+                            onPress={this.addFriend}
                         />
-                        {(friendToggled && !areFriends) || (!friendToggled && areFriends) ? (
-                            <Button
-                                containerStyle={styles.friendButtonContainer}
-                                buttonStyle={[
-                                    styles.friendButton,
-                                    { backgroundColor: Colors.appGreen },
-                                ]}
-                                title="Friends"
-                                titleStyle={styles.friendButtonText}
-                                type={'solid'}
-                                onPress={this.toggleFriend}
-                            />
-                        ) : (
-                            <Button
-                                containerStyle={styles.friendButtonContainer}
-                                buttonStyle={[
-                                    styles.friendButton,
-                                    {
-                                        borderColor: Colors.appGreen,
-                                        borderWidth: 1,
-                                    },
-                                ]}
-                                title="Add Friend"
-                                titleStyle={[styles.friendButtonText, { color: Colors.appGreen }]}
-                                type={'outline'}
-                                onPress={this.toggleFriend}
-                            />
-                        )}
-                    </View>
-                </View>
-                <View style={styles.spacing} />
-                <View style={[styles.box, { paddingTop: 0 }]}>
-                    <View style={styles.userDetails}>
-                        <MainText
-                            style={{ fontSize: 18, color: Colors.appGreen, textAlign: 'center' }}
+                    )
+                }
+                bottomElement={
+                    <View>
+                        <View
+                            style={{
+                                marginVertical: 5,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
                         >
-                            {displayName}
-                        </MainText>
-                        {verified && (
-                            <Image
-                                style={{ height: 18, width: 18, marginHorizontal: 5 }}
-                                source={require('../../../assets/images/profile/verified-icon.png')}
+                            <Avatar
+                                size={35}
+                                rounded
+                                title={this.props.userData.firstName[0]}
+                                source={
+                                    this.props.userData.profileImg
+                                        ? { uri: this.props.userData.profileImg }
+                                        : require('../../../assets/images/default/profile.png')
+                                }
+                                containerStyle={{
+                                    marginRight: 10,
+                                    borderWidth: StyleSheet.hairlineWidth,
+                                    borderColor: Colors.appGray,
+                                }}
                             />
-                        )}
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../../assets/images/profile/job-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
+                            <MainText style={{ color: Colors.appGray }}>
+                                Write something to {this.state.profileData.firstName}...
+                            </MainText>
+                        </View>
+                        <Button
+                            title={'Write Post'}
+                            titleStyle={styles.postButtonText}
+                            containerStyle={styles.postButtonContainer}
+                            buttonStyle={{ backgroundColor: Colors.appGreen }}
+                            onPress={this.goToWritePost}
                         />
-                        <MainText style={{ fontSize: 15 }}>{role}</MainText>
                     </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../../assets/images/profile/study-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {major}, {year}
-                        </MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../../assets/images/profile/house-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {this.renderHouseText(house)} {roomNumber}
-                            {roomNumber ? ' ' : ''}• {friendsCount}{' '}
-                            {friendsCount === 0 ? 'Friend' : 'Friends'}
-                        </MainText>
-                    </View>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>About</MainText>
-                    <MainText>{aboutText}</MainText>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
-                    <ScrollView style={{ maxHeight: 150 }}>
-                        {moduleCodes.length === 0 ? (
-                            <ListItem
-                                title={'None'}
-                                titleStyle={styles.emptyText}
-                                containerStyle={{ padding: 0 }}
-                            />
-                        ) : (
-                            moduleCodes.map((item, index) => (
-                                <ListItem
-                                    key={item}
-                                    leftElement={<MainText>•</MainText>}
-                                    title={`${item} ${moduleNames[index]}`}
-                                    titleStyle={{
-                                        fontFamily: MAIN_FONT,
-                                        fontSize: 13,
-                                    }}
-                                    containerStyle={{
-                                        padding: 0,
-                                        paddingBottom: 1,
-                                    }}
-                                />
-                            ))
-                        )}
-                    </ScrollView>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>Posts</MainText>
-                    <View style={{ marginVertical: 5, flexDirection: 'row', alignItems: 'center' }}>
-                        <Avatar
-                            size={35}
-                            rounded
-                            title={this.props.userData.firstName[0]}
-                            source={
-                                this.props.userData.profileImg
-                                    ? { uri: this.props.userData.profileImg }
-                                    : require('../../../assets/images/default/profile.png')
-                            }
-                            containerStyle={{
-                                marginRight: 10,
-                                borderWidth: StyleSheet.hairlineWidth,
-                                borderColor: Colors.appGray,
-                            }}
-                        />
-                        <MainText style={{ color: Colors.appGray }}>
-                            Write something to {firstName}...
-                        </MainText>
-                    </View>
-                    <Button
-                        title={'Write Post'}
-                        titleStyle={styles.postButtonText}
-                        containerStyle={styles.postButtonContainer}
-                        buttonStyle={{ backgroundColor: Colors.appGreen }}
-                        onPress={this.goToWritePost}
-                    />
-                </View>
-            </View>
+                }
+            />
         );
     };
     renderFooter = () => {
@@ -446,75 +294,12 @@ class UserProfile extends Component {
         }
     };
     renderPost = (post) => {
-        if (post.is_private && post.sender_uid !== this.props.userData.uid) {
-            return null;
-        }
-        const {
-            body,
-            is_private,
-            //TODO: implement likes
-            likes,
-            sender_img,
-            sender_name,
-            sender_uid,
-            time_posted,
-            post_id,
-            imgUrl,
-            imgRatio,
-        } = post;
         return (
-            <View style={[styles.box, is_private && { backgroundColor: Colors.appLightGray }]}>
-                <View style={{ marginBottom: 5, flexDirection: 'row', alignItems: 'center' }}>
-                    <Avatar
-                        size={35}
-                        rounded
-                        title={sender_name[0]}
-                        source={
-                            sender_img
-                                ? { uri: sender_img }
-                                : require('../../../assets/images/default/profile.png')
-                        }
-                        containerStyle={{
-                            marginRight: 10,
-                            borderWidth: StyleSheet.hairlineWidth,
-                            borderColor: Colors.appGray,
-                        }}
-                        onPress={() => this.goToProfile(sender_uid)}
-                    />
-                    <View style={{ flexDirection: 'column' }}>
-                        <MainText
-                            style={{ fontSize: 15 }}
-                            onPress={() => this.goToProfile(sender_uid)}
-                        >
-                            {sender_name}
-                        </MainText>
-                        <MainText>{this.formatDate(time_posted)}</MainText>
-                    </View>
-                    {is_private && (
-                        <MainText
-                            style={{
-                                alignSelf: 'flex-end',
-                                marginLeft: 5,
-                                color: Colors.appDarkGray,
-                            }}
-                        >
-                            (Private)
-                        </MainText>
-                    )}
-                </View>
-                <MainText>{body}</MainText>
-                {imgUrl ? (
-                    <Image
-                        source={{ uri: imgUrl }}
-                        style={{
-                            marginTop: 5,
-                            width: '100%',
-                            aspectRatio: imgRatio,
-                            resizeMode: 'contain',
-                        }}
-                    />
-                ) : null}
-            </View>
+            <ProfilePost
+                postDetails={post}
+                onUserPress={this.goToProfile}
+                postOptionsVisible={false}
+            />
         );
     };
 
@@ -546,7 +331,7 @@ class UserProfile extends Component {
                         onEndReached={this.retrieveMorePosts}
                         onEndReachedThreshold={0.5}
                         refreshing={refreshing}
-                        onRefresh={this.retrievePosts}
+                        onRefresh={this.onRefresh}
                         ListEmptyComponent={() => {
                             return <MainText style={styles.emptyText}>No Posts</MainText>;
                         }}
@@ -561,18 +346,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.appWhite,
         flex: 1,
-    },
-    header: {},
-    bannerImg: {
-        width: Layout.window.width,
-        height: Layout.window.width / 3,
-        justifyContent: 'flex-end',
-    },
-    profileImg: {
-        backgroundColor: Colors.appWhite,
-        borderColor: Colors.appWhite,
-        borderWidth: 4,
-        marginLeft: 20,
     },
     friendButtonContainer: {
         marginRight: 20,
@@ -589,21 +362,6 @@ const styles = StyleSheet.create({
         fontFamily: MAIN_FONT,
         fontSize: 12,
     },
-    spacing: {
-        height: 40,
-    },
-    userDetails: {
-        marginBottom: 2,
-        flexDirection: 'row',
-        alignItems: 'center',
-        textAlign: 'center',
-    },
-    title: {
-        fontFamily: MAIN_FONT,
-        fontSize: 15,
-        color: Colors.appGreen,
-        marginBottom: 2,
-    },
     postButtonText: {
         fontFamily: MAIN_FONT,
         color: Colors.appWhite,
@@ -614,20 +372,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginVertical: 5,
         justifyContent: 'center',
-    },
-    icon: {
-        marginLeft: 3,
-        marginRight: 8,
-        width: 15,
-        height: 15,
-    },
-    box: {
-        borderBottomWidth: 5,
-        borderColor: Colors.appGray,
-        backgroundColor: Colors.appWhite,
-        paddingHorizontal: 20,
-        paddingTop: 5,
-        paddingBottom: 10,
     },
     emptyText: {
         fontFamily: MAIN_FONT,

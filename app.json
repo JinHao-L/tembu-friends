@@ -34,7 +34,12 @@
             "package": "com.nus.tembufriends",
             "versionCode": 1,
             "googleServicesFile": "",
-            "permissions": ["CAMERA", "WRITE_EXTERNAL_STORAGE", "READ_INTERNAL_STORAGE"]
+            "permissions": [
+                "CAMERA",
+                "WRITE_EXTERNAL_STORAGE",
+                "READ_INTERNAL_STORAGE",
+                "NOTIFICATIONS"
+            ]
         },
         "web": {
             "favicon": "./assets/images/favicon.png"

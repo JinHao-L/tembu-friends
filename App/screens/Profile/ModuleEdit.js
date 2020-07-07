@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet, Picker } from 'react-native';
-import { Button, ButtonGroup, Input, ListItem, SearchBar } from 'react-native-elements';
+import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { Button, ButtonGroup, Input, ListItem } from 'react-native-elements';
 import Colors from '../../constants/Colors';
 import { MAIN_FONT, Popup } from '../../components';
 

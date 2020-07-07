@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -9,12 +10,29 @@ import HomeTabNav from './HomeTabNav';
 import AuthNav from './AuthNav';
 import { withFirebase } from '../config/Firebase';
 import AppLogo from '../components/AppLogo';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../constants';
+import { fetchUserData, updateProfile } from '../redux';
+import { connect } from 'react-redux';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
 
+const mapStateToProps = (state) => {
+    return { userData: state.userData };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchUserData: () => {
+            dispatch(fetchUserData());
+        },
+        updateToken: (uid, token) => {
+            dispatch(updateProfile(uid, { expoToken: token }));
+        },
+    };
+};
 const RootStack = createStackNavigator();
 
-class RootNavigator extends Component {
+class RootNav extends Component {
     state = {
         isUserLoading: true,
         isAssetsLoading: true,
@@ -25,16 +43,20 @@ class RootNavigator extends Component {
     async componentDidMount() {
         console.log('Starting app');
         try {
-            await this.props.firebase.checkUserAuth((result) => {
-                if (result && result.emailVerified) {
+            this.props.firebase.checkUserAuth((user) => {
+                if (user && user.emailVerified) {
                     console.log('Email verified');
+                    this.props.fetchUserData();
+                    this.registerForPushNotificationsAsync().then((token) =>
+                        this.props.updateToken(this.props.userData.uid, token)
+                    );
                     this.setState({
                         isUserLoading: false,
                         isUserSignedIn: true,
                     });
                 } else {
                     console.log('Email not verified');
-                    if (result) {
+                    if (user) {
                         this.props.firebase.signOut();
                     }
                     this.setState({
@@ -60,6 +82,21 @@ class RootNavigator extends Component {
         }
     }
 
+    registerForPushNotificationsAsync = async () => {
+        const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        let finalStatus = status;
+
+        if (status !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+            finalStatus = status;
+        }
+        console.log('Notification Permission', finalStatus);
+        if (finalStatus !== 'granted') {
+            return;
+        }
+
+        return Notifications.getExpoPushTokenAsync();
+    };
     componentWillUnmount() {
         if (this.timer) this.timer = null;
     }
@@ -146,4 +183,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withFirebase(RootNavigator);
+export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(RootNav));

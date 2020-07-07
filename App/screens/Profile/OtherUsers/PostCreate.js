@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Avatar, Button, CheckBox, Icon } from 'react-native-elements';
+import { Avatar, Button, Icon } from 'react-native-elements';
 import { Colors } from '../../../constants';
 import * as ImagePicker from 'expo-image-picker';
 import { withFirebase } from '../../../config/Firebase';

@@ -4,13 +4,14 @@ import { Firebase, FirebaseProvider } from './config/Firebase/';
 import { Provider } from 'react-redux';
 import { store } from './redux';
 
-import RootNavigator from './navigation';
+import RootNav from './navigation';
 
+console.ignoredYellowBox = ['Setting a timer'];
 function App() {
     return (
         <FirebaseProvider value={Firebase}>
             <Provider store={store}>
-                <RootNavigator />
+                <RootNav />
             </Provider>
         </FirebaseProvider>
     );

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, SafeAreaView, ActivityIndicator, FlatList } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Icon, Input } from 'react-native-elements';
+import { Button, Icon, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { MAIN_FONT, MainText, UserItem } from '../components';
+import { MAIN_FONT, MainText, Popup, UserItem } from '../components';
 import { Colors } from '../constants/index';
 import { withFirebase } from '../config/Firebase';
 
@@ -23,19 +23,11 @@ class ExploreScreen extends Component {
             userList: [],
             limit: 10,
             searchStarted: false,
+            prefix: 'Name',
+            prefixSearchPopupVisible: false,
         };
     }
 
-    goToProfile = (userData) => {
-        const { uid } = userData;
-        if (!uid || uid === 'deleted') {
-            console.log('User does not exist', uid);
-        } else if (uid === this.props.userData.uid) {
-            this.props.navigation.navigate('MyProfile');
-        } else {
-            this.props.navigation.navigate('UserProfile', { userData: userData });
-        }
-    };
     clearSearch = () => {
         this.searchBarRef.current.clear();
         this.setState({
@@ -44,24 +36,38 @@ class ExploreScreen extends Component {
         });
     };
 
-    search = (event) => {
-        const searchArr = event.nativeEvent.text.split(':', 2);
-        let search = searchArr[0];
-        let code = 'name';
-        if (searchArr.length !== 1) {
-            code = searchArr[0];
-            search = searchArr[1];
+    goToProfile = (userData) => {
+        const { uid } = userData;
+        if (!uid || uid === 'deleted') {
+            console.log('User does not exist', uid);
+        } else if (uid === this.props.userData.uid) {
+            this.props.navigation.navigate('MenuNav', {
+                screen: 'MyProfile',
+                initial: false,
+            });
+        } else {
+            this.props.navigation.navigate('MenuNav', {
+                screen: 'UserProfile',
+                initial: false,
+                params: {
+                    userData: userData,
+                },
+            });
         }
-        if (search) {
+    };
+
+    search = (searchValue) => {
+        const { prefix } = this.state;
+        if (searchValue) {
             this.setState({ loading: true, searchStarted: true });
-            if (code === 'name') {
-                return this.searchByName(search);
-            } else if (code === 'mod') {
-                return this.searchByMod(search);
-            } else if (code === 'role') {
-                return this.searchByRole(search);
-            } else if (code === 'room') {
-                return this.searchByRoom(search);
+            if (prefix === 'Name') {
+                return this.searchByName(searchValue);
+            } else if (prefix === 'Mods') {
+                return this.searchByMod(searchValue);
+            } else if (prefix === 'Role') {
+                return this.searchByRole(searchValue);
+            } else if (prefix === 'Room') {
+                return this.searchByRoom(searchValue);
             }
         }
     };
@@ -172,7 +178,6 @@ class ExploreScreen extends Component {
     };
 
     toTitleCase = (text) => {
-        const lower = text.toLowerCase();
         const arr = text.split(' ');
         for (let i = 0; i < arr.length; i++) {
             arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
@@ -235,7 +240,7 @@ class ExploreScreen extends Component {
         }
     };
     renderProfile = (userData) => {
-        const { displayName, profileImg, uid, role } = userData;
+        const { displayName, profileImg, uid, role, roomNumber } = userData;
 
         return (
             <UserItem
@@ -261,14 +266,96 @@ class ExploreScreen extends Component {
         );
     };
 
+    setPrefix = (prefix) => {
+        this.setState({
+            prefix: prefix,
+        });
+        this.togglePrefixSearchPopup();
+    };
+    togglePrefixSearchPopup = () => {
+        this.setState({
+            prefixSearchPopupVisible: !this.state.prefixSearchPopupVisible,
+        });
+    };
+    renderPrefixSearchPopup = () => {
+        return (
+            <Popup
+                imageType={'Custom'}
+                isVisible={this.state.prefixSearchPopupVisible}
+                title={'Search by...'}
+                body={
+                    <View>
+                        <Button
+                            title={'Name'}
+                            type={'clear'}
+                            titleStyle={{
+                                fontFamily: MAIN_FONT,
+                                fontSize: 15,
+                                color: Colors.appBlack,
+                            }}
+                            buttonStyle={{ justifyContent: 'center' }}
+                            containerStyle={{ borderRadius: 0 }}
+                            onPress={() => this.setPrefix('Name')}
+                        />
+                        {/*<Popup.Separator />*/}
+                        <Button
+                            title={'Module'}
+                            type={'clear'}
+                            titleStyle={{
+                                fontFamily: MAIN_FONT,
+                                fontSize: 15,
+                                color: Colors.appBlack,
+                            }}
+                            buttonStyle={{ justifyContent: 'center' }}
+                            containerStyle={{ borderRadius: 0 }}
+                            onPress={() => this.setPrefix('Mods')}
+                        />
+                        {/*<Popup.Separator />*/}
+                        <Button
+                            title={'Role'}
+                            type={'clear'}
+                            titleStyle={{
+                                fontFamily: MAIN_FONT,
+                                fontSize: 15,
+                                color: Colors.appBlack,
+                            }}
+                            buttonStyle={{ justifyContent: 'center' }}
+                            containerStyle={{ borderRadius: 0 }}
+                            onPress={() => this.setPrefix('Role')}
+                        />
+                        {/*<Popup.Separator />*/}
+                        <Button
+                            title={'Room/Floor'}
+                            type={'clear'}
+                            titleStyle={{
+                                fontFamily: MAIN_FONT,
+                                fontSize: 15,
+                                color: Colors.appBlack,
+                            }}
+                            buttonStyle={{ justifyContent: 'center' }}
+                            containerStyle={{
+                                borderRadius: 0,
+                                borderBottomEndRadius: 20,
+                                borderBottomStartRadius: 20,
+                            }}
+                            onPress={() => this.setPrefix('Room')}
+                        />
+                    </View>
+                }
+                callback={this.togglePrefixSearchPopup}
+            />
+        );
+    };
+
     render() {
-        const { userList } = this.state;
+        const { userList, prefix } = this.state;
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
+                    {this.renderPrefixSearchPopup()}
                     <View style={styles.header}>
                         <MainText style={styles.title}>Explore</MainText>
                     </View>
@@ -283,16 +370,15 @@ class ExploreScreen extends Component {
                                 autoCorrect={true}
                                 renderErrorMessage={false}
                                 autoCapitalize={'none'}
-                                onEndEditing={(text) => this.search(text)}
+                                onEndEditing={({ nativeEvent: { text } }) => this.search(text)}
                                 placeholderTextColor={Colors.appDarkGray}
                                 inputStyle={styles.searchBarInput}
                                 inputContainerStyle={styles.inputContentContainer}
-                                leftIcon={{
-                                    type: 'material',
-                                    size: 18,
-                                    name: 'search',
-                                    color: Colors.appDarkGray,
-                                }}
+                                leftIcon={
+                                    <MainText onPress={this.togglePrefixSearchPopup}>
+                                        {prefix}
+                                    </MainText>
+                                }
                                 leftIconContainerStyle={styles.leftIconContainerStyle}
                                 rightIcon={this.renderRightIcon()}
                                 rightIconContainerStyle={styles.rightIconContainerStyle}
@@ -354,7 +440,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     leftIconContainerStyle: {
-        marginLeft: 8,
+        backgroundColor: Colors.appGray,
+        width: '20%',
+        alignItems: 'center',
+        paddingLeft: 8,
     },
     rightIconContainerStyle: {
         marginRight: 8,

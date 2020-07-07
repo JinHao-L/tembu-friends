@@ -45,7 +45,7 @@ function MenuNav() {
             <MenuStack.Screen
                 name="Delete"
                 component={DeleteScreen}
-                options={{ headerTitle: 'Deleting account' }}
+                options={{ headerTitle: 'Deleting Account' }}
             />
             <MenuStack.Screen
                 name="MyProfile"

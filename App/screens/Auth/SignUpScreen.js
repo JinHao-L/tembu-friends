@@ -7,6 +7,7 @@ import {
     Keyboard,
     Text,
     Platform,
+    ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -112,7 +113,7 @@ class SignUpScreen extends Component {
             this.setState({ passwordError: 'Weak password' });
         } else {
             // Others
-            this.setState({ generalError: 'Unknown error' });
+            this.setState({ generalError: 'Unknown error' + errorCode });
             console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
     }
@@ -284,6 +285,12 @@ class SignUpScreen extends Component {
         return this.signUp.bind(this)();
     }
 
+    toggleEmailSentPopup = () => {
+        this.setState({
+            emailSentPopup: !this.state.emailSentPopup,
+        });
+    };
+
     renderEmailSentPopup = () => {
         return (
             <Popup
@@ -308,11 +315,26 @@ class SignUpScreen extends Component {
             />
         );
     };
-
-    toggleEmailSentPopup = () => {
-        this.setState({
-            emailSentPopup: !this.state.emailSentPopup,
-        });
+    renderLoading = () => {
+        return (
+            <Popup
+                imageType={'Custom'}
+                isVisible={this.state.isLoading}
+                body={
+                    <View
+                        style={{
+                            paddingVertical: 20,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <ActivityIndicator size={'large'} />
+                        <MainText>Saving your changes</MainText>
+                    </View>
+                }
+                callback={null}
+            />
+        );
     };
 
     render() {
@@ -347,6 +369,7 @@ class SignUpScreen extends Component {
                     },
                 ]}
             >
+                {this.renderLoading()}
                 {this.renderEmailSentPopup()}
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>

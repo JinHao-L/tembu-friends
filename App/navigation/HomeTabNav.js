@@ -1,34 +1,18 @@
 import React, { Component } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { connect } from 'react-redux';
 
-import { fetchUserData } from '../redux';
 import { TabBarIcon } from '../components/index';
-import { HomeScreen, NotificationScreen } from '../screens/index';
+import { HomeScreen, NotificationScreen, ExploreScreen } from '../screens/index';
 import MenuNav from './MenuNav';
 import { Colors } from '../constants';
-import ExploreNav from './ExploreNav';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
 
-const mapStateToProps = (state) => {
-    return { personData: state.personData };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchUserData: () => {
-            dispatch(fetchUserData());
-        },
-    };
-};
-
 class HomeTabNav extends Component {
     constructor(props) {
         super(props);
-        this.props.fetchUserData();
         this.props.navigation.setOptions({
             headerShown: false,
         });
@@ -60,13 +44,12 @@ class HomeTabNav extends Component {
                         }}
                     />
                     <BottomTab.Screen
-                        name="ExploreNav"
-                        component={ExploreNav}
+                        name="Explore"
+                        component={ExploreScreen}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-search" />
                             ),
-                            // unmountOnBlur: true,
                         }}
                     />
                     <BottomTab.Screen
@@ -79,7 +62,7 @@ class HomeTabNav extends Component {
                         }}
                     />
                     <BottomTab.Screen
-                        name="Menus"
+                        name="MenuNav"
                         component={MenuNav}
                         options={{
                             tabBarIcon: ({ focused }) => (
@@ -87,6 +70,14 @@ class HomeTabNav extends Component {
                             ),
                             unmountOnBlur: true,
                         }}
+                        listeners={({ navigation, route }) => ({
+                            tabPress: (e) => {
+                                navigation.setParams({
+                                    screen: undefined,
+                                    params: undefined,
+                                });
+                            },
+                        })}
                     />
                 </BottomTab.Navigator>
             </SafeAreaView>
@@ -94,4 +85,4 @@ class HomeTabNav extends Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeTabNav);
+export default HomeTabNav;
