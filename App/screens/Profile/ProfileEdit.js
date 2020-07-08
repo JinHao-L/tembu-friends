@@ -14,7 +14,7 @@ import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { Colors, Layout } from '../../constants';
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { MainText, Popup, RadioButton, MAIN_FONT } from '../../components';
 import { updateProfile } from '../../redux';
 

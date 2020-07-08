@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { MainText, UserItem } from '../../components';
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { connect } from 'react-redux';
 import { Colors } from '../../constants';
 import { LinearGradient } from 'expo-linear-gradient';

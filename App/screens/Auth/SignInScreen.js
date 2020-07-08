@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, LogoText, MainText, Popup } from '../../components';
 

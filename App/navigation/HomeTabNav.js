@@ -3,8 +3,9 @@ import { SafeAreaView, StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { TabBarIcon } from '../components/index';
-import { HomeScreen, NotificationScreen, ExploreScreen } from '../screens/index';
+import { HomeScreen, NotificationScreen } from '../screens/index';
 import MenuNav from './MenuNav';
+import ExploreNav from './ExploreNav';
 import { Colors } from '../constants';
 
 const BottomTab = createBottomTabNavigator();
@@ -24,7 +25,7 @@ class HomeTabNav extends Component {
                 {Platform.OS === 'ios' ? (
                     <StatusBar barStyle="dark-content" />
                 ) : (
-                    <StatusBar backgroundColor="#248458" barStyle="light-content" />
+                    <StatusBar backgroundColor={Colors.appGreen} barStyle="light-content" />
                 )}
                 <BottomTab.Navigator
                     initialRouteName={INITIAL_ROUTE_NAME}
@@ -45,7 +46,7 @@ class HomeTabNav extends Component {
                     />
                     <BottomTab.Screen
                         name="Explore"
-                        component={ExploreScreen}
+                        component={ExploreNav}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-search" />
@@ -68,16 +69,7 @@ class HomeTabNav extends Component {
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-menu" />
                             ),
-                            unmountOnBlur: true,
                         }}
-                        listeners={({ navigation, route }) => ({
-                            tabPress: (e) => {
-                                navigation.setParams({
-                                    screen: undefined,
-                                    params: undefined,
-                                });
-                            },
-                        })}
                     />
                 </BottomTab.Navigator>
             </SafeAreaView>

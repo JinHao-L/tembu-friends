@@ -2,7 +2,7 @@ import React from 'react';
 import { View, FlatList, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
 
 import { Colors } from '../../../constants';
-import { withFirebase } from '../../../config/Firebase';
+import { withFirebase } from '../../../helper/Firebase';
 import { ListItem } from 'react-native-elements';
 import { MainText } from '../../../components';
 

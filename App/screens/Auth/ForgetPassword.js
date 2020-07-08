@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
 

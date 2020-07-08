@@ -2,8 +2,8 @@ import React from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 
-import { Colors, Layout } from '../constants';
-import { MAIN_FONT, MainText } from './MyAppText';
+import { Colors, Layout } from '../../constants';
+import { MAIN_FONT, MainText } from '../MyAppText';
 
 const renderHouseText = (house) => {
     let color = Colors.appBlack;
@@ -72,7 +72,7 @@ const ProfileHeader = ({
                     source={
                         bannerImg
                             ? { uri: bannerImg }
-                            : require('../assets/images/default/banner.png')
+                            : require('../../assets/images/default/banner.png')
                     }
                 />
 
@@ -84,7 +84,7 @@ const ProfileHeader = ({
                         source={
                             profileImg
                                 ? { uri: profileImg }
-                                : require('../assets/images/default/profile.png')
+                                : require('../../assets/images/default/profile.png')
                         }
                         showAccessory
                         accessory={{
@@ -113,13 +113,13 @@ const ProfileHeader = ({
                     {verified && (
                         <Image
                             style={{ height: 18, width: 18, marginHorizontal: 5 }}
-                            source={require('../assets/images/profile/verified-icon.png')}
+                            source={require('../../assets/images/profile/verified-icon.png')}
                         />
                     )}
                 </View>
                 <View style={styles.userDetails}>
                     <Image
-                        source={require('../assets/images/profile/job-icon.png')}
+                        source={require('../../assets/images/profile/job-icon.png')}
                         style={styles.icon}
                         resizeMode={'contain'}
                     />
@@ -127,7 +127,7 @@ const ProfileHeader = ({
                 </View>
                 <View style={styles.userDetails}>
                     <Image
-                        source={require('../assets/images/profile/study-icon.png')}
+                        source={require('../../assets/images/profile/study-icon.png')}
                         style={styles.icon}
                         resizeMode={'contain'}
                     />
@@ -137,7 +137,7 @@ const ProfileHeader = ({
                 </View>
                 <View style={styles.userDetails}>
                     <Image
-                        source={require('../assets/images/profile/house-icon.png')}
+                        source={require('../../assets/images/profile/house-icon.png')}
                         style={styles.icon}
                         resizeMode={'contain'}
                     />

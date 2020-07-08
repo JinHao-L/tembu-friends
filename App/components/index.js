@@ -6,5 +6,5 @@ export MenuButton from './MenuButton';
 export Popup from './Popup';
 export RadioButton from './RadioButton';
 export UserItem from './UserItem';
-export ProfilePost from './ProfilePost';
-export ProfileHeader from './ProfileHeader';
+export ProfilePost from './Profile/ProfilePost';
+export ProfileHeader from './Profile/ProfileHeader';

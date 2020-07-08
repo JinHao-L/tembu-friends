@@ -4,9 +4,10 @@ import { Avatar, Button } from 'react-native-elements';
 
 import { Colors } from '../../../constants';
 import { MainText, MAIN_FONT, ProfilePost, ProfileHeader } from '../../../components';
-import { withFirebase } from '../../../config/Firebase';
+import { withFirebase } from '../../../helper/Firebase';
 import { connect } from 'react-redux';
 import { updateProfile } from '../../../redux';
+import PushNotifications from '../../../helper/PushNotification';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -187,6 +188,23 @@ class UserProfile extends Component {
                     this.props.userData.uid,
                     [this.state.profileData.uid, ...currFriendList],
                     [userDetails, ...currFriendDetails]
+                );
+                PushNotifications.writeNotification(
+                    this.state.profileData.uid,
+                    {
+                        type: 'Friend Request',
+                        message: `${this.state.receiverName} sent you a friend request`,
+                        uid: this.props.userData.uid,
+                    },
+                    {
+                        displayName: this.state.receiverName,
+                        expoPushToken: 'ExponentPushToken[2V3_KGJKXLhxZWpxdsDab9]',
+                        permissions: undefined,
+                    }
+                );
+                PushNotifications.sendFriendNotification(
+                    'Jin Hao',
+                    'ExponentPushToken[2V3_KGJKXLhxZWpxdsDab9]'
                 );
             }
         );

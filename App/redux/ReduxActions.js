@@ -1,4 +1,4 @@
-import Firebase from '../config/Firebase/firebase';
+import Firebase from '../helper/Firebase/firebase';
 //
 // Action Creators
 //

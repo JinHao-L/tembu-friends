@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import { MAIN_FONT, MainText, Popup, UserItem } from '../components';
 import { Colors } from '../constants/index';
-import { withFirebase } from '../config/Firebase';
+import { withFirebase } from '../helper/Firebase';
 
 const mapStateToProps = (state) => {
     return {
@@ -41,17 +41,10 @@ class ExploreScreen extends Component {
         if (!uid || uid === 'deleted') {
             console.log('User does not exist', uid);
         } else if (uid === this.props.userData.uid) {
-            this.props.navigation.navigate('MenuNav', {
-                screen: 'MyProfile',
-                initial: false,
-            });
+            this.props.navigation.navigate('MyProfile');
         } else {
-            this.props.navigation.navigate('MenuNav', {
-                screen: 'UserProfile',
-                initial: false,
-                params: {
-                    userData: userData,
-                },
+            this.props.navigation.navigate('UserProfile', {
+                userData: userData,
             });
         }
     };

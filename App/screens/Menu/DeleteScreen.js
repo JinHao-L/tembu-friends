@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { Colors, Layout } from '../../constants';
 import { AuthButton, FormInput, MainText } from '../../components';
 import ErrorMessage from '../../components/Auth/ErrorMessage';

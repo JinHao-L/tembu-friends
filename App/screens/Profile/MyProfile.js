@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements';
 
 import { MAIN_FONT, MainText, Popup, ProfilePost, ProfileHeader } from '../../components';
 import { Colors } from '../../constants';
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { fetchUserData, updateProfile } from '../../redux';
 
 const mapStateToProps = (state) => {

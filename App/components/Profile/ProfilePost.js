@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
+import ReadMore from 'react-native-read-more-text';
 
-import { Colors, Layout } from '../constants';
-import { MainText } from './MyAppText';
+import { Colors } from '../../constants';
+import { MainText } from '../MyAppText';
+import PostImage from './PostImage';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const formatDate = (timestamp) => {
     if (timestamp) {
         const dateTimeFormat = timestamp.toDate();
-        const day = dateTimeFormat.getDate();
+        let day = dateTimeFormat.getDate();
+        day = day < 10 ? '0' + day : day;
         const month = months[dateTimeFormat.getMonth()];
 
         let hours = dateTimeFormat.getHours();
@@ -24,6 +27,26 @@ const formatDate = (timestamp) => {
     } else {
         return null;
     }
+};
+
+const truncateText = (text, textStyle) => {
+    return (
+        <ReadMore
+            numberOfLines={3}
+            renderTruncatedFooter={(handlePress) => (
+                <MainText style={{ color: Colors.appGreen }} onPress={handlePress}>
+                    See More
+                </MainText>
+            )}
+            renderRevealedFooter={(handlePress) => (
+                <MainText style={{ color: Colors.appGreen }} onPress={handlePress}>
+                    See Less
+                </MainText>
+            )}
+        >
+            <MainText style={textStyle}>{text}</MainText>
+        </ReadMore>
+    );
 };
 
 const ProfilePost = ({
@@ -45,7 +68,7 @@ const ProfilePost = ({
         imgUrl,
         imgRatio,
     } = postDetails;
-    const [expand, setExpand] = useState(false);
+
     return (
         <View style={[styles.box, is_private && { backgroundColor: Colors.appLightGray }]}>
             <View style={styles.header}>
@@ -56,7 +79,7 @@ const ProfilePost = ({
                     source={
                         sender_img
                             ? { uri: sender_img }
-                            : require('../assets/images/default/profile.png')
+                            : require('../../assets/images/default/profile.png')
                     }
                     containerStyle={{
                         marginRight: 10,
@@ -92,33 +115,19 @@ const ProfilePost = ({
                     />
                 )}
             </View>
-            <MainText>{body}</MainText>
+            <View>{truncateText(body)}</View>
             {imgUrl ? (
-                <TouchableOpacity
-                    style={
-                        expand
-                            ? undefined
-                            : {
-                                  maxHeight: Layout.window.height / 2,
-                                  overflow: 'hidden',
-                              }
+                <PostImage
+                    imgRatio={imgRatio}
+                    imgUrl={imgUrl}
+                    style={{ marginTop: 10 }}
+                    caption={() =>
+                        truncateText(body, {
+                            textAlign: 'center',
+                            color: Colors.appWhite,
+                        })
                     }
-                    onPress={() => {
-                        console.log('TAPPED');
-                        setExpand(!expand);
-                    }}
-                    disabled={Layout.window.width / imgRatio <= Layout.window.height / 2}
-                >
-                    <Image
-                        source={{ uri: imgUrl }}
-                        style={{
-                            marginTop: 5,
-                            width: '100%',
-                            aspectRatio: imgRatio,
-                            resizeMode: 'contain',
-                        }}
-                    />
-                </TouchableOpacity>
+                />
             ) : null}
         </View>
     );

@@ -4,7 +4,7 @@ import { ListItem, Button } from 'react-native-elements';
 
 import { Colors } from '../../../constants';
 import { MAIN_FONT, MainText } from '../../../components';
-import { withFirebase } from '../../../config/Firebase';
+import { withFirebase } from '../../../helper/Firebase';
 
 class ReportsControl extends Component {
     state = {

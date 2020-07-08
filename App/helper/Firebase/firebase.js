@@ -119,6 +119,10 @@ const Firebase = {
     deletePost: (uid, postId) => {
         return firebase.firestore().collection(`posts/${uid}/userPosts`).doc(`${postId}`).delete();
     },
+    writeNotification: (uid, details) => {
+        details.timeCreated = firebase.firestore.Timestamp.now();
+        return firebase.firestore().collection(`notifications/${uid}/details`).add(details);
+    },
 
     // Storage
     getStorageRef: () => {

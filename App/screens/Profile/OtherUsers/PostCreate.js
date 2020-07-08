@@ -12,7 +12,8 @@ import {
 import { Avatar, Button, Icon } from 'react-native-elements';
 import { Colors } from '../../../constants';
 import * as ImagePicker from 'expo-image-picker';
-import { withFirebase } from '../../../config/Firebase';
+import { withFirebase } from '../../../helper/Firebase';
+import PushNotifications from '../../../helper/PushNotification';
 
 class PostCreate extends Component {
     state = {
@@ -102,10 +103,26 @@ class PostCreate extends Component {
                     sender_img: this.state.profileImg,
                     sender_name: this.state.myName,
                     imgUrl: url,
-                    imgRatio: this.state.ratio,
+                    imgRatio: this.state.imgRatio,
                 };
                 return this.props.firebase.createPost(post);
             })
+            .then(() =>
+                PushNotifications.writeNotification(
+                    this.state.receiverUid,
+                    {
+                        type: 'Post',
+                        message:
+                            `${this.state.receiverName} posted on your wall:` + this.state.body,
+                        uid: this.state.receiverUid,
+                    },
+                    {
+                        displayName: this.state.receiverName,
+                        expoPushToken: 'ExponentPushToken[2V3_KGJKXLhxZWpxdsDab9]',
+                        permissions: undefined,
+                    }
+                )
+            )
             .then(() => this.toggleSuccessPopup())
             .catch((error) => {
                 console.log(error);
@@ -133,7 +150,7 @@ class PostCreate extends Component {
         if (!result.cancelled) {
             this.setState({
                 postImg: result.uri,
-                ratio: result.width / result.height,
+                imgRatio: result.width / result.height,
             });
         }
     };
@@ -402,7 +419,7 @@ class PostCreate extends Component {
                                 source={{ uri: postImg }}
                                 style={{
                                     width: '100%',
-                                    aspectRatio: this.state.ratio,
+                                    aspectRatio: this.state.imgRatio,
                                     resizeMode: 'contain',
                                     marginBottom: 5,
                                 }}

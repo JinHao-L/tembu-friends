@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
-import { withFirebase } from '../../config/Firebase';
+import { withFirebase } from '../../helper/Firebase';
 import { MainText, MenuButton, Popup } from '../../components';
 
 const mapStateToProps = (state) => {
