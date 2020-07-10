@@ -189,7 +189,7 @@ class ExploreScreen extends Component {
                     borderRadius: 10,
                 }}
             >
-                <MainText style={{ fontSize: 15, borderBottomWidth: 1 }}>Search examples</MainText>
+                <MainText style={{ fontSize: 15, borderBottomWidth: 1 }}>Search Examples</MainText>
                 <View style={{ flexDirection: 'row' }}>
                     <View
                         style={{ flexDirection: 'column', alignItems: 'flex-end', paddingRight: 5 }}
@@ -201,9 +201,9 @@ class ExploreScreen extends Component {
                     </View>
                     <View style={{ flexDirection: 'column', paddingLeft: 5 }}>
                         <MainText style={styles.exampleStyle}>'John Doe'</MainText>
-                        <MainText style={styles.exampleStyle}>'mod:CS1101S'</MainText>
-                        <MainText style={styles.exampleStyle}>'role:Developer'</MainText>
-                        <MainText style={styles.exampleStyle}>'room:#00-000'</MainText>
+                        <MainText style={styles.exampleStyle}>'CS1101S'</MainText>
+                        <MainText style={styles.exampleStyle}>'Developer'</MainText>
+                        <MainText style={styles.exampleStyle}>'#15-555'</MainText>
                     </View>
                 </View>
             </View>
@@ -244,7 +244,7 @@ class ExploreScreen extends Component {
             />
         );
     };
-    renderRightIcon = () => {
+    renderRightSearchBarIcon = () => {
         const { loading } = this.state;
         return loading ? (
             <ActivityIndicator style={{ marginRight: 5 }} />
@@ -373,7 +373,7 @@ class ExploreScreen extends Component {
                                     </MainText>
                                 }
                                 leftIconContainerStyle={styles.leftIconContainerStyle}
-                                rightIcon={this.renderRightIcon()}
+                                rightIcon={this.renderRightSearchBarIcon()}
                                 rightIconContainerStyle={styles.rightIconContainerStyle}
                             />
                         </View>

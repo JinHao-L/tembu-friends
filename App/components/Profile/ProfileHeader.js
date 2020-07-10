@@ -55,14 +55,13 @@ const ProfileHeader = ({
         year = 'Y0',
         house = 'Undeclared',
         roomNumber = '',
-        friends = [],
+        friendsCount = 0,
         aboutText = "Hello, I'm new to TembuFriends",
         moduleCodes = [],
         moduleNames = [],
         verified,
         statusType,
     } = userData;
-    const friendsCount = friends.length;
 
     return (
         <View>

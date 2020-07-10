@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Friends, DeleteScreen, MenuScreen } from '../screens/Menu';
+import { Friends, FriendRequests, DeleteScreen, MenuScreen, SettingsScreen } from '../screens/Menu';
 import AdminNav from './AdminNav';
 import { Colors } from '../constants';
 import { MAIN_FONT } from '../components';
@@ -42,6 +42,7 @@ function MenuNav() {
                 component={AdminNav}
                 options={{ headerShown: false }}
             />
+            <MenuStack.Screen name="Settings" component={SettingsScreen} />
             <MenuStack.Screen
                 name="Delete"
                 component={DeleteScreen}
@@ -63,6 +64,11 @@ function MenuNav() {
                 options={{ headerTitle: 'Edit Modules' }}
             />
             <MenuStack.Screen name="Friends" component={Friends} />
+            <MenuStack.Screen
+                name="FriendRequests"
+                component={FriendRequests}
+                options={{ headerTitle: 'Friend Requests' }}
+            />
             <MenuStack.Screen
                 name="UserProfile"
                 component={UserProfile}

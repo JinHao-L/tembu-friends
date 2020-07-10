@@ -12,7 +12,7 @@ import AuthNav from './AuthNav';
 import { withFirebase } from '../helper/Firebase';
 import AppLogo from '../components/AppLogo';
 import { Colors } from '../constants';
-import { fetchUserData, updateProfile } from '../redux';
+import { fetchUserData, updateProfile, listenFriendList, clearCache } from '../redux';
 import PushNotifications from '../helper/PushNotification';
 
 const mapStateToProps = (state) => {
@@ -25,7 +25,13 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(fetchUserData());
         },
         updateToken: (uid, token) => {
-            dispatch(updateProfile(uid, { expoToken: token }));
+            dispatch(updateProfile(uid, { expoPushToken: token }));
+        },
+        listenFriendList: (uid) => {
+            dispatch(listenFriendList(uid));
+        },
+        clearCache: () => {
+            dispatch(clearCache());
         },
     };
 };
@@ -37,28 +43,40 @@ class RootNav extends Component {
         isAssetsLoading: true,
         isUserSignedIn: false,
         timerCounting: true,
+
+        uid: null,
     };
 
     async componentDidMount() {
         console.log('Starting app');
         try {
             this.props.firebase.checkUserAuth((user) => {
+                console.log('onAuthStateChange', user !== null);
                 if (user && user.emailVerified) {
-                    console.log('Email verified');
-                    this.props.fetchUserData();
-                    PushNotifications.registerAsync().then((token) =>
-                        this.props.updateToken(this.props.userData.uid, token)
-                    );
-                    this.setState({
-                        isUserLoading: false,
-                        isUserSignedIn: true,
-                    });
+                    if (user.uid !== this.state.uid) {
+                        console.log('Email verified');
+                        this.props.fetchUserData();
+                        PushNotifications.registerAsync().then((token) => {
+                            if (token) {
+                                this.props.updateToken(user.uid, token.data);
+                            }
+                        });
+                        this.props.listenFriendList(user.uid);
+                        this.setState({
+                            uid: user.uid,
+                            isUserLoading: false,
+                            isUserSignedIn: true,
+                        });
+                    }
                 } else {
-                    console.log('Email not verified');
-                    if (user) {
+                    this.props.clearCache();
+                    if (user && !user.emailVerified) {
+                        console.log('Email not verified');
                         this.props.firebase.signOut();
                     }
+                    console.log('Not Signed In');
                     this.setState({
+                        uid: null,
                         isUserLoading: false,
                         isUserSignedIn: false,
                     });

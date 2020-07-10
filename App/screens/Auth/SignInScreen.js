@@ -274,7 +274,7 @@ class SignInScreen extends Component {
                     <View>
                         {keyboardShown ? null : <View style={styles.header} />}
                         <View style={styles.titleContainer}>
-                            <LogoText style={styles.title}>
+                            <LogoText style={styles.title} adjustsFontSizeToFit={true}>
                                 TEMBU<Text style={styles.title2}>FRIENDS</Text>
                             </LogoText>
                         </View>

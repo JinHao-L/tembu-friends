@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 
-import { MainText, MenuButton } from '../../../components';
-import { Colors } from '../../../constants';
+import { MainText, MenuButton } from '../../components';
+import { Colors } from '../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Button } from 'react-native-elements';
 
 class AdminMenu extends Component {
-    state = {};
-
     goToReports = () => {
         return this.props.navigation.navigate('Reports');
     };
@@ -23,10 +22,7 @@ class AdminMenu extends Component {
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    <View style={styles.header}>
-                        <MainText style={styles.title}>Admin Privileges</MainText>
-                    </View>
-                    <View style={styles.contentContainer}>
+                    <ScrollView style={styles.contentContainer}>
                         <MenuButton
                             style={styles.adminButton}
                             textStyle={{ color: 'white' }}
@@ -41,20 +37,24 @@ class AdminMenu extends Component {
                         >
                             Reports
                         </MenuButton>
-                    </View>
+                    </ScrollView>
                 </LinearGradient>
             </SafeAreaView>
         );
     }
 }
 
-styles = StyleSheet.create({
-    header: {
-        paddingBottom: 10,
-        paddingTop: 20,
-    },
+const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    header: {
+        flexDirection: 'row',
+        paddingBottom: 10,
+        paddingTop: 20,
+        paddingLeft: 15,
+        paddingRight: 15,
+        alignItems: 'center',
     },
     contentContainer: {
         paddingTop: 15,
@@ -62,9 +62,9 @@ styles = StyleSheet.create({
     },
     title: {
         textAlign: 'left',
+        textAlignVertical: 'center',
         color: 'white',
         fontSize: 24,
-        left: 30,
     },
     adminButton: {
         alignItems: 'center',

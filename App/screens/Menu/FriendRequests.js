@@ -11,14 +11,12 @@ import { Colors } from '../../constants';
 const mapStateToProps = (state) => {
     return {
         userData: state.userData,
-        friends: state.friends,
     };
 };
 
-class Friends extends Component {
+class FriendRequests extends Component {
     state = {
         pendingList: [],
-        friendList: [],
         refreshing: false,
     };
 
@@ -30,27 +28,16 @@ class Friends extends Component {
         this.setState({
             refreshing: true,
         });
-        const friendList = [];
-        const pendingList = [];
-        Object.entries(this.props.friends).forEach((entry) => {
-            const status = entry[1].status;
-            if (status === 'friends') {
-                friendList.push({ uid: entry[0] });
-            } else if (status === 'respond') {
-                pendingList.push({ uid: entry[0] });
-            }
-        });
 
         return this.props.firebase
-            .getUsers(friendList)
+            .getUsers(this.props.route.params.pendingList)
             .then((list) => {
                 this.setState({
-                    friendList: list,
+                    pendingList: list,
                 });
             })
             .finally(() => {
                 this.setState({
-                    pendingList: pendingList,
                     refreshing: false,
                 });
             });
@@ -64,14 +51,6 @@ class Friends extends Component {
         } else {
             this.props.navigation.navigate('UserProfile', { user_uid: uid });
         }
-    };
-    goToExplore = () => {
-        return this.props.navigation.navigate('Explore');
-    };
-    goToFriendRequests = () => {
-        return this.props.navigation.navigate('FriendRequests', {
-            pendingList: this.state.pendingList,
-        });
     };
 
     renderProfile = (userData) => {
@@ -89,32 +68,14 @@ class Friends extends Component {
         return (
             <View style={styles.emptyContainerStyle}>
                 <MainText onPress={this.goToExplore} style={{ color: Colors.appGreen }}>
-                    Find some friends
+                    No Friend Requests
                 </MainText>
-            </View>
-        );
-    };
-    renderHeader = () => {
-        return (
-            <View>
-                <ListItem
-                    title={'Friend Requests'}
-                    titleStyle={styles.titleStyle}
-                    subtitle={'Approve or ignore requests'}
-                    subtitleStyle={styles.subtitleStyle}
-                    bottomDivider={true}
-                    badge={{
-                        value: '2',
-                        status: 'primary',
-                    }}
-                    onPress={this.goToFriendRequests}
-                />
             </View>
         );
     };
 
     render() {
-        const { friendList, refreshing } = this.state;
+        const { pendingList, refreshing } = this.state;
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <LinearGradient
@@ -122,11 +83,9 @@ class Friends extends Component {
                     style={styles.container}
                 >
                     <FlatList
-                        contentContainerStyle={{ paddingHorizontal: 25 }}
-                        data={friendList}
+                        data={pendingList}
                         renderItem={({ item }) => this.renderProfile(item)}
                         keyExtractor={(friend) => friend.uid}
-                        ListHeaderComponent={this.renderHeader}
                         ListEmptyComponent={this.renderEmpty}
                         refreshing={refreshing}
                         onRefresh={this.refresh}
@@ -158,4 +117,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps)(withFirebase(Friends));
+export default connect(mapStateToProps)(withFirebase(FriendRequests));

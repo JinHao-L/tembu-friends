@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image, Platform } from 'react-native';
 import { BaseButton } from 'react-native-gesture-handler';
-import { Avatar } from 'react-native-elements';
+import { Avatar, Icon } from 'react-native-elements';
 
 import { Colors } from '../constants';
 import { MainText } from './MyAppText';
@@ -41,6 +41,13 @@ const MenuButton = (property) => {
                             }
                             containerStyle={styles.profileContainer}
                         />
+                    ) : type === 'Admin' ? (
+                        <Icon
+                            type={'font-awesome-5'}
+                            name={'users-cog'}
+                            style={styles.imageContainer}
+                            color={Colors.appGreen}
+                        />
                     ) : type ? (
                         <Image source={getImage(type)} style={styles.imageContainer} />
                     ) : null}
@@ -68,7 +75,7 @@ const getImage = (img) => {
 
 const styles = StyleSheet.create({
     outerContainer: {
-        marginBottom: 12,
+        marginBottom: 15,
         borderRadius: 11,
         ...Platform.select({
             ios: {

@@ -1,7 +1,6 @@
 import React from 'react';
 import * as Notifications from 'expo-notifications';
 
-import { Firebase } from './Firebase';
 import { Colors } from '../constants';
 
 const PushNotifications = {
@@ -48,10 +47,12 @@ const PushNotifications = {
 
     sendPostNotification: async (displayName, expoPushToken, permissions) => {
         if (!expoPushToken) {
+            console.log('No push token');
             return;
         }
 
-        if (permissions && !permissions.allowPostUpdate) {
+        if (permissions && permissions.disablePostUpdate) {
+            console.log('Notifications disabled');
             return;
         }
 
@@ -64,7 +65,9 @@ const PushNotifications = {
             channelId: 'default',
         };
 
-        await fetch('https://exp.host/--/api/v2/push/send', {
+        console.log(message);
+
+        return fetch('https://exp.host/--/api/v2/push/send', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -73,15 +76,17 @@ const PushNotifications = {
             },
             body: JSON.stringify(message),
         })
-            .then(() => console.log('Success'))
+            .then((response) => console.log('Success', response.ok))
             .catch((error) => console.log('Post Notification Error', error));
     },
-    sendFriendNotification: async (displayName, expoPushToken, permissions) => {
+    sendFriendRequestNotification: async (displayName, expoPushToken, permissions) => {
         if (!expoPushToken) {
+            console.log('No push token');
             return;
         }
 
-        if (permissions && !permissions.allowFriendNotification) {
+        if (permissions && permissions.disableFriendNotification) {
+            console.log('Notifications disabled');
             return;
         }
 
@@ -89,6 +94,36 @@ const PushNotifications = {
             to: expoPushToken,
             title: 'Friend Request',
             body: `${displayName} sent you a friend request`,
+            sound: 'default',
+            priority: 'high',
+            channelId: 'default',
+        };
+
+        return fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+        })
+            .then((response) => console.log('Success', response.statusText))
+            .catch((error) => console.log('Friend Request Notification Error', error));
+    },
+    sendAcceptFriendNotification: async (displayName, expoPushToken, permissions) => {
+        if (!expoPushToken) {
+            return;
+        }
+
+        if (permissions && permissions.disableFriendNotification) {
+            return;
+        }
+
+        const message = {
+            to: expoPushToken,
+            title: 'Friend Request',
+            body: `${displayName} accepted your friend request`,
             sound: 'default',
             priority: 'high',
             channelId: 'default',
@@ -103,19 +138,8 @@ const PushNotifications = {
             },
             body: JSON.stringify(message),
         })
-            .then(() => console.log('Success'))
-            .catch((error) => console.log('Friend Notification Error', error));
-    },
-
-    writeNotification: async (uid, message, settings) => {
-        const { displayName, expoPushToken, permissions } = settings;
-        Firebase.writeNotification(uid, message).then(() => {
-            if (message.type === 'Post') {
-                return this.sendPostNotification(displayName, expoPushToken, permissions);
-            } else if (message.type === 'Friend Request') {
-                return this.sendFriendNotification(displayName, expoPushToken, permissions);
-            }
-        });
+            .then((response) => console.log('Success', response.statusText))
+            .catch((error) => console.log('Friend Accept Notification Error', error));
     },
 };
 

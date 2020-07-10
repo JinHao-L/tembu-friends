@@ -13,14 +13,12 @@ import { Avatar, Button, Icon } from 'react-native-elements';
 import { Colors } from '../../../constants';
 import * as ImagePicker from 'expo-image-picker';
 import { withFirebase } from '../../../helper/Firebase';
-import PushNotifications from '../../../helper/PushNotification';
 
 class PostCreate extends Component {
     state = {
         myName: this.props.route.params.myName,
         profileImg: this.props.route.params.profileImg,
-        receiverUid: this.props.route.params.receiverUid,
-        receiverName: this.props.route.params.receiverName,
+        profileData: this.props.route.params.profileData,
 
         // Post
         body: '',
@@ -74,7 +72,7 @@ class PostCreate extends Component {
 
             let ref = this.props.firebase
                 .getStorageRef()
-                .child(`posts/${this.state.receiverUid}/` + uniqueName);
+                .child(`posts/${this.state.profileData.uid}/` + uniqueName);
             return ref.put(blob).then(() => ref);
         } else {
             return Promise.resolve();
@@ -99,33 +97,19 @@ class PostCreate extends Component {
                 const post = {
                     body: this.state.body,
                     is_private: this.state.isPrivate,
-                    receiver_uid: this.state.receiverUid,
+                    receiver_uid: this.state.profileData.uid,
                     sender_img: this.state.profileImg,
                     sender_name: this.state.myName,
                     imgUrl: url,
                     imgRatio: this.state.imgRatio,
                 };
-                return this.props.firebase.createPost(post);
+                return this.props.firebase.createPost(post, {
+                    expoPushToken: this.state.profileData.expoPushToken,
+                    permissions: this.state.profileData.pushPermissions,
+                });
             })
-            .then(() =>
-                PushNotifications.writeNotification(
-                    this.state.receiverUid,
-                    {
-                        type: 'Post',
-                        message:
-                            `${this.state.receiverName} posted on your wall:` + this.state.body,
-                        uid: this.state.receiverUid,
-                    },
-                    {
-                        displayName: this.state.receiverName,
-                        expoPushToken: 'ExponentPushToken[2V3_KGJKXLhxZWpxdsDab9]',
-                        permissions: undefined,
-                    }
-                )
-            )
             .then(() => this.toggleSuccessPopup())
-            .catch((error) => {
-                console.log(error);
+            .catch(() => {
                 return this.toggleFailurePopup();
             });
     };
@@ -344,7 +328,7 @@ class PostCreate extends Component {
     }
 
     render() {
-        const { myName, profileImg, receiverName, isPrivate, body, postImg } = this.state;
+        const { myName, profileImg, profileData, isPrivate, body, postImg } = this.state;
         return (
             <View style={styles.container}>
                 {this.renderDiscardPostPopup()}
@@ -403,7 +387,7 @@ class PostCreate extends Component {
                         placeholder={
                             postImg
                                 ? 'Write something about this photo...'
-                                : `Write a message to ${receiverName}...`
+                                : `Write a message to ${profileData.firstName}...`
                         }
                         placeholderTextColor={Colors.appGray}
                         textAlignVertical={'top'}

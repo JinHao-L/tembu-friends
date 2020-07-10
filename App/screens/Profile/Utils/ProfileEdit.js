@@ -13,10 +13,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors, Layout } from '../../constants';
-import { withFirebase } from '../../helper/Firebase';
-import { MainText, Popup, RadioButton, MAIN_FONT } from '../../components';
-import { updateProfile } from '../../redux';
+import { Colors, Layout } from '../../../constants';
+import { withFirebase } from '../../../helper/Firebase';
+import { MainText, Popup, RadioButton, MAIN_FONT } from '../../../components';
+import { updateProfile } from '../../../redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -599,7 +599,7 @@ class ProfileEdit extends Component {
                             source={
                                 bannerImg
                                     ? { uri: bannerImg }
-                                    : require('../../assets/images/default/banner.png')
+                                    : require('../../../assets/images/default/banner.png')
                             }
                         >
                             <Icon
@@ -620,7 +620,7 @@ class ProfileEdit extends Component {
                             source={
                                 profileImg
                                     ? { uri: profileImg }
-                                    : require('../../assets/images/default/profile.png')
+                                    : require('../../../assets/images/default/profile.png')
                             }
                             showAccessory={true}
                             accessory={{

@@ -205,7 +205,7 @@ class SignUpScreen extends Component {
                 console.log('User created. Creating profile');
                 return this.props.firebase
                     .createProfile(userData)
-                    .then(() => response.user.sendEmailVerification());
+                    .then(response.user.sendEmailVerification);
             })
             .then(() => {
                 this.props.firebase.signOut();

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
 import { Button, ButtonGroup, Input, ListItem } from 'react-native-elements';
-import Colors from '../../constants/Colors';
-import { MAIN_FONT, Popup } from '../../components';
+import Colors from '../../../constants/Colors';
+import { MAIN_FONT, Popup } from '../../../components';
 
 class ModuleEdit extends Component {
     state = {
@@ -281,11 +281,6 @@ const styles = StyleSheet.create({
     },
     searchBarContainer: {
         flexDirection: 'column',
-        // borderTopWidth: 1,
-        // borderBottomWidth: 1,
-        // borderTopColor: '#e1e1e1',
-        // borderBottomColor: '#e1e1e1',
-        // backgroundColor: Colors.appWhite,
     },
     searchBarInput: {
         marginLeft: 10,

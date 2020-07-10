@@ -4,13 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
-import { withFirebase } from '../../helper/Firebase';
 import { MainText, MenuButton, Popup } from '../../components';
+import { withFirebase } from '../../helper/Firebase';
 
 const mapStateToProps = (state) => {
-    return {
-        userData: state.userData,
-    };
+    return { userData: state.userData, friendSubscriber: state.friendSubscriber };
 };
 
 class MenuScreen extends Component {
@@ -19,20 +17,13 @@ class MenuScreen extends Component {
         signOutVisible: false,
     };
 
-    signOut = async () => {
-        try {
-            await this.props.firebase.signOut();
-        } catch (error) {
-            console.log('Sign out fail', error);
-        }
+    signOut = () => {
+        this.props.friendSubscriber();
+        return this.props.firebase.signOut().catch((error) => console.log('Sign out fail', error));
     };
 
     goToProfile = () => {
         this.props.navigation.push('MyProfile');
-    };
-
-    goToDelete = () => {
-        this.props.navigation.push('Delete');
     };
 
     goToAdmin = () => {
@@ -41,6 +32,10 @@ class MenuScreen extends Component {
 
     goToFriends = () => {
         this.props.navigation.push('Friends');
+    };
+
+    goToSettings = () => {
+        this.props.navigation.push('Settings');
     };
 
     toggleTestingVisibility = () => {
@@ -87,7 +82,9 @@ class MenuScreen extends Component {
     };
 
     render() {
-        if (!this.props.userData) {
+        const userData = this.props.userData;
+        const { profileImg, firstName, admin } = userData;
+        if (!userData) {
             return (
                 <View
                     style={[
@@ -116,11 +113,11 @@ class MenuScreen extends Component {
                     <ScrollView style={styles.contentContainer}>
                         <MenuButton
                             type={'Profile'}
-                            avatar={this.props.userData.profileImg || null}
-                            avatarPlaceholder={this.props.userData.firstName[0]}
+                            avatar={profileImg || null}
+                            avatarPlaceholder={firstName && firstName[0]}
                             onPress={this.goToProfile}
                         >
-                            <Text style={{ color: 'green' }}>{this.props.userData.firstName}</Text>
+                            <Text style={{ color: 'green' }}>{firstName}</Text>
                             {'\n'}
                             <Text style={{ fontSize: 13 }}>See your profile</Text>
                         </MenuButton>
@@ -130,11 +127,13 @@ class MenuScreen extends Component {
                         <MenuButton type={'QRCode'} onPress={this.toggleTestingVisibility}>
                             Scan QR Code
                         </MenuButton>
-                        <MenuButton type={'Settings'} onPress={this.toggleTestingVisibility}>
+                        {admin && (
+                            <MenuButton type={'Admin'} onPress={this.goToAdmin}>
+                                Admin
+                            </MenuButton>
+                        )}
+                        <MenuButton type={'Settings'} onPress={this.goToSettings}>
                             Settings
-                        </MenuButton>
-                        <MenuButton type={'Default'} onPress={this.goToAdmin}>
-                            Admin
                         </MenuButton>
                         <MenuButton
                             style={styles.centralButton}
@@ -142,13 +141,6 @@ class MenuScreen extends Component {
                             onPress={this.toggleSignOutVisibility}
                         >
                             Sign Out
-                        </MenuButton>
-                        <MenuButton
-                            style={styles.centralButton}
-                            textStyle={{ color: 'white' }}
-                            onPress={this.goToDelete}
-                        >
-                            Delete account
                         </MenuButton>
                     </ScrollView>
                 </LinearGradient>
@@ -167,7 +159,6 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         paddingTop: 15,
-        // alignItems: 'center',
         paddingHorizontal: 30,
     },
     title: {
@@ -176,15 +167,10 @@ const styles = StyleSheet.create({
         fontSize: 24,
         left: 30,
     },
-    notAvailable: {
-        backgroundColor: Colors.appDarkGray,
-    },
     centralButton: {
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
     },
 });
 
-const wrappedMenuScreen = withFirebase(MenuScreen);
-
-export default connect(mapStateToProps)(wrappedMenuScreen);
+export default connect(mapStateToProps)(withFirebase(MenuScreen));

@@ -23,6 +23,41 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+const RoomStatusButton = ({ text, color }) => {
+    let actualColor = Colors.statusYellow;
+    switch (color) {
+        case 'green':
+            actualColor = Colors.statusGreen;
+            break;
+        case 'yellow':
+            actualColor = Colors.statusYellow;
+            break;
+        case 'red':
+            actualColor = Colors.statusRed;
+            break;
+    }
+    return (
+        <Button
+            title={text}
+            type={'clear'}
+            titleStyle={{
+                fontFamily: MAIN_FONT,
+                fontSize: 15,
+                color: Colors.appBlack,
+            }}
+            icon={{
+                name: 'lens',
+                color: actualColor,
+                size: 25,
+                containerStyle: { paddingHorizontal: 20 },
+            }}
+            buttonStyle={{ justifyContent: 'flex-start' }}
+            containerStyle={{ borderRadius: 0 }}
+            onPress={() => this.handleStatus(color)}
+        />
+    );
+};
+
 class MyProfile extends Component {
     state = {
         // Post retrieval
@@ -182,62 +217,11 @@ class MyProfile extends Component {
                 title={'Room Status'}
                 body={
                     <View>
-                        <Button
-                            title={"I'm in my room!"}
-                            type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
-                            icon={{
-                                name: 'lens',
-                                color: Colors.statusGreen,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 20 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            onPress={() => this.handleStatus('green')}
-                        />
+                        <RoomStatusButton text="I'm in my room!" color="green" />
                         <Popup.Separator />
-                        <Button
-                            title={"I'm not in my room :("}
-                            type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
-                            icon={{
-                                name: 'lens',
-                                color: Colors.statusYellow,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 20 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            onPress={() => this.handleStatus('yellow')}
-                        />
+                        <RoomStatusButton text="I'm not in my room :(" color="yellow" />
                         <Popup.Separator />
-                        <Button
-                            title={'Do not disturb!'}
-                            type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
-                            icon={{
-                                name: 'lens',
-                                color: Colors.statusRed,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 20 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            onPress={() => this.handleStatus('red')}
-                        />
+                        <RoomStatusButton text="Do not disturb!" color="red" />
                     </View>
                 }
                 buttonText={'Cancel'}
