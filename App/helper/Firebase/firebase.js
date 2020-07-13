@@ -245,23 +245,26 @@ const Firebase = {
     deleteFriend: (friendshipID) => {
         return firebase.firestore().collection('friends').doc(`${friendshipID}`).delete();
     },
-    // checkFriendship: (uid1, uid2) => {
-    //     return firebase.firestore().collection('friends')
-    //         .where(`friendship.${uid1}`, '==', true)
-    //         .where(`friendship.${uid2}`, '==', true)
-    //         .get()
-    //         .then((querySnapshot) => {
-    //             if (querySnapshot.empty) {
-    //                 return null;
-    //             } else {
-    //                 return querySnapshot.docs.map((doc) => {
-    //                     return doc.data();
-    //                 })[0];
-    //             }
-    //         });
-    // },
 
     // Notifications
+    getUserNotifications: (uid) => {
+        return firebase.firestore().collection(`notifications/${uid}/notification`);
+    },
+    updateNotification: (uid, notificationId, updates) => {
+        const notificationRef = firebase
+            .firestore()
+            .collection(`notifications/${uid}/notification`)
+            .doc(`${notificationId}`);
+        return notificationRef.update(updates);
+    },
+    reportNotification: (uid, notificationId) => {},
+    deleteNotification: (uid, notificationId) => {
+        const notificationRef = firebase
+            .firestore()
+            .collection(`notifications/${uid}/notification`)
+            .doc(`${notificationId}`);
+        return notificationRef.delete();
+    },
 
     // Storage
     getStorageRef: () => {

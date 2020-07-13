@@ -92,10 +92,7 @@ const ProfileHeader = ({
                             name: 'lens',
                             style: {
                                 backgroundColor: Colors.appWhite,
-                                borderColor: Colors.appWhite,
-                                overflow: 'hidden',
-                                justifyContent: 'center',
-                                alignItems: 'center',
+                                borderRadius: 50,
                             },
                         }}
                         onAccessoryPress={onAccessoryPress}

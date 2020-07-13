@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ListItem } from 'react-native-elements';
 
@@ -20,6 +20,7 @@ class Friends extends Component {
         pendingList: [],
         friendList: [],
         refreshing: false,
+        loading: true,
     };
 
     componentDidMount() {
@@ -52,6 +53,7 @@ class Friends extends Component {
                 this.setState({
                     pendingList: pendingList,
                     refreshing: false,
+                    loading: false,
                 });
             });
     };
@@ -70,6 +72,7 @@ class Friends extends Component {
     };
     goToFriendRequests = () => {
         return this.props.navigation.navigate('FriendRequests', {
+            onGoBack: this.refresh,
             pendingList: this.state.pendingList,
         });
     };
@@ -77,12 +80,13 @@ class Friends extends Component {
     renderProfile = (userData) => {
         const { displayName, profileImg, uid } = userData;
         return (
-            <UserItem
-                outerContainerStyle={{ borderWidth: 3, borderColor: Colors.appGreen }}
-                name={displayName || 'undefined'}
-                profileImg={profileImg || ''}
-                onPress={() => this.goToProfile(uid)}
-            />
+            <View style={{ paddingHorizontal: 25 }}>
+                <UserItem
+                    name={displayName || 'undefined'}
+                    profileImg={profileImg || ''}
+                    onPress={() => this.goToProfile(uid)}
+                />
+            </View>
         );
     };
     renderEmpty = () => {
@@ -96,41 +100,51 @@ class Friends extends Component {
     };
     renderHeader = () => {
         return (
-            <View>
-                <ListItem
-                    title={'Friend Requests'}
-                    titleStyle={styles.titleStyle}
-                    subtitle={'Approve or ignore requests'}
-                    subtitleStyle={styles.subtitleStyle}
-                    bottomDivider={true}
-                    badge={{
-                        value: '2',
-                        status: 'primary',
-                    }}
-                    onPress={this.goToFriendRequests}
-                />
-            </View>
+            <ListItem
+                title={'Friend Requests'}
+                titleStyle={styles.titleStyle}
+                subtitle={'Approve or ignore requests'}
+                subtitleStyle={styles.subtitleStyle}
+                badge={{
+                    value: this.state.pendingList.length,
+                    badgeStyle: { backgroundColor: Colors.appGreen },
+                    textStyle: styles.titleStyle,
+                }}
+                onPress={this.goToFriendRequests}
+            />
         );
     };
 
     render() {
-        const { friendList, refreshing } = this.state;
+        const { friendList, refreshing, loading } = this.state;
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    <FlatList
-                        contentContainerStyle={{ paddingHorizontal: 25 }}
-                        data={friendList}
-                        renderItem={({ item }) => this.renderProfile(item)}
-                        keyExtractor={(friend) => friend.uid}
-                        ListHeaderComponent={this.renderHeader}
-                        ListEmptyComponent={this.renderEmpty}
-                        refreshing={refreshing}
-                        onRefresh={this.refresh}
-                    />
+                    {loading ? (
+                        <View
+                            style={[
+                                styles.container,
+                                { justifyContent: 'center', alignItems: 'center' },
+                            ]}
+                        >
+                            <ActivityIndicator color={Colors.appWhite} />
+                        </View>
+                    ) : (
+                        <FlatList
+                            data={friendList.sort((a, b) =>
+                                a.displayName.localeCompare(b.displayName)
+                            )}
+                            renderItem={({ item }) => this.renderProfile(item)}
+                            keyExtractor={(friend) => friend.uid}
+                            ListHeaderComponent={this.renderHeader}
+                            ListEmptyComponent={this.renderEmpty}
+                            refreshing={refreshing}
+                            onRefresh={this.refresh}
+                        />
+                    )}
                 </LinearGradient>
             </SafeAreaView>
         );
@@ -140,17 +154,18 @@ class Friends extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 10,
     },
     emptyContainerStyle: {
         backgroundColor: Colors.appGray,
         paddingVertical: 7,
+        marginTop: 12,
         alignItems: 'center',
         flex: 1,
     },
     titleStyle: {
         fontFamily: MAIN_FONT,
         fontSize: 14,
+        textAlignVertical: 'center',
     },
     subtitleStyle: {
         fontFamily: MAIN_FONT,

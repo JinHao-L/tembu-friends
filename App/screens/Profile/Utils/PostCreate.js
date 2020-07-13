@@ -140,7 +140,6 @@ class PostCreate extends Component {
     };
 
     handleText = (text) => {
-        //TODO: text validation
         this.setState({
             body: text,
         });

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
-import { MAIN_FONT, MainText, Popup, UserItem } from '../../components';
+import { MAIN_FONT, MainText, Popup } from '../../components';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -89,7 +89,8 @@ class UserListScreen extends React.Component {
                 {isAdmin && (
                     <Icon
                         style={styles.badge}
-                        name={'account-circle'}
+                        name={'crown'}
+                        type={'material-community'}
                         size={20}
                         color={Colors.appGreen}
                     />
@@ -258,6 +259,8 @@ const styles = StyleSheet.create({
         fontFamily: MAIN_FONT,
         fontSize: 15,
         color: Colors.appBlack,
+        flexShrink: 1,
+        textAlign: 'left',
     },
     badge: {
         marginLeft: 5,

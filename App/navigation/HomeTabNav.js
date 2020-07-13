@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { SafeAreaView, StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { TabBarIcon } from '../components/index';
-import { HomeScreen, NotificationScreen } from '../screens/index';
-import MenuNav from './MenuNav';
-import ExploreNav from './ExploreNav';
+import { TabBarIcon } from '../components';
+import { HomeScreen } from '../screens';
+import { MenuNav, NotificationNav, ExploreNav } from './tabs';
 import { Colors } from '../constants';
 
 const BottomTab = createBottomTabNavigator();
@@ -54,8 +53,8 @@ class HomeTabNav extends Component {
                         }}
                     />
                     <BottomTab.Screen
-                        name="Notifications"
-                        component={NotificationScreen}
+                        name="NotificationNav"
+                        component={NotificationNav}
                         options={{
                             tabBarIcon: ({ focused }) => (
                                 <TabBarIcon focused={focused} name="md-notifications" />

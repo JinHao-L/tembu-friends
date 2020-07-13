@@ -628,11 +628,12 @@ class ProfileEdit extends Component {
                                     bottom: 5,
                                 },
                                 raised: true,
-                                size: 15,
+                                size: 12,
                                 name: 'add-a-photo',
                                 color: Colors.appGreen,
+                                overlayColor: Colors.appWhite,
+                                onPress: this.onChangeProfileImgPress,
                             }}
-                            onAccessoryPress={this.onChangeProfileImgPress}
                         />
                     </View>
 

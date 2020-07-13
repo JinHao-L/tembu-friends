@@ -27,7 +27,7 @@ function Popup({
         >
             <View style={styles.message}>
                 {imageType === 'Custom' ? (
-                    <View>
+                    <View style={{ width: '100%' }}>
                         {title && <MainText style={styles.title}>{title}</MainText>}
                         {title && <View style={styles.line} />}
                         {body}
@@ -95,9 +95,12 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
         borderRadius: 20,
         paddingVertical: 0,
+        paddingHorizontal: 0,
+        marginHorizontal: 0,
     },
     message: {
         alignItems: 'center',
+        width: '100%',
     },
     image: {
         width: 150,

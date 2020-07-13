@@ -40,11 +40,7 @@ const RoomStatusButton = ({ text, color }) => {
         <Button
             title={text}
             type={'clear'}
-            titleStyle={{
-                fontFamily: MAIN_FONT,
-                fontSize: 15,
-                color: Colors.appBlack,
-            }}
+            titleStyle={styles.optionsTitle}
             icon={{
                 name: 'lens',
                 color: actualColor,
@@ -70,6 +66,7 @@ class MyProfile extends Component {
 
         // Popup handler
         postOptionsVisible: false,
+        postOptionsProps: null,
         roomStatusPopupVisible: false,
     };
 
@@ -78,9 +75,7 @@ class MyProfile extends Component {
     }
 
     onRefresh = () => {
-        console.log('Your profile refreshing');
         this.setState({ refreshing: true });
-        this.props.fetchUserData();
         this.retrievePosts();
     };
 
@@ -166,7 +161,7 @@ class MyProfile extends Component {
         }
         this.toggleRoomStatusPopup();
     };
-    deletePost = (postId, index) => {
+    deletePost = ({ postId, index }) => {
         this.setState(
             {
                 postsData: [
@@ -174,20 +169,22 @@ class MyProfile extends Component {
                     ...this.state.postsData.slice(index + 1),
                 ],
             },
-            async () => {
-                try {
-                    if (postId === this.state.lastLoaded) {
-                        this.setState({
-                            lastLoaded: this.state.postsData[this.state.postsData.length - 1].id,
-                        });
-                    }
-                    console.log('Deleting Posts');
-                    this.props.firebase.deletePost(this.props.userData.uid, postId);
-                } catch (error) {
-                    console.log(error);
+            () => {
+                if (postId === this.state.lastLoaded) {
+                    this.setState({
+                        lastLoaded: this.state.postsData[this.state.postsData.length - 1]
+                            .time_posted,
+                    });
                 }
+                console.log('Deleting Posts');
+                this.props.firebase
+                    .deletePost(this.props.userData.uid, postId)
+                    .catch((error) => console.log(error));
             }
         );
+    };
+    reportPost = ({ postId, index }) => {
+        Alert.alert('Work in progress', 'Not available');
     };
 
     toggleRoomStatusPopup = () => {
@@ -199,12 +196,15 @@ class MyProfile extends Component {
         if (id === undefined) {
             this.setState({
                 postOptionsVisible: !this.state.postOptionsVisible,
+                postOptionsProps: null,
             });
         } else {
             this.setState({
                 postOptionsVisible: !this.state.postOptionsVisible,
-                postOptionsId: id,
-                postOptionsIndex: index,
+                postOptionsProps: {
+                    postId: id,
+                    index: index,
+                },
             });
         }
     };
@@ -238,15 +238,11 @@ class MyProfile extends Component {
                 body={
                     <View>
                         <Button
-                            title={'Report as inappropriate'}
+                            title={'Flag post as inappropriate'}
                             type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
+                            titleStyle={styles.optionsTitle}
                             icon={{
-                                name: 'report',
+                                name: 'flag',
                                 color: Colors.statusYellow,
                                 size: 25,
                                 containerStyle: { paddingHorizontal: 10 },
@@ -255,19 +251,15 @@ class MyProfile extends Component {
                             containerStyle={{ borderRadius: 0 }}
                             // TODO:
                             onPress={() => {
-                                Alert.alert('Work in progress', 'Not available');
+                                this.reportPost(this.state.postOptionsProps);
                                 this.togglePostOptions();
                             }}
                         />
                         <Popup.Separator />
                         <Button
-                            title={'Delete post'}
+                            title={'Delete this post'}
                             type={'clear'}
-                            titleStyle={{
-                                fontFamily: MAIN_FONT,
-                                fontSize: 15,
-                                color: Colors.appBlack,
-                            }}
+                            titleStyle={styles.optionsTitle}
                             icon={{
                                 name: 'delete',
                                 color: Colors.statusRed,
@@ -278,10 +270,7 @@ class MyProfile extends Component {
                             containerStyle={{ borderRadius: 0 }}
                             // onPress={() => Alert.alert('Disabled', 'Disabled temporarily')}
                             onPress={() => {
-                                this.deletePost(
-                                    this.state.postOptionsId,
-                                    this.state.postOptionsIndex
-                                );
+                                this.deletePost(this.state.postOptionsProps);
                                 this.togglePostOptions();
                             }}
                         />
@@ -362,7 +351,7 @@ class MyProfile extends Component {
                         ListHeaderComponent={this.renderHeader}
                         ListFooterComponent={this.renderFooter}
                         onEndReached={this.retrieveMorePosts}
-                        onEndReachedThreshold={0.5}
+                        onEndReachedThreshold={0.1}
                         refreshing={refreshing}
                         onRefresh={this.onRefresh}
                         ListEmptyComponent={() => {
@@ -402,6 +391,13 @@ const styles = StyleSheet.create({
         fontSize: 12,
         textAlign: 'center',
         marginBottom: 5,
+    },
+    optionsTitle: {
+        fontFamily: MAIN_FONT,
+        fontSize: 15,
+        color: Colors.appBlack,
+        flexShrink: 1,
+        textAlign: 'left',
     },
 });
 

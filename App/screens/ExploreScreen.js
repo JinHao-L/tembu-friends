@@ -180,15 +180,7 @@ class ExploreScreen extends Component {
 
     searchIntro = () => {
         return (
-            <View
-                style={{
-                    backgroundColor: Colors.appGray,
-                    paddingHorizontal: 5,
-                    paddingVertical: 7,
-                    alignItems: 'center',
-                    borderRadius: 10,
-                }}
-            >
+            <View style={styles.box}>
                 <MainText style={{ fontSize: 15, borderBottomWidth: 1 }}>Search Examples</MainText>
                 <View style={{ flexDirection: 'row' }}>
                     <View
@@ -213,15 +205,7 @@ class ExploreScreen extends Component {
     renderEmpty = () => {
         if (this.state.searchStarted) {
             return (
-                <View
-                    style={{
-                        backgroundColor: Colors.appGray,
-                        paddingHorizontal: 5,
-                        paddingVertical: 7,
-                        alignItems: 'center',
-                        borderRadius: 10,
-                    }}
-                >
+                <View style={styles.box}>
                     <MainText style={{ color: Colors.appDarkGray }}>No results</MainText>
                     <MainText style={{ color: Colors.appDarkGray }}>
                         Did you use the correct prefix?
@@ -353,30 +337,26 @@ class ExploreScreen extends Component {
                         <MainText style={styles.title}>Explore</MainText>
                     </View>
                     <View style={styles.contentContainer}>
-                        <View>
-                            <Input
-                                ref={this.searchBarRef}
-                                style={{ flex: 1 }}
-                                containerStyle={{ paddingHorizontal: 0, marginBottom: 10 }}
-                                testID="searchInput"
-                                placeholder={'Search for users'}
-                                autoCorrect={true}
-                                renderErrorMessage={false}
-                                autoCapitalize={'none'}
-                                onEndEditing={({ nativeEvent: { text } }) => this.search(text)}
-                                placeholderTextColor={Colors.appDarkGray}
-                                inputStyle={styles.searchBarInput}
-                                inputContainerStyle={styles.inputContentContainer}
-                                leftIcon={
-                                    <MainText onPress={this.togglePrefixSearchPopup}>
-                                        {prefix}
-                                    </MainText>
-                                }
-                                leftIconContainerStyle={styles.leftIconContainerStyle}
-                                rightIcon={this.renderRightSearchBarIcon()}
-                                rightIconContainerStyle={styles.rightIconContainerStyle}
-                            />
-                        </View>
+                        <Input
+                            ref={this.searchBarRef}
+                            style={{ flex: 1 }}
+                            containerStyle={{ paddingHorizontal: 0 }}
+                            testID="searchInput"
+                            placeholder={'Search for users'}
+                            autoCorrect={true}
+                            renderErrorMessage={false}
+                            autoCapitalize={'none'}
+                            onEndEditing={({ nativeEvent: { text } }) => this.search(text)}
+                            placeholderTextColor={Colors.appDarkGray}
+                            inputStyle={styles.searchBarInput}
+                            inputContainerStyle={styles.inputContentContainer}
+                            leftIcon={
+                                <MainText onPress={this.togglePrefixSearchPopup}>{prefix}</MainText>
+                            }
+                            leftIconContainerStyle={styles.leftIconContainerStyle}
+                            rightIcon={this.renderRightSearchBarIcon()}
+                            rightIconContainerStyle={styles.rightIconContainerStyle}
+                        />
                         <FlatList
                             contentContainerStyle={{ paddingHorizontal: 10 }}
                             data={userList}
@@ -404,20 +384,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingTop: 5,
     },
+    box: {
+        backgroundColor: Colors.appGray,
+        paddingHorizontal: 5,
+        paddingVertical: 7,
+        alignItems: 'center',
+        borderRadius: 10,
+        marginTop: 10,
+    },
     title: {
         textAlign: 'left',
         color: Colors.appWhite,
         fontSize: 24,
         left: 30,
-    },
-    floorPlan: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: 'black',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        marginHorizontal: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     searchBarInput: {
         marginLeft: 10,

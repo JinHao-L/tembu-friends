@@ -1,18 +1,19 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { ExploreScreen } from '../screens';
-import { Colors } from '../constants';
-import { MAIN_FONT } from '../components';
-import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../screens/Profile';
+import { NotificationScreen } from '../../screens';
+import { Colors } from '../../constants';
+import { MAIN_FONT, MainText } from '../../components';
+import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
 
-const ExploreStack = createStackNavigator();
-const INITIAL_ROUTE_NAME = 'Search';
+const NotificationStack = createStackNavigator();
+const INITIAL_ROUTE_NAME = 'Notifications';
 
-function ExploreNav() {
+function NotificationNav() {
     return (
-        <ExploreStack.Navigator
+        <NotificationStack.Navigator
             initialRouteName={INITIAL_ROUTE_NAME}
             screenOptions={{
                 headerStyle: {
@@ -32,42 +33,64 @@ function ExploreNav() {
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
+                headerBackTitleVisible: false,
                 headerLeftContainerStyle: { marginLeft: 5 },
             }}
         >
-            <ExploreStack.Screen
-                name="Search"
-                component={ExploreScreen}
-                options={{ headerShown: false }}
+            <NotificationStack.Screen
+                name="Notifications"
+                component={NotificationScreen}
+                options={{
+                    header: (props) => {
+                        return (
+                            <View style={styles.header}>
+                                <MainText style={styles.title}>Notifications</MainText>
+                            </View>
+                        );
+                    },
+                }}
             />
 
-            <ExploreStack.Screen
+            <NotificationStack.Screen
                 name="MyProfile"
                 component={MyProfile}
                 options={{ headerTitle: 'My Profile' }}
             />
-            <ExploreStack.Screen
+            <NotificationStack.Screen
                 name="ProfileEdit"
                 component={ProfileEdit}
                 options={{ headerTitle: 'Edit Profile' }}
             />
-            <ExploreStack.Screen
+            <NotificationStack.Screen
                 name="ModuleEdit"
                 component={ModuleEdit}
                 options={{ headerTitle: 'Edit Modules' }}
             />
-            <ExploreStack.Screen
+            <NotificationStack.Screen
                 name="UserProfile"
                 component={UserProfile}
                 options={{ headerTitle: 'Profile' }}
             />
-            <ExploreStack.Screen
+            <NotificationStack.Screen
                 name="PostCreate"
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
             />
-        </ExploreStack.Navigator>
+        </NotificationStack.Navigator>
     );
 }
+const styles = StyleSheet.create({
+    header: {
+        backgroundColor: Colors.appGreen,
+        paddingBottom: 10,
+        paddingTop: 20,
+    },
+    title: {
+        textAlign: 'left',
+        color: Colors.appWhite,
+        fontSize: 24,
+        left: 30,
+    },
+});
 
-export default ExploreNav;
+export default NotificationNav;

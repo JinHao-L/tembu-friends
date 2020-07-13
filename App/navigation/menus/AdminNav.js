@@ -2,9 +2,9 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { AdminMenu, ReportsControl, UserListScreen } from '../screens/Admin';
-import { Colors } from '../constants';
-import { MAIN_FONT } from '../components';
+import { AdminMenu, ReportsControl, UserListScreen } from '../../screens/Admin';
+import { Colors } from '../../constants';
+import { MAIN_FONT } from '../../components';
 
 const AdminStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Admin';
@@ -31,6 +31,7 @@ function AdminNav() {
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
+                headerBackTitleVisible: false,
                 headerLeftContainerStyle: { marginLeft: 5 },
             }}
         >

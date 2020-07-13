@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Image, Platform } from 'react-native';
-import { Avatar, Icon } from 'react-native-elements';
+import { View, StyleSheet, Platform, TouchableNativeFeedback } from 'react-native';
+import { Avatar, Button } from 'react-native-elements';
 import { BaseButton } from 'react-native-gesture-handler';
 import { Colors } from '../constants';
 import { MainText } from './MyAppText';
@@ -14,16 +14,17 @@ const UserItem = ({
     outerContainerStyle,
     textStyle,
     subtextStyle,
-    chevron,
+    rightElement = () => null,
     ...others
 }) => {
     return (
         <View style={[styles.outerContainer, outerContainerStyle]}>
-            <BaseButton
+            <TouchableNativeFeedback
                 style={[styles.container, style]}
                 onPress={onPress}
-                underlayColor={Colors.appGray}
-                rippleColor={Colors.appGray}
+                background={TouchableNativeFeedback.Ripple(Colors.appGray, true)}
+                // underlayColor={Colors.appGray}
+                // rippleColor={Colors.appGray}
                 {...others}
             >
                 <View style={styles.contents}>
@@ -45,22 +46,16 @@ const UserItem = ({
                             <MainText style={[styles.subtext, subtextStyle]}>{subtext}</MainText>
                         ) : null}
                     </View>
+                    <View style={styles.rightElementContainer}>{rightElement()}</View>
                 </View>
-            </BaseButton>
+            </TouchableNativeFeedback>
         </View>
     );
 };
 
-const chevronDefaultProps = {
-    type: Platform.OS === 'ios' ? 'ionicon' : 'material',
-    color: Colors.appGray,
-    name: Platform.OS === 'ios' ? 'ios-arrow-forward' : 'keyboard-arrow-right',
-    size: 16,
-};
-
 const styles = StyleSheet.create({
     outerContainer: {
-        marginBottom: 12,
+        marginTop: 12,
         borderRadius: 16,
         ...Platform.select({
             ios: {
@@ -79,18 +74,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         paddingVertical: 7,
         alignItems: 'flex-start',
-        justifyContent: 'center',
         borderRadius: 15,
     },
     contents: {
+        backgroundColor: Colors.appWhite,
+        paddingHorizontal: 5,
+        paddingVertical: 7,
+        borderRadius: 15,
         flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
+        alignItems: 'center',
     },
     textContainer: {
-        justifyContent: 'center',
         flexDirection: 'column',
         alignSelf: 'center',
+        flex: 1,
     },
     text: {
         fontSize: 18,
@@ -112,6 +109,10 @@ const styles = StyleSheet.create({
     subtext: {
         fontSize: 13,
         color: Colors.appBlack,
+        flexWrap: 'wrap',
+    },
+    rightElementContainer: {
+        marginLeft: 'auto',
     },
 });
 

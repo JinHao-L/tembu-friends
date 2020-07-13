@@ -204,7 +204,7 @@ class UserProfile extends Component {
         const friendshipId = this.props.friends[uid]?.id;
         return this.props.firebase
             .deleteFriend(friendshipId)
-            .catch((error) => console.log('Accept friend error', error))
+            .catch((error) => console.log('Remove friend error', error))
             .finally(() => {
                 this.setState({
                     buttonLoading: false,
@@ -328,11 +328,7 @@ class UserProfile extends Component {
                     <Button
                         title={'Unfriend'}
                         type={'clear'}
-                        titleStyle={{
-                            fontFamily: MAIN_FONT,
-                            fontSize: 15,
-                            color: Colors.appRed,
-                        }}
+                        titleStyle={styles.popupTitleStyle}
                         icon={{
                             type: 'material-community',
                             name: 'account-minus-outline',
@@ -446,7 +442,7 @@ class UserProfile extends Component {
                         ListHeaderComponent={this.renderHeader}
                         ListFooterComponent={this.renderFooter}
                         onEndReached={this.retrieveMorePosts}
-                        onEndReachedThreshold={0.5}
+                        onEndReachedThreshold={0.1}
                         refreshing={refreshing}
                         onRefresh={this.onRefresh}
                         ListEmptyComponent={() => {
@@ -486,6 +482,8 @@ const styles = StyleSheet.create({
         fontFamily: MAIN_FONT,
         fontSize: 15,
         color: Colors.appBlack,
+        flexShrink: 1,
+        textAlign: 'left',
     },
 });
 

@@ -2,18 +2,17 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Friends, FriendRequests, DeleteScreen, MenuScreen, SettingsScreen } from '../screens/Menu';
-import AdminNav from './AdminNav';
-import { Colors } from '../constants';
-import { MAIN_FONT } from '../components';
-import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../screens/Profile';
+import { ExploreScreen } from '../../screens';
+import { Colors } from '../../constants';
+import { MAIN_FONT } from '../../components';
+import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
 
-const MenuStack = createStackNavigator();
-const INITIAL_ROUTE_NAME = 'Menu';
+const ExploreStack = createStackNavigator();
+const INITIAL_ROUTE_NAME = 'Search';
 
-function MenuNav() {
+function ExploreNav() {
     return (
-        <MenuStack.Navigator
+        <ExploreStack.Navigator
             initialRouteName={INITIAL_ROUTE_NAME}
             screenOptions={{
                 headerStyle: {
@@ -33,54 +32,43 @@ function MenuNav() {
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
+                headerBackTitleVisible: false,
                 headerLeftContainerStyle: { marginLeft: 5 },
             }}
         >
-            <MenuStack.Screen name="Menu" component={MenuScreen} options={{ headerShown: false }} />
-            <MenuStack.Screen
-                name="AdminNav"
-                component={AdminNav}
+            <ExploreStack.Screen
+                name="Search"
+                component={ExploreScreen}
                 options={{ headerShown: false }}
             />
-            <MenuStack.Screen name="Settings" component={SettingsScreen} />
-            <MenuStack.Screen
-                name="Delete"
-                component={DeleteScreen}
-                options={{ headerTitle: 'Deleting Account' }}
-            />
-            <MenuStack.Screen
+
+            <ExploreStack.Screen
                 name="MyProfile"
                 component={MyProfile}
                 options={{ headerTitle: 'My Profile' }}
             />
-            <MenuStack.Screen
+            <ExploreStack.Screen
                 name="ProfileEdit"
                 component={ProfileEdit}
                 options={{ headerTitle: 'Edit Profile' }}
             />
-            <MenuStack.Screen
+            <ExploreStack.Screen
                 name="ModuleEdit"
                 component={ModuleEdit}
                 options={{ headerTitle: 'Edit Modules' }}
             />
-            <MenuStack.Screen name="Friends" component={Friends} />
-            <MenuStack.Screen
-                name="FriendRequests"
-                component={FriendRequests}
-                options={{ headerTitle: 'Friend Requests' }}
-            />
-            <MenuStack.Screen
+            <ExploreStack.Screen
                 name="UserProfile"
                 component={UserProfile}
                 options={{ headerTitle: 'Profile' }}
             />
-            <MenuStack.Screen
+            <ExploreStack.Screen
                 name="PostCreate"
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
             />
-        </MenuStack.Navigator>
+        </ExploreStack.Navigator>
     );
 }
 
-export default MenuNav;
+export default ExploreNav;

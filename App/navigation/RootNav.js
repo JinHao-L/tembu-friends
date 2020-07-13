@@ -7,12 +7,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
+import { fetchUserData, updateProfile, listenFriendList, clearCache } from '../redux';
 import HomeTabNav from './HomeTabNav';
 import AuthNav from './AuthNav';
 import { withFirebase } from '../helper/Firebase';
-import AppLogo from '../components/AppLogo';
+import { AppLogo } from '../components';
 import { Colors } from '../constants';
-import { fetchUserData, updateProfile, listenFriendList, clearCache } from '../redux';
 import PushNotifications from '../helper/PushNotification';
 
 const mapStateToProps = (state) => {
