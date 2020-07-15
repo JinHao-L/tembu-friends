@@ -7,7 +7,15 @@ import { Colors } from '../../constants';
 import { MAIN_FONT, MainText } from '../../components';
 import { NotificationScreen } from '../../screens';
 import { FriendRequests } from '../../screens/Menu';
-import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
+import {
+    ModuleEdit,
+    MyProfile,
+    MyQR,
+    PostCreate,
+    ProfileEdit,
+    ScanQR,
+    UserProfile,
+} from '../../screens/Profile';
 
 const NotificationStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Notifications';
@@ -80,6 +88,16 @@ function NotificationNav() {
                 name="PostCreate"
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
+            />
+            <NotificationStack.Screen
+                name="MyQR"
+                component={MyQR}
+                options={{ headerShown: false }}
+            />
+            <NotificationStack.Screen
+                name="ScanQR"
+                component={ScanQR}
+                options={{ headerShown: false }}
             />
         </NotificationStack.Navigator>
     );

@@ -19,6 +19,7 @@ import {
     ProfileEdit,
     UserProfile,
     MyQR,
+    ScanQR,
 } from '../../screens/Profile';
 
 const MenuStack = createStackNavigator();
@@ -93,11 +94,8 @@ function MenuNav() {
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
             />
-            <MenuStack.Screen
-                name="MyQR"
-                component={MyQR}
-                options={{ headerTitle: 'My QR Code', headerShown: false }}
-            />
+            <MenuStack.Screen name="MyQR" component={MyQR} options={{ headerShown: false }} />
+            <MenuStack.Screen name="ScanQR" component={ScanQR} options={{ headerShown: false }} />
         </MenuStack.Navigator>
     );
 }

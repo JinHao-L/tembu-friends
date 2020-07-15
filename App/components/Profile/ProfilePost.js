@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
 import ReadMore from 'react-native-read-more-text';
 
@@ -51,7 +51,7 @@ const truncateText = (text, textStyle) => {
 
 const ProfilePost = ({
     postDetails,
-    onUserPress,
+    onUserPress = () => null,
     postOptionsVisible = false,
     onPostOptionsPress,
 }) => {
@@ -65,6 +65,7 @@ const ProfilePost = ({
         sender_uid,
         time_posted,
         post_id,
+        reported = false,
         imgUrl,
         imgRatio,
     } = postDetails;
@@ -111,7 +112,7 @@ const ProfilePost = ({
                         size={18}
                         color={Colors.appGreen}
                         containerStyle={{ alignSelf: 'flex-start', marginLeft: 'auto' }}
-                        onPress={() => onPostOptionsPress(post_id)}
+                        onPress={() => onPostOptionsPress(post_id, reported)}
                     />
                 )}
             </View>

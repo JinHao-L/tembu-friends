@@ -194,6 +194,37 @@ const Firebase = {
     deletePost: (uid, postId) => {
         return firebase.firestore().collection(`posts/${uid}/userPosts`).doc(`${postId}`).delete();
     },
+    reportPost: (uid, postId) => {
+        const reportRef = firebase.firestore().collection(`reports`).doc('posts');
+
+        const postRef = firebase.firestore().collection(`posts/${uid}/userPosts`).doc(postId);
+
+        const toAdd = { uid, postId };
+
+        return reportRef
+            .update({
+                report: firebase.firestore.FieldValue.arrayUnion(toAdd),
+            })
+            .then(() => postRef.update('reported', true));
+    },
+    getPost: (uid, postId) => {
+        return firebase
+            .firestore()
+            .collection(`posts/${uid}/userPosts`)
+            .doc(`${postId}`)
+            .get()
+            .then((doc) => {
+                if (!doc.exists) {
+                    console.log('Post does not exist!');
+                } else {
+                    console.log('Post data available');
+                    return doc.data();
+                }
+            })
+            .catch((err) => {
+                console.log('Error getting post document', err);
+            });
+    },
 
     // Friends
     getFriendListRef: (uid) => {
@@ -272,13 +303,43 @@ const Firebase = {
             .doc(`${notificationId}`);
         return notificationRef.update(updates);
     },
-    reportNotification: (uid, notificationId) => {},
     deleteNotification: (uid, notificationId) => {
         const notificationRef = firebase
             .firestore()
             .collection(`notifications/${uid}/notification`)
             .doc(`${notificationId}`);
         return notificationRef.delete();
+    },
+
+    // Reports
+    getPostReport: () => {
+        const reportRef = firebase.firestore().collection(`reports`).doc('posts');
+
+        return reportRef.get().then((doc) => {
+            return doc.data().report;
+        });
+    },
+    cancelReport: (report) => {
+        const { uid, postId } = report;
+        const reportRef = firebase.firestore().collection(`reports`).doc('posts');
+        const postRef = firebase.firestore().collection(`posts/${uid}/userPosts`).doc(postId);
+
+        return reportRef
+            .update({
+                report: firebase.firestore.FieldValue.arrayRemove(report),
+            })
+            .then(() => postRef.update('reported', false));
+    },
+    deleteReportedPost: (report) => {
+        const { uid, postId } = report;
+        const reportRef = firebase.firestore().collection(`reports`).doc('posts');
+        const postRef = firebase.firestore().collection(`posts/${uid}/userPosts`).doc(postId);
+
+        return reportRef
+            .update({
+                report: firebase.firestore.FieldValue.arrayRemove(report),
+            })
+            .then(() => postRef.delete());
     },
 
     // Storage

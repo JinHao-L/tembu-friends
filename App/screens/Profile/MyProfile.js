@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList, ActivityIndicator, SafeAreaView, Alert } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    FlatList,
+    ActivityIndicator,
+    SafeAreaView,
+    Alert,
+    Image,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 
@@ -71,6 +79,22 @@ class MyProfile extends Component {
     };
 
     componentDidMount() {
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    onPress={this.goToMyQR}
+                    icon={
+                        <Image
+                            source={require('../../assets/images/profile/QR-Code.png')}
+                            style={{ width: 25, height: 25 }}
+                        />
+                    }
+                    buttonStyle={{ backgroundColor: 'transparent' }}
+                    titleStyle={{ color: Colors.appWhite }}
+                    containerStyle={{ marginRight: 5, borderRadius: 20 }}
+                />
+            ),
+        });
         this.retrievePosts();
     }
 
@@ -154,6 +178,9 @@ class MyProfile extends Component {
             this.props.navigation.push('UserProfile', { user_uid: uid });
         }
     };
+    goToMyQR = () => {
+        this.props.navigation.push('MyQR');
+    };
 
     handleStatus = (statusType) => {
         if (statusType !== this.props.userData.statusType) {
@@ -184,7 +211,17 @@ class MyProfile extends Component {
         );
     };
     reportPost = ({ postId, index }) => {
-        Alert.alert('Work in progress', 'Not available');
+        this.state.postsData[index].reported = true;
+        this.setState({
+            postsData: [
+                ...this.state.postsData.slice(0, index),
+                this.state.postsData[index],
+                ...this.state.postsData.slice(index + 1),
+            ],
+        });
+        return this.props.firebase
+            .reportPost(this.props.userData.uid, postId)
+            .catch((error) => console.log('report error', error));
     };
 
     toggleRoomStatusPopup = () => {
@@ -192,7 +229,7 @@ class MyProfile extends Component {
             roomStatusPopupVisible: !this.state.roomStatusPopupVisible,
         });
     };
-    togglePostOptions = (id, index) => {
+    togglePostOptions = (id, index, reported) => {
         if (id === undefined) {
             this.setState({
                 postOptionsVisible: !this.state.postOptionsVisible,
@@ -204,6 +241,7 @@ class MyProfile extends Component {
                 postOptionsProps: {
                     postId: id,
                     index: index,
+                    reported: reported,
                 },
             });
         }
@@ -237,25 +275,28 @@ class MyProfile extends Component {
                 title={'Options'}
                 body={
                     <View>
-                        <Button
-                            title={'Flag post as inappropriate'}
-                            type={'clear'}
-                            titleStyle={styles.optionsTitle}
-                            icon={{
-                                name: 'flag',
-                                color: Colors.statusYellow,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 10 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            // TODO:
-                            onPress={() => {
-                                this.reportPost(this.state.postOptionsProps);
-                                this.togglePostOptions();
-                            }}
-                        />
-                        <Popup.Separator />
+                        {!this.state.postOptionsProps?.reported ? (
+                            <View>
+                                <Button
+                                    title={'Flag post as inappropriate'}
+                                    type={'clear'}
+                                    titleStyle={styles.optionsTitle}
+                                    icon={{
+                                        name: 'flag',
+                                        color: Colors.statusYellow,
+                                        size: 25,
+                                        containerStyle: { paddingHorizontal: 10 },
+                                    }}
+                                    buttonStyle={{ justifyContent: 'flex-start' }}
+                                    containerStyle={{ borderRadius: 0 }}
+                                    onPress={() => {
+                                        this.reportPost(this.state.postOptionsProps);
+                                        this.togglePostOptions();
+                                    }}
+                                />
+                                <Popup.Separator />
+                            </View>
+                        ) : null}
                         <Button
                             title={'Delete this post'}
                             type={'clear'}
@@ -268,7 +309,6 @@ class MyProfile extends Component {
                             }}
                             buttonStyle={{ justifyContent: 'flex-start' }}
                             containerStyle={{ borderRadius: 0 }}
-                            // onPress={() => Alert.alert('Disabled', 'Disabled temporarily')}
                             onPress={() => {
                                 this.deletePost(this.state.postOptionsProps);
                                 this.togglePostOptions();
@@ -317,7 +357,7 @@ class MyProfile extends Component {
                 postDetails={post}
                 onUserPress={this.goToOtherProfile}
                 postOptionsVisible={true}
-                onPostOptionsPress={(id) => this.togglePostOptions(id, index)}
+                onPostOptionsPress={(id, reported) => this.togglePostOptions(id, index, reported)}
             />
         );
     };

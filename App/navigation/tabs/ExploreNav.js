@@ -5,7 +5,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { ExploreScreen } from '../../screens';
 import { Colors } from '../../constants';
 import { MAIN_FONT, MainText } from '../../components';
-import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
+import {
+    ModuleEdit,
+    MyProfile,
+    MyQR,
+    PostCreate,
+    ProfileEdit,
+    ScanQR,
+    UserProfile,
+} from '../../screens/Profile';
 import { StyleSheet, View } from 'react-native';
 
 const ExploreStack = createStackNavigator();
@@ -50,7 +58,6 @@ function ExploreNav() {
                     },
                 }}
             />
-
             <ExploreStack.Screen
                 name="MyProfile"
                 component={MyProfile}
@@ -75,6 +82,12 @@ function ExploreNav() {
                 name="PostCreate"
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
+            />
+            <ExploreStack.Screen name="MyQR" component={MyQR} options={{ headerShown: false }} />
+            <ExploreStack.Screen
+                name="ScanQR"
+                component={ScanQR}
+                options={{ headerShown: false }}
             />
         </ExploreStack.Navigator>
     );

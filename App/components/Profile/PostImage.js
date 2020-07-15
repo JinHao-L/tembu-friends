@@ -12,7 +12,7 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
     return (
         <View>
             <TouchableOpacity
-                style={[styles.container, style]}
+                style={style}
                 onPress={() => setImgVisibility(true)}
                 activeOpacity={0.8}
             >
@@ -51,33 +51,14 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
                     backgroundColor={'rgba(0,0,0, 0.8)'}
                 />
             </Modal>
-            {/*<ImageView*/}
-            {/*    glideAlways*/}
-            {/*    images={[{ source: { uri: imgUrl } }]}*/}
-            {/*    imageIndex={0}*/}
-            {/*    animationType={'slide'}*/}
-            {/*    isVisible={imgVisibility}*/}
-            {/*    onClose={() => setImgVisibility(false)}*/}
-            {/*    renderFooter={() => (*/}
-            {/*        <View style={{ maxHeight: '50%' }}>*/}
-            {/*            <ScrollView style={{ flexGrow: 0 }} contentContainerStyle={styles.caption}>*/}
-            {/*                {caption()}*/}
-            {/*            </ScrollView>*/}
-            {/*        </View>*/}
-            {/*    )}*/}
-            {/*    isSwipeCloseEnabled={false}*/}
-            {/*    // isPinchZoomEnabled={true}*/}
-            {/*    // isTapZoomEnabled={true}*/}
-            {/*    // backgroundColor={'rgba(255,255,255,0.5)'}*/}
-            {/*/>*/}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+    // container: {
+    //     flex: 1,
+    // },
     image: {
         width: '100%',
         resizeMode: 'cover',

@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import {
-    StyleSheet,
-    SafeAreaView,
-    View,
-    ActivityIndicator,
-    Text,
-    TouchableNativeFeedback,
-} from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 import { QRCode } from 'react-native-custom-qr-codes-expo';
 import { Button } from 'react-native-elements';
+import * as Sharing from 'expo-sharing';
+import ViewShot, { captureRef } from 'react-native-view-shot';
 
 import { Colors } from '../../constants';
 import { LogoText, MainText } from '../../components';
@@ -20,9 +15,13 @@ const mapStateToProps = (state) => {
 };
 
 class MyQR extends Component {
-    state = {
-        ready: false,
-    };
+    constructor(props) {
+        super(props);
+        this.qrCardRef = React.createRef();
+        this.state = {
+            ready: false,
+        };
+    }
 
     componentDidMount() {
         this.timer = setTimeout(() => {
@@ -31,6 +30,10 @@ class MyQR extends Component {
             });
         }, 1000);
     }
+
+    goToScan = () => {
+        this.props.navigation.push('ScanQR');
+    };
 
     generateQRCode = () => {
         const userData = this.props.userData;
@@ -64,6 +67,28 @@ class MyQR extends Component {
         );
     };
 
+    snapAndShare = () => {
+        return this.takeSnapshot().then(this.shareSnapshot);
+    };
+
+    takeSnapshot = async () => {
+        if (this.qrCardRef.current) {
+            return await captureRef(this.qrCardRef);
+        }
+    };
+
+    shareSnapshot = async (snapshot) => {
+        if (snapshot) {
+            const available = await Sharing.isAvailableAsync();
+            if (!available) {
+                alert('Sharing is not available on your platform');
+                return;
+            }
+
+            await Sharing.shareAsync(snapshot, { dialogTitle: 'Add me on TembuFriends!' });
+        }
+    };
+
     render() {
         const userData = this.props.userData;
         if (!userData) {
@@ -93,12 +118,22 @@ class MyQR extends Component {
                             onPress={this.props.navigation.goBack}
                             type={'clear'}
                         />
-                        <MainText style={styles.title}>My QR Code</MainText>
+                        <MainText style={[styles.title]}>My QR Code</MainText>
+                        <Button
+                            containerStyle={{ borderRadius: 28, marginLeft: 'auto' }}
+                            titleStyle={{ color: Colors.appWhite }}
+                            buttonStyle={{ padding: 0, height: 40, width: 40 }}
+                            icon={{
+                                name: 'share',
+                                size: 28,
+                                color: Colors.appWhite,
+                            }}
+                            onPress={this.snapAndShare}
+                            type={'clear'}
+                            disabled={!this.state.ready}
+                        />
                     </View>
-                    <TouchableNativeFeedback
-                        onPress={() => console.log('pressed')}
-                        style={{ borderRadius: 25, overflow: 'hidden' }}
-                    >
+                    <ViewShot ref={this.qrCardRef}>
                         <View style={styles.QRContainer}>
                             {this.generateQRCode()}
                             <LogoText
@@ -113,8 +148,10 @@ class MyQR extends Component {
                             </LogoText>
                             <MainText style={styles.name}>{userData.displayName}</MainText>
                         </View>
-                    </TouchableNativeFeedback>
-                    <MainText style={styles.scanText}>Scan a QR Code</MainText>
+                    </ViewShot>
+                    <MainText style={styles.scanText} onPress={this.goToScan}>
+                        Scan a QR Code
+                    </MainText>
                 </LinearGradient>
             </SafeAreaView>
         );
@@ -134,6 +171,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         alignSelf: 'flex-start',
+        width: '100%',
 
         paddingBottom: 10,
         paddingTop: 20,

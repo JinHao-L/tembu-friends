@@ -220,7 +220,7 @@ class UserListScreen extends React.Component {
                 {this.renderAdminSettings()}
                 <FlatList
                     data={users.sort((x, y) => x.displayName.localeCompare(y.displayName))}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    // ItemSeparatorComponent={() => <View style={styles.separator} />}
                     renderItem={({ item }) => this.renderUser(item)}
                     keyExtractor={(item) => item.uid}
                     ListHeaderComponent={this.renderHeader}

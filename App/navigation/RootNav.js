@@ -125,7 +125,6 @@ class RootNav extends Component {
                 require('../assets/images/profile/study-icon.png'),
             ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
-                ...Icon.font,
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
                 'Futura-Medium-BT': require('../assets/fonts/Futura-Medium-BT.ttf'),
             }).then(() => console.log('Font Loaded')),

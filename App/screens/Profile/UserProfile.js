@@ -309,13 +309,7 @@ class UserProfile extends Component {
         }
     };
     renderPost = (post) => {
-        return (
-            <ProfilePost
-                postDetails={post}
-                onUserPress={this.goToProfile}
-                postOptionsVisible={false}
-            />
-        );
+        return <ProfilePost postDetails={post} onUserPress={this.goToProfile} />;
     };
 
     renderUnfriendPopup = () => {

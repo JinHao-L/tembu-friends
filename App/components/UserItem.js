@@ -26,27 +26,25 @@ const UserItem = ({
                 rippleColor={Colors.appGray2}
                 {...others}
             >
-                <View style={styles.contents}>
-                    <Avatar
-                        rounded
-                        size={40}
-                        title={name[0]}
-                        source={
-                            profileImg
-                                ? { uri: profileImg }
-                                : require('../assets/images/default/profile.png')
-                        }
-                        containerStyle={styles.profileContainer}
-                    />
+                <Avatar
+                    rounded
+                    size={40}
+                    title={name[0]}
+                    source={
+                        profileImg
+                            ? { uri: profileImg }
+                            : require('../assets/images/default/profile.png')
+                    }
+                    containerStyle={styles.profileContainer}
+                />
 
-                    <View style={styles.textContainer}>
-                        <MainText style={[styles.text, textStyle]}>{name}</MainText>
-                        {subtext ? (
-                            <MainText style={[styles.subtext, subtextStyle]}>{subtext}</MainText>
-                        ) : null}
-                    </View>
-                    <View style={styles.rightElementContainer}>{rightElement()}</View>
+                <View style={styles.textContainer}>
+                    <MainText style={[styles.text, textStyle]}>{name}</MainText>
+                    {subtext ? (
+                        <MainText style={[styles.subtext, subtextStyle]}>{subtext}</MainText>
+                    ) : null}
                 </View>
+                <View style={styles.rightElementContainer}>{rightElement()}</View>
             </BaseButton>
         </View>
     );
@@ -69,13 +67,6 @@ const styles = StyleSheet.create({
         }),
     },
     container: {
-        backgroundColor: Colors.appWhite,
-        paddingHorizontal: 5,
-        paddingVertical: 7,
-        alignItems: 'flex-start',
-        borderRadius: 15,
-    },
-    contents: {
         backgroundColor: Colors.appWhite,
         paddingHorizontal: 5,
         paddingVertical: 7,
