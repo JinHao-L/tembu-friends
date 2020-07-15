@@ -9,6 +9,7 @@ import Firebase from '../helper/Firebase/firebase';
 const initialState = {
     userData: {},
     friends: {},
+    respondList: [],
     friendSubscriber: () => {},
 };
 
@@ -23,15 +24,32 @@ const dataReducer = (state = initialState, action) => {
         case 'updateUserProfile':
             return { ...state, userData: { ...state.userData, ...action.value } };
         case 'updateFriendList':
-            return { ...state, friends: { ...state.friends, ...action.value } };
+            const newFriendState = { ...state.friends, ...action.value };
+            let respondList = [];
+            Object.entries(newFriendState).forEach((value) => {
+                if (value[1].status === 'respond') {
+                    respondList.push({
+                        ...value[1],
+                        uid: value[0],
+                    });
+                }
+            });
+            return {
+                ...state,
+                friends: { ...state.friends, ...action.value },
+                respondList: respondList,
+            };
         case 'removeFriend':
-            let newFriendList = Object.keys(state.friends).reduce((r, e) => {
+            const newFriendList = Object.keys(state.friends).reduce((r, e) => {
                 if (e !== action.value) {
                     r[e] = state.friends[e];
                 }
                 return r;
             }, {});
-            return { ...state, friends: newFriendList };
+            const updatedRespondList = state.respondList.filter(
+                (value) => value.uid !== action.value
+            );
+            return { ...state, friends: newFriendList, respondList: updatedRespondList };
         case 'attachSubscriber':
             return { ...state, friendSubscriber: action.value };
         case 'resetState':

@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontFamily: MAIN_FONT,
-        color: Colors.appDarkGray,
+        color: Colors.appGray4,
         fontSize: 12,
         textAlign: 'center',
         marginBottom: 5,

@@ -58,7 +58,7 @@ class PostCreate extends Component {
                     titleStyle={{ color: Colors.appWhite }}
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
                     disabled={this.state.body === ''}
-                    disabledTitleStyle={{ color: Colors.appDarkGray }}
+                    disabledTitleStyle={{ color: Colors.appGray4 }}
                 />
             ),
         });
@@ -105,7 +105,7 @@ class PostCreate extends Component {
                 };
                 return this.props.firebase.createPost(post, {
                     expoPushToken: this.state.profileData.expoPushToken,
-                    permissions: this.state.profileData.pushPermissions,
+                    pushPermissions: this.state.profileData.pushPermissions,
                 });
             })
             .then(() => this.toggleSuccessPopup())
@@ -319,7 +319,7 @@ class PostCreate extends Component {
                         titleStyle={{ color: Colors.appWhite }}
                         containerStyle={{ marginRight: 5, borderRadius: 20 }}
                         disabled={this.state.body === ''}
-                        disabledTitleStyle={{ color: Colors.appDarkGray }}
+                        disabledTitleStyle={{ color: Colors.appGray4 }}
                     />
                 ),
             });
@@ -388,7 +388,7 @@ class PostCreate extends Component {
                                 ? 'Write something about this photo...'
                                 : `Write a message to ${profileData.firstName}...`
                         }
-                        placeholderTextColor={Colors.appGray}
+                        placeholderTextColor={Colors.appGray2}
                         textAlignVertical={'top'}
                         underlineColorAndroid="transparent"
                         value={body}
@@ -414,8 +414,8 @@ class PostCreate extends Component {
                             style={styles.imgOptions}
                             accessible
                         >
-                            <Icon name={'attachment'} color={Colors.appGray} />
-                            <MainText style={{ color: Colors.appGray }}>Add an image</MainText>
+                            <Icon name={'attachment'} color={Colors.appGray2} />
+                            <MainText style={{ color: Colors.appGray2 }}>Add an image</MainText>
                         </TouchableOpacity>
                     )}
                 </ScrollView>
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     avatarStyle: {
         marginRight: 10,
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appGray2,
     },
     content: {
         paddingHorizontal: 20,
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     imgOptions: {
         borderStyle: 'dashed',
         borderWidth: 2,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appGray2,
         borderRadius: 5,
         marginBottom: 5,
 

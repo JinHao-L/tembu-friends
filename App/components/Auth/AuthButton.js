@@ -11,7 +11,7 @@ const AuthButton = (property) => {
             {...others}
             style={[
                 styles.container,
-                { backgroundColor: loading ? Colors.appGray : Colors.appGreen },
+                { backgroundColor: loading ? Colors.appGray2 : Colors.appGreen },
                 style,
             ]}
             onPress={onPress}

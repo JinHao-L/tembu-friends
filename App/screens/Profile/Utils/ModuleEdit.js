@@ -168,14 +168,14 @@ class ModuleEdit extends Component {
                             autoCorrect={true}
                             renderErrorMessage={false}
                             onChangeText={this.searchFilter}
-                            placeholderTextColor={Colors.appDarkGray}
+                            placeholderTextColor={Colors.appGray4}
                             inputStyle={styles.searchBarInput}
                             inputContainerStyle={styles.inputContentContainer}
                             leftIcon={{
                                 type: 'material',
                                 size: 18,
                                 name: 'search',
-                                color: Colors.appDarkGray,
+                                color: Colors.appGray4,
                             }}
                             leftIconContainerStyle={styles.leftIconContainerStyle}
                         />
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     },
     separator: {
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: Colors.appDarkGray,
+        borderColor: Colors.appGray4,
     },
     titleStyle: {
         fontFamily: MAIN_FONT,
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
         // borderRadius: 3,
         overflow: 'hidden',
         height: 40,
-        backgroundColor: Colors.appGray,
+        backgroundColor: Colors.appGray2,
     },
     leftIconContainerStyle: {
         marginLeft: 8,

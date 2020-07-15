@@ -206,8 +206,8 @@ class ExploreScreen extends Component {
         if (this.state.searchStarted) {
             return (
                 <View style={styles.box}>
-                    <MainText style={{ color: Colors.appDarkGray }}>No results</MainText>
-                    <MainText style={{ color: Colors.appDarkGray }}>
+                    <MainText style={{ color: Colors.appGray4 }}>No results</MainText>
+                    <MainText style={{ color: Colors.appGray4 }}>
                         Did you use the correct prefix?
                     </MainText>
                 </View>
@@ -237,7 +237,7 @@ class ExploreScreen extends Component {
                 type={'material'}
                 size={18}
                 name={'clear'}
-                color={Colors.appDarkGray}
+                color={Colors.appGray4}
                 onPress={this.clearSearch}
             />
         );
@@ -333,9 +333,9 @@ class ExploreScreen extends Component {
                     style={styles.container}
                 >
                     {this.renderPrefixSearchPopup()}
-                    <View style={styles.header}>
-                        <MainText style={styles.title}>Explore</MainText>
-                    </View>
+                    {/*<View style={styles.header}>*/}
+                    {/*    <MainText style={styles.title}>Explore</MainText>*/}
+                    {/*</View>*/}
                     <View style={styles.contentContainer}>
                         <Input
                             ref={this.searchBarRef}
@@ -347,7 +347,7 @@ class ExploreScreen extends Component {
                             renderErrorMessage={false}
                             autoCapitalize={'none'}
                             onEndEditing={({ nativeEvent: { text } }) => this.search(text)}
-                            placeholderTextColor={Colors.appDarkGray}
+                            placeholderTextColor={Colors.appGray4}
                             inputStyle={styles.searchBarInput}
                             inputContainerStyle={styles.inputContentContainer}
                             leftIcon={
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
         paddingTop: 5,
     },
     box: {
-        backgroundColor: Colors.appGray,
+        backgroundColor: Colors.appGray2,
         paddingHorizontal: 5,
         paddingVertical: 7,
         alignItems: 'center',
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     leftIconContainerStyle: {
-        backgroundColor: Colors.appGray,
+        backgroundColor: Colors.appGray2,
         width: '20%',
         alignItems: 'center',
         paddingLeft: 8,

@@ -447,7 +447,7 @@ class SignUpScreen extends Component {
                                         <Icon
                                             name={passwordIcon}
                                             size={28}
-                                            color={Colors.appGray}
+                                            color={Colors.appGray2}
                                             style={{ marginRight: 5 }}
                                         />
                                     </TouchableOpacity>
@@ -472,7 +472,7 @@ class SignUpScreen extends Component {
                                         <Icon
                                             name={confirmPasswordIcon}
                                             size={28}
-                                            color={Colors.appGray}
+                                            color={Colors.appGray2}
                                             style={{ marginRight: 5 }}
                                         />
                                     </TouchableOpacity>

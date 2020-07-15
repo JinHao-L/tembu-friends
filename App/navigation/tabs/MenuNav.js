@@ -12,7 +12,14 @@ import {
 import { AdminNav } from '../menus';
 import { Colors } from '../../constants';
 import { MAIN_FONT } from '../../components';
-import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
+import {
+    ModuleEdit,
+    MyProfile,
+    PostCreate,
+    ProfileEdit,
+    UserProfile,
+    MyQR,
+} from '../../screens/Profile';
 
 const MenuStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Menu';
@@ -85,6 +92,11 @@ function MenuNav() {
                 name="PostCreate"
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
+            />
+            <MenuStack.Screen
+                name="MyQR"
+                component={MyQR}
+                options={{ headerTitle: 'My QR Code', headerShown: false }}
             />
         </MenuStack.Navigator>
     );

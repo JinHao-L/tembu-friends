@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     },
     box: {
         borderBottomWidth: 5,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appGray2,
         backgroundColor: Colors.appWhite,
         paddingHorizontal: 20,
         paddingTop: 5,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontFamily: MAIN_FONT,
-        color: Colors.appDarkGray,
+        color: Colors.appGray4,
         fontSize: 12,
         textAlign: 'center',
     },

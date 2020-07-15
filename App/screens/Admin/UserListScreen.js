@@ -219,7 +219,7 @@ class UserListScreen extends React.Component {
             <SafeAreaView style={styles.container}>
                 {this.renderAdminSettings()}
                 <FlatList
-                    data={users}
+                    data={users.sort((x, y) => x.displayName.localeCompare(y.displayName))}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                     renderItem={({ item }) => this.renderUser(item)}
                     keyExtractor={(item) => item.uid}
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     },
     separator: {
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: Colors.appDarkGray,
+        borderColor: Colors.appGray4,
     },
     titleStyle: {
         fontFamily: MAIN_FONT,

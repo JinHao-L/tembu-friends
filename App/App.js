@@ -1,9 +1,9 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import { Firebase, FirebaseProvider } from './helper/Firebase/';
 import { Provider } from 'react-redux';
-import { store } from './redux';
 
+import { Firebase, FirebaseProvider } from './helper/Firebase/';
+import { store } from './redux';
 import RootNav from './navigation';
 
 console.ignoredYellowBox = ['Setting a timer'];

@@ -70,7 +70,7 @@ const ProfilePost = ({
     } = postDetails;
 
     return (
-        <View style={[styles.box, is_private && { backgroundColor: Colors.appLightGray }]}>
+        <View style={[styles.box, is_private && { backgroundColor: Colors.appGray1 }]}>
             <View style={styles.header}>
                 <Avatar
                     size={35}
@@ -84,7 +84,7 @@ const ProfilePost = ({
                     containerStyle={{
                         marginRight: 10,
                         borderWidth: StyleSheet.hairlineWidth,
-                        borderColor: Colors.appGray,
+                        borderColor: Colors.appGray2,
                     }}
                     onPress={() => onUserPress(sender_uid)}
                 />
@@ -99,7 +99,7 @@ const ProfilePost = ({
                         style={{
                             alignSelf: 'flex-end',
                             marginLeft: 5,
-                            color: Colors.appDarkGray,
+                            color: Colors.appGray4,
                         }}
                     >
                         (Private)
@@ -136,7 +136,7 @@ const ProfilePost = ({
 const styles = StyleSheet.create({
     box: {
         borderBottomWidth: 5,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appGray2,
         backgroundColor: Colors.appWhite,
         paddingHorizontal: 20,
         paddingTop: 5,

@@ -45,14 +45,9 @@ const PushNotifications = {
         return Notifications.getExpoPushTokenAsync();
     },
 
-    sendPostNotification: async (displayName, expoPushToken, permissions) => {
+    sendPostNotification: async (displayName, expoPushToken) => {
         if (!expoPushToken) {
             console.log('No push token');
-            return;
-        }
-
-        if (permissions && permissions.disablePostUpdate) {
-            console.log('Notifications disabled');
             return;
         }
 
@@ -79,14 +74,9 @@ const PushNotifications = {
             .then((response) => console.log('Success', response.ok))
             .catch((error) => console.log('Post Notification Error', error));
     },
-    sendFriendRequestNotification: async (displayName, expoPushToken, permissions) => {
+    sendFriendRequestNotification: async (displayName, expoPushToken) => {
         if (!expoPushToken) {
             console.log('No push token');
-            return;
-        }
-
-        if (permissions && permissions.disableFriendNotification) {
-            console.log('Notifications disabled');
             return;
         }
 
@@ -111,18 +101,14 @@ const PushNotifications = {
             .then((response) => console.log('Success', response.statusText))
             .catch((error) => console.log('Friend Request Notification Error', error));
     },
-    sendAcceptFriendNotification: async (displayName, expoPushToken, permissions) => {
+    sendAcceptFriendNotification: async (displayName, expoPushToken) => {
         if (!expoPushToken) {
-            return;
-        }
-
-        if (permissions && permissions.disableFriendNotification) {
             return;
         }
 
         const message = {
             to: expoPushToken,
-            title: 'Friend Request',
+            title: 'New Friend',
             body: `${displayName} accepted your friend request`,
             sound: 'default',
             priority: 'high',

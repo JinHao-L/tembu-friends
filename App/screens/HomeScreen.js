@@ -20,8 +20,8 @@ const WebNavButton = ({ title, disabled, onPress }) => {
             title={title}
             titleStyle={{ fontFamily: MAIN_FONT, fontSize: 15, color: Colors.appWhite }}
             onPress={onPress}
-            disabledStyle={{ backgroundColor: Colors.appLightGray }}
-            disabledTitleStyle={{ color: Colors.appGray }}
+            disabledStyle={{ backgroundColor: Colors.appGray1 }}
+            disabledTitleStyle={{ color: Colors.appGray2 }}
             disabled={disabled}
         />
     );
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     disabledButton: {
-        color: Colors.appGray,
+        color: Colors.appGray2,
         fontSize: 18,
     },
 });

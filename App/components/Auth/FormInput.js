@@ -27,13 +27,13 @@ function FormInput({
                     isError
                         ? { borderColor: Colors.appRed }
                         : focus
-                        ? { borderColor: Colors.appDarkGray }
-                        : { borderColor: Colors.appGray },
+                        ? { borderColor: Colors.appGray4 }
+                        : { borderColor: Colors.appGray2 },
                 ]}
             >
                 <TextInput
                     {...rest}
-                    placeholderTextColor={Colors.appGray}
+                    placeholderTextColor={Colors.appGray2}
                     placeholder={placeholder}
                     underlineColorAndroid="transparent"
                     style={styles.input}

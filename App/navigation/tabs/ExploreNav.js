@@ -4,8 +4,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { ExploreScreen } from '../../screens';
 import { Colors } from '../../constants';
-import { MAIN_FONT } from '../../components';
+import { MAIN_FONT, MainText } from '../../components';
 import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
+import { StyleSheet, View } from 'react-native';
 
 const ExploreStack = createStackNavigator();
 const INITIAL_ROUTE_NAME = 'Search';
@@ -39,7 +40,15 @@ function ExploreNav() {
             <ExploreStack.Screen
                 name="Search"
                 component={ExploreScreen}
-                options={{ headerShown: false }}
+                options={{
+                    header: (props) => {
+                        return (
+                            <View style={styles.header}>
+                                <MainText style={styles.title}>Explore</MainText>
+                            </View>
+                        );
+                    },
+                }}
             />
 
             <ExploreStack.Screen
@@ -70,5 +79,18 @@ function ExploreNav() {
         </ExploreStack.Navigator>
     );
 }
+const styles = StyleSheet.create({
+    header: {
+        backgroundColor: Colors.appGreen,
+        paddingBottom: 10,
+        paddingTop: 20,
+    },
+    title: {
+        textAlign: 'left',
+        color: Colors.appWhite,
+        fontSize: 24,
+        left: 15,
+    },
+});
 
 export default ExploreNav;

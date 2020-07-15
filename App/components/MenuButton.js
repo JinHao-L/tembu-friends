@@ -24,8 +24,8 @@ const MenuButton = (property) => {
             <BaseButton
                 style={[styles.container, style]}
                 onPress={onPress}
-                underlayColor={Colors.appGray}
-                rippleColor={Colors.appGray}
+                underlayColor={Colors.appGray2}
+                rippleColor={Colors.appGray2}
                 {...others}
             >
                 <View style={styles.contents}>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         height: 50,
         margin: 1,
         borderWidth: 1,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appGray2,
     },
     container: {
         flex: 1,

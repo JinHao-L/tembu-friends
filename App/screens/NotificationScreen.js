@@ -1,55 +1,65 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, SafeAreaView, Alert, FlatList, ActivityIndicator } from 'react-native';
-import { Button, Icon, ListItem } from 'react-native-elements';
+import { StyleSheet, View, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
+import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { Colors } from '../constants/index';
-import { MAIN_FONT, MainText, Popup } from '../components';
+import { MAIN_FONT, MainText, Popup, NotificationItem } from '../components';
 import { withFirebase } from '../helper/Firebase';
-import ReadMore from 'react-native-read-more-text';
 
 const mapStateToProps = (state) => {
-    return { userData: state.userData };
+    return {
+        userData: state.userData,
+        respondList: state.respondList,
+    };
 };
-
-const formatDate = (timestamp) => {
-    if (timestamp) {
-        const dateTimeFormat = timestamp.toDate();
-        let day = dateTimeFormat.getDate();
-        day = day < 10 ? '0' + day : day;
-        const month = months[dateTimeFormat.getMonth()];
-
-        let hours = dateTimeFormat.getHours();
-        let minutes = dateTimeFormat.getMinutes();
-        const ampm = hours >= 12 ? ' PM' : ' AM';
-        hours = hours % 12 || 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        const time = hours + ':' + minutes + ampm;
-
-        return day + ' ' + month + ' at ' + time;
-    } else {
-        return null;
-    }
-};
-
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 class NotificationScreen extends Component {
     state = {
         notifications: null,
-        limit: 10,
+        friendRequest: null,
+        limit: 8,
         lastLoaded: null,
-        loading: false,
+        fetchingMore: false,
         refreshing: false,
         allNotificationsLoaded: false,
+        loading: true,
 
         notificationOptionsVisible: false,
         notificationOptionsProps: null,
     };
 
     componentDidMount() {
-        this.retrieveNotifications();
+        this.retrieveNotifications()
+            .then(this.getLatestFriendRequest)
+            .then(() => this.setState({ loading: false }));
     }
+
+    getLatestFriendRequest = () => {
+        if (this.props.respondList.length === 0) {
+            this.setState({
+                friendRequest: null,
+            });
+        } else {
+            this.setState({ refreshing: true });
+            const sortedList = this.props.respondList.sort(
+                (x, y) => y.time_requested.toMillis() - x.time_requested.toMillis()
+            );
+            return this.props.firebase
+                .getUsers([{ uid: sortedList[0].uid }])
+                .then((userRecords) => {
+                    return { ...sortedList[0], ...userRecords[0] };
+                })
+                .then((friendRequest) => {
+                    this.setState({
+                        friendRequest: friendRequest,
+                    });
+                })
+                .finally(() => {
+                    this.setState({ refreshing: false });
+                });
+        }
+    };
 
     retrieveNotifications = () => {
         this.setState({ refreshing: true, allNotificationsLoaded: false });
@@ -80,10 +90,10 @@ class NotificationScreen extends Component {
             });
     };
     retrieveMoreNotifications = () => {
-        if (this.state.allNotificationsLoaded || this.state.loading || this.state.refreshing) {
+        if (this.state.allNotificationsLoaded || this.state.fetchingMore || this.state.refreshing) {
             return;
         }
-        this.setState({ loading: true });
+        this.setState({ fetchingMore: true });
 
         return this.props.firebase
             .getUserNotifications(this.props.userData.uid)
@@ -101,14 +111,14 @@ class NotificationScreen extends Component {
                     this.setState({
                         notifications: [...this.state.notifications, ...notifications],
                         lastLoaded: lastLoaded,
-                        loading: false,
+                        fetchingMore: false,
                     });
                 } else {
-                    this.setState({ loading: false, allNotificationsLoaded: true });
+                    this.setState({ fetchingMore: false, allNotificationsLoaded: true });
                 }
             })
             .catch((error) => {
-                this.setState({ loading: false });
+                this.setState({ fetchingMore: false });
                 console.log(error);
             });
     };
@@ -122,11 +132,13 @@ class NotificationScreen extends Component {
             this.props.navigation.push('UserProfile', { user_uid: uid });
         }
     };
+    goToFriendRequests = () => {
+        this.props.navigation.navigate('FriendRequests', {
+            onGoBack: this.getLatestFriendRequest,
+        });
+    };
 
-    markAsRead = ({ id, seen, index }) => {
-        if (seen) {
-            return;
-        }
+    markAsRead = ({ id, index }) => {
         this.setState((prevState) => {
             const updated = prevState.notifications;
             updated[index].seen = true;
@@ -156,18 +168,6 @@ class NotificationScreen extends Component {
             }
         );
     };
-    reportNotification = ({ id, reported, index }) => {
-        Alert.alert('Work in progress', 'Not available');
-        // if (reported) {
-        //     return;
-        // }
-        // this.setState((prevState) => {
-        //     const updated = prevState.notifications;
-        //     updated[index].reported = true;
-        //     return { notifications: updated };
-        // });
-        // return this.props.firebase.reportNotification(this.props.userData.uid, id);
-    };
 
     renderNotification = (notification, index) => {
         const {
@@ -175,66 +175,42 @@ class NotificationScreen extends Component {
             notification_id,
             seen,
             timeCreated,
-            type = 'FriendRequest' | 'FriendAccepted' | 'Post',
+            type,
             uid,
             sender_img,
             sender_uid,
-            reported = false,
         } = notification;
         const notificationOptionsProps = {
             id: notification_id,
             seen: seen,
             index: index,
-            reported: reported,
         };
         let iconName;
         switch (type) {
-            case 'FriendRequest':
-                iconName = 'account-plus';
-                break;
-            case 'FriendAccepted':
+            case 'Friends':
                 iconName = 'account-multiple';
                 break;
             case 'Post':
                 iconName = 'text';
                 break;
             default:
-                iconName = 'account';
+                iconName = undefined;
                 break;
         }
         return (
-            <ListItem
-                containerStyle={seen ? styles.notificationItemSeen : styles.notificationItem}
-                title={message}
-                titleStyle={seen ? styles.notificationTextSeen : styles.notificationText}
-                subtitle={formatDate(timeCreated)}
-                subtitleStyle={styles.dateTimeText}
-                bottomDivider={true}
-                leftAvatar={{
-                    rounded: true,
-                    source: sender_img
-                        ? { uri: sender_img }
-                        : require('../assets/images/default/profile.png'),
-                    showAccessory: true,
-                    accessory: {
-                        name: iconName,
-                        type: 'material-community',
-                        underlayColor: Colors.appWhite,
-                        color: Colors.appGreen,
-                        style: { backgroundColor: Colors.appWhite, borderRadius: 50 },
-                        // color: Colors.appGreen,
-                        // underlayColor: Colors.appWhite,
-                    },
-                    onPress: sender_uid
+            <NotificationItem
+                message={message}
+                timeCreated={timeCreated}
+                seen={seen}
+                avatarImg={sender_img}
+                accessoryIcon={iconName}
+                avatarOnPress={
+                    sender_uid
                         ? () => {
                               this.goToProfile(sender_uid);
                           }
-                        : undefined,
-                    overlayContainerStyle: {
-                        backgroundColor: Colors.appWhite,
-                    },
-                    size: 'medium',
-                }}
+                        : undefined
+                }
                 onPress={() => {
                     if (!seen) {
                         this.markAsRead(notificationOptionsProps);
@@ -247,19 +223,120 @@ class NotificationScreen extends Component {
                         notificationOptionsProps: notificationOptionsProps,
                     })
                 }
+                bottomBorder={true}
             />
         );
     };
+
+    acceptFriend = (friendshipId, expoPushToken, pushPermissions) => {
+        return this.props.firebase
+            .acceptFriendRequest(friendshipId, {
+                expoPushToken: expoPushToken,
+                pushPermissions: pushPermissions,
+            })
+            .then(this.getLatestFriendRequest)
+            .catch((error) => console.log('Accept friend error', error));
+    };
+    removeFriend = (friendshipId) => {
+        return this.props.firebase
+            .deleteFriend(friendshipId)
+            .then(this.getLatestFriendRequest)
+            .catch((error) => console.log('Remove friend error', error));
+    };
+    renderFriendRequests = (request) => {
+        return (
+            <NotificationItem
+                message={request.displayName + ' sent you a friend request'}
+                seen={request.seen}
+                timeCreated={request.time_requested}
+                avatarImg={request.profileImg}
+                onPress={() => {
+                    if (!request.seen) {
+                        this.markRequestAsRead(request.id);
+                    }
+                    this.goToProfile(request.uid);
+                }}
+                subtitleElement={
+                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                        <Button
+                            title={'Confirm'}
+                            titleStyle={styles.confirmTitle}
+                            buttonStyle={{
+                                backgroundColor: Colors.appGreen,
+                                height: 30,
+                                marginRight: 5,
+                            }}
+                            containerStyle={{ flex: 1 }}
+                            onPress={() => {
+                                this.acceptFriend(
+                                    request.id,
+                                    request.expoPushToken,
+                                    request.pushPermissions
+                                );
+                            }}
+                        />
+                        <Button
+                            title={'Delete'}
+                            titleStyle={styles.deleteTitle}
+                            buttonStyle={{
+                                backgroundColor: Colors.appGray3,
+                                height: 30,
+                                marginLeft: 5,
+                            }}
+                            containerStyle={{ flex: 1 }}
+                            onPress={() => {
+                                this.removeFriend(request.id);
+                            }}
+                        />
+                    </View>
+                }
+                bottomBorder={true}
+            />
+        );
+    };
+    markRequestAsRead = (id) => {
+        this.setState((prevState) => {
+            const updated = prevState.friendRequest;
+            updated.seen = true;
+            return { friendRequest: updated };
+        });
+        return this.props.firebase.markFriendRequestAsSeen(id);
+    };
+
+    renderHeader = () => {
+        if (this.state.friendRequest) {
+            return (
+                <View>
+                    <View style={styles.listHeader}>
+                        <MainText style={styles.listHeaderText}>Friend Requests</MainText>
+                        <MainText
+                            onPress={this.goToFriendRequests}
+                            style={{ color: Colors.appGreen }}
+                        >
+                            See all ({this.props.respondList.length})
+                        </MainText>
+                    </View>
+                    {this.renderFriendRequests(this.state.friendRequest)}
+                    <View style={styles.separator} />
+                    <View style={styles.listHeader}>
+                        <MainText style={styles.listHeaderText}>Activity</MainText>
+                    </View>
+                </View>
+            );
+        } else {
+            return null;
+        }
+    };
     renderEmptyNotifications = () => {
         return (
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', paddingTop: 10 }}>
                 <MainText>All cleared</MainText>
                 <MainText>No new notification</MainText>
             </View>
         );
     };
     renderFooter = () => {
-        if (this.state.loading) {
+        if (this.state.fetchingMore) {
             return <ActivityIndicator color={Colors.appGreen} />;
         } else {
             return null;
@@ -319,28 +396,6 @@ class NotificationScreen extends Component {
                                 });
                             }}
                         />
-                        <Popup.Separator />
-                        <Button
-                            title={'Report notification bug'}
-                            type={'clear'}
-                            titleStyle={styles.optionsTitle}
-                            icon={{
-                                name: 'bug-report',
-                                color: Colors.statusYellow,
-                                size: 25,
-                                containerStyle: { paddingHorizontal: 10 },
-                            }}
-                            buttonStyle={{ justifyContent: 'flex-start' }}
-                            containerStyle={{ borderRadius: 0 }}
-                            // TODO:
-                            onPress={() => {
-                                this.reportNotification(this.state.notificationOptionsProps);
-                                this.setState({
-                                    notificationOptionsVisible: false,
-                                    notificationOptionsProps: null,
-                                });
-                            }}
-                        />
                     </View>
                 }
                 buttonText={'Cancel'}
@@ -355,8 +410,8 @@ class NotificationScreen extends Component {
     };
 
     render() {
-        const { notifications, refreshing } = this.state;
-        if (notifications === null) {
+        const { notifications, refreshing, loading } = this.state;
+        if (loading) {
             return (
                 <View
                     style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}
@@ -368,62 +423,56 @@ class NotificationScreen extends Component {
 
         return (
             <SafeAreaView style={styles.container}>
-                {this.renderNotificationOptions()}
-                <FlatList
-                    data={notifications}
-                    renderItem={({ item, index }) => this.renderNotification(item, index)}
-                    keyExtractor={(notification) => notification.notification_id}
-                    ListEmptyComponent={this.renderEmptyNotifications}
-                    ListFooterComponent={this.renderFooter}
-                    refreshing={refreshing}
-                    onRefresh={this.retrieveNotifications}
-                    onEndReached={this.retrieveMoreNotifications}
-                    onEndReachedThreshold={0.1}
-                />
+                <View style={styles.container}>
+                    {this.renderNotificationOptions()}
+                    <FlatList
+                        data={notifications}
+                        renderItem={({ item, index }) => this.renderNotification(item, index)}
+                        keyExtractor={(notification) => notification.notification_id}
+                        ListHeaderComponent={this.renderHeader}
+                        ListEmptyComponent={this.renderEmptyNotifications}
+                        ListFooterComponent={this.renderFooter}
+                        refreshing={refreshing}
+                        onRefresh={this.retrieveNotifications}
+                        onEndReached={this.retrieveMoreNotifications}
+                        onEndReachedThreshold={0}
+                        ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    />
+                </View>
             </SafeAreaView>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    header: {
-        backgroundColor: Colors.appGreen,
-        paddingBottom: 10,
-        paddingTop: 20,
-    },
     container: {
-        backgroundColor: Colors.appWhite,
         flex: 1,
-    },
-    dateTimeText: {
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
-        color: Colors.appDarkGray,
-    },
-    notificationIconContainer: {
-        marginRight: 12,
-    },
-    notificationItemSeen: {
-        backgroundColor: Colors.appLightGray,
-    },
-    notificationItem: {
-        borderRightWidth: 5,
-        borderColor: Colors.appGreen,
-        borderTopColor: 'transparent',
-        borderBottomColor: 'transparent',
         backgroundColor: Colors.appWhite,
     },
-    notificationText: {
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
-        fontWeight: '200',
+    listHeader: {
+        backgroundColor: Colors.appWhite,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        alignItems: 'center',
+    },
+    listHeaderText: {
+        fontSize: 15,
+        fontWeight: '600',
         color: Colors.appBlack,
     },
-    notificationTextSeen: {
+    confirmTitle: {
         fontFamily: MAIN_FONT,
-        fontSize: 13,
-        fontWeight: '100',
-        color: Colors.appDarkGray,
+        fontSize: 12,
+        fontWeight: '600',
+        color: Colors.appWhite,
+    },
+    deleteTitle: {
+        fontFamily: MAIN_FONT,
+        fontSize: 12,
+        fontWeight: '600',
+        color: Colors.appBlack,
     },
     optionsTitle: {
         fontFamily: MAIN_FONT,
@@ -432,6 +481,7 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         textAlign: 'left',
     },
+    separator: { height: 5, backgroundColor: Colors.appGray2 },
 });
 
 export default connect(mapStateToProps)(withFirebase(NotificationScreen));

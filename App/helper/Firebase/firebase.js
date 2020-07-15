@@ -171,14 +171,13 @@ const Firebase = {
         const createPostFn = firebase.functions().httpsCallable('createPost');
         return createPostFn(post)
             .then(() => {
-                if (notificationDetails && notificationDetails.expoPushToken) {
+                if (
+                    notificationDetails?.expoPushToken &&
+                    !notificationDetails?.pushPermissions?.disablePostNotifications
+                ) {
                     const displayName = Firebase.getCurrentUser().displayName;
-                    const { expoPushToken, permissions } = notificationDetails;
-                    return PushNotifications.sendPostNotification(
-                        displayName,
-                        expoPushToken,
-                        permissions
-                    );
+                    const { expoPushToken } = notificationDetails;
+                    return PushNotifications.sendPostNotification(displayName, expoPushToken);
                 }
             })
             .catch((error) => {
@@ -200,19 +199,26 @@ const Firebase = {
     getFriendListRef: (uid) => {
         return firebase.firestore().collection('friends').where(`friendship.${uid}`, '==', true);
     },
-    sendFriendRequest: (uid, notificationDetails) => {
+    sendFriendRequest: (
+        uid,
+        notificationDetails = { expoPushToken: null, pushPermissions: null }
+    ) => {
         const friendRequestFn = firebase.functions().httpsCallable('friendRequest');
-        const request = { uid: uid };
+        const { expoPushToken, pushPermissions } = notificationDetails;
+        let request;
+        if (expoPushToken && !pushPermissions?.disableFriendNotification) {
+            request = { uid: uid, expoPushToken: expoPushToken };
+        } else {
+            request = { uid: uid };
+        }
 
         return friendRequestFn(request)
             .then(() => {
-                if (notificationDetails && notificationDetails.expoPushToken) {
+                if (request.expoPushToken) {
                     const displayName = Firebase.getCurrentUser().displayName;
-                    const { expoPushToken, permissions } = notificationDetails;
                     return PushNotifications.sendFriendRequestNotification(
                         displayName,
-                        expoPushToken,
-                        permissions
+                        expoPushToken
                     );
                 }
             })
@@ -231,19 +237,28 @@ const Firebase = {
             .doc(`${friendshipID}`)
             .update('status', 'friends')
             .then(() => {
-                if (notificationDetails && notificationDetails.expoPushToken) {
+                if (
+                    notificationDetails?.expoPushToken &&
+                    !notificationDetails.pushPermissions?.disableFriendNotification
+                ) {
                     const displayName = Firebase.getCurrentUser().displayName;
-                    const { expoPushToken, permissions } = notificationDetails;
+                    const { expoPushToken } = notificationDetails;
                     return PushNotifications.sendAcceptFriendNotification(
                         displayName,
-                        expoPushToken,
-                        permissions
+                        expoPushToken
                     );
                 }
             });
     },
     deleteFriend: (friendshipID) => {
         return firebase.firestore().collection('friends').doc(`${friendshipID}`).delete();
+    },
+    markFriendRequestAsSeen: (friendshipID) => {
+        return firebase
+            .firestore()
+            .collection('friends')
+            .doc(`${friendshipID}`)
+            .update('seen', true);
     },
 
     // Notifications

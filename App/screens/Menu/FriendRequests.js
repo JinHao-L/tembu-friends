@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from 'react-native-elements';
 
-import { MAIN_FONT, MainText, UserItem } from '../../components';
+import { MAIN_FONT, MainText, NotificationItem } from '../../components';
 import { withFirebase } from '../../helper/Firebase';
 import { connect } from 'react-redux';
 import { Colors } from '../../constants';
@@ -11,14 +10,18 @@ import { Colors } from '../../constants';
 const mapStateToProps = (state) => {
     return {
         userData: state.userData,
-        friends: state.friends,
+        respondList: state.respondList,
     };
 };
 
 class FriendRequests extends Component {
     state = {
-        pendingList: [],
+        requests: null,
+        lastLoaded: null,
+        allRequestsLoaded: false,
         refreshing: false,
+        fetchingMore: false,
+        limit: 10,
 
         loading: true,
     };
@@ -44,26 +47,37 @@ class FriendRequests extends Component {
                 />
             ),
         });
-        this.refresh();
+        this.getFriendRequest();
+        console.log(this.state.requests);
     }
 
-    refresh = () => {
-        this.setState({
-            refreshing: true,
-        });
-        return this.props.firebase
-            .getUsers(this.props.route.params.pendingList)
-            .then((list) => {
-                this.setState({
-                    pendingList: list,
-                });
-            })
-            .finally(() => {
-                this.setState({
-                    refreshing: false,
-                    loading: false,
-                });
+    getFriendRequest = () => {
+        if (this.props.respondList.length === 0) {
+            this.setState({
+                requests: [],
             });
+        } else {
+            this.setState({ refreshing: true });
+            const userRequests = [];
+            this.props.respondList.forEach((entry) => {
+                userRequests.push({ uid: entry.uid });
+            });
+            return this.props.firebase
+                .getUsers(userRequests)
+                .then((userRecords) => {
+                    return userRecords.map((value, index) => {
+                        return { ...value, ...this.props.respondList[index] };
+                    });
+                })
+                .then((requests) => {
+                    this.setState({
+                        requests: requests,
+                    });
+                })
+                .finally(() => {
+                    this.setState({ refreshing: false, loading: false });
+                });
+        }
     };
 
     goToProfile = (uid) => {
@@ -76,47 +90,112 @@ class FriendRequests extends Component {
         }
     };
 
-    removeRequest = (uid, index) => {
-        const friendshipId = this.props.friends[uid]?.id;
+    acceptFriend = (index, friendshipId, expoPushToken, pushPermissions) => {
         return this.props.firebase
-            .deleteFriend(friendshipId)
-            .catch((error) => console.log('Remove friend error', error))
+            .acceptFriendRequest(friendshipId, {
+                expoPushToken: expoPushToken,
+                pushPermissions: pushPermissions,
+            })
+            .catch((error) => console.log('Accept friend error', error))
             .finally(() => {
                 this.setState({
-                    pendingList: [
-                        ...this.state.pendingList.slice(0, index),
-                        ...this.state.pendingList.slice(index + 1),
+                    requests: [
+                        ...this.state.requests.slice(0, index),
+                        ...this.state.requests.slice(index + 1),
                     ],
                 });
             });
     };
 
-    renderProfile = (userData, index) => {
-        const { displayName, profileImg, uid } = userData;
+    removeFriend = (index, friendshipId) => {
+        return this.props.firebase
+            .deleteFriend(friendshipId)
+            .catch((error) => console.log('Remove friend error', error))
+            .finally(() => {
+                this.setState({
+                    requests: [
+                        ...this.state.requests.slice(0, index),
+                        ...this.state.requests.slice(index + 1),
+                    ],
+                });
+            });
+    };
+
+    markRequestAsRead = (id, index) => {
+        this.setState((prevState) => {
+            const updated = prevState.requests;
+            updated[index].seen = true;
+            return { requests: updated };
+        });
+        return this.props.firebase.markFriendRequestAsSeen(id);
+    };
+
+    renderFriendRequests = (request, index) => {
+        let confirmLoading = false;
+        let deleteLoading = false;
         return (
-            <UserItem
-                name={displayName || 'undefined'}
-                profileImg={profileImg || ''}
-                onPress={() => this.goToProfile(uid)}
-                rightElement={() => (
-                    <View style={{ flexDirection: 'row' }}>
+            <NotificationItem
+                message={request.displayName}
+                seen={request.seen}
+                titleSpread={true}
+                timeCreated={request.time_requested}
+                avatarImg={request.profileImg}
+                onPress={() => {
+                    if (!request.seen) {
+                        this.markRequestAsRead(request.id, index);
+                    }
+                    this.goToProfile(request.uid);
+                }}
+                subtitleElement={
+                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
                         <Button
-                            type={'clear'}
-                            icon={{ name: 'clear', color: Colors.appRed, size: 25 }}
-                            buttonStyle={{ padding: 0, margin: 0 }}
-                            containerStyle={{ borderRadius: 30 }}
-                            titleStyle={{ color: Colors.appGray }}
-                            onPress={() => this.removeRequest(uid, index)}
+                            title={'Confirm'}
+                            titleStyle={styles.confirmTitle}
+                            buttonStyle={{
+                                backgroundColor: Colors.appGreen,
+                                height: 30,
+                                marginRight: 5,
+                            }}
+                            containerStyle={{ flex: 1 }}
+                            loading={confirmLoading}
+                            onPress={() => {
+                                confirmLoading = true;
+                                this.acceptFriend(
+                                    index,
+                                    request.id,
+                                    request.expoPushToken,
+                                    request.pushPermissions
+                                );
+                            }}
+                        />
+                        <Button
+                            title={'Delete'}
+                            titleStyle={styles.deleteTitle}
+                            buttonStyle={{
+                                backgroundColor: Colors.appGray3,
+                                height: 30,
+                                marginLeft: 5,
+                            }}
+                            containerStyle={{ flex: 1 }}
+                            loading={deleteLoading}
+                            onPress={() => {
+                                deleteLoading = true;
+                                this.removeFriend(index, request.id);
+                            }}
                         />
                     </View>
-                )}
+                }
             />
         );
     };
+
     renderEmpty = () => {
         return (
             <View style={styles.emptyContainerStyle}>
-                <MainText onPress={this.goToExplore} style={{ color: Colors.appGreen }}>
+                <MainText
+                    onPress={this.goToExplore}
+                    style={{ color: Colors.appBlack, textAlign: 'center' }}
+                >
                     No Friend Requests
                 </MainText>
             </View>
@@ -124,36 +203,30 @@ class FriendRequests extends Component {
     };
 
     render() {
-        const { pendingList, refreshing, loading } = this.state;
-        return (
-            <SafeAreaView style={{ flex: 1 }}>
-                <LinearGradient
-                    colors={[Colors.appGreen, Colors.appLightGreen]}
-                    style={styles.container}
+        const { requests, refreshing, loading } = this.state;
+        if (loading) {
+            return (
+                <View
+                    style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}
                 >
-                    {loading ? (
-                        <View
-                            style={[
-                                styles.container,
-                                { justifyContent: 'center', alignItems: 'center' },
-                            ]}
-                        >
-                            <ActivityIndicator color={Colors.appWhite} />
-                        </View>
-                    ) : (
-                        <FlatList
-                            contentContainerStyle={{ paddingHorizontal: 25 }}
-                            data={pendingList.sort((a, b) =>
-                                a.displayName.localeCompare(b.displayName)
-                            )}
-                            renderItem={({ item, index }) => this.renderProfile(item, index)}
-                            keyExtractor={(friend) => friend.uid}
-                            ListEmptyComponent={this.renderEmpty}
-                            refreshing={refreshing}
-                            onRefresh={this.refresh}
-                        />
+                    <ActivityIndicator color={Colors.appGreen} />
+                </View>
+            );
+        }
+
+        return (
+            <SafeAreaView style={styles.container}>
+                <FlatList
+                    data={requests.sort(
+                        (x, y) => y.time_requested.toMillis() - x.time_requested.toMillis()
                     )}
-                </LinearGradient>
+                    renderItem={({ item, index }) => this.renderFriendRequests(item, index)}
+                    keyExtractor={(friend) => friend.id}
+                    ListEmptyComponent={this.renderEmpty}
+                    refreshing={refreshing}
+                    onRefresh={this.getFriendRequest}
+                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                />
             </SafeAreaView>
         );
     }
@@ -161,23 +234,28 @@ class FriendRequests extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: Colors.appWhite,
         flex: 1,
     },
     emptyContainerStyle: {
-        marginTop: 20,
-        backgroundColor: Colors.appGray,
-        paddingVertical: 7,
+        marginTop: 10,
+        paddingVertical: 10,
         alignItems: 'center',
         flex: 1,
     },
-    titleStyle: {
+    confirmTitle: {
         fontFamily: MAIN_FONT,
-        fontSize: 14,
+        fontSize: 12,
+        fontWeight: '600',
+        color: Colors.appWhite,
     },
-    subtitleStyle: {
+    deleteTitle: {
         fontFamily: MAIN_FONT,
-        fontSize: 13,
+        fontSize: 12,
+        fontWeight: '600',
+        color: Colors.appBlack,
     },
+    separator: { height: 5, backgroundColor: Colors.appGray2 },
 });
 
 export default connect(mapStateToProps)(withFirebase(FriendRequests));

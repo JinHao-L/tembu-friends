@@ -13,7 +13,7 @@ class ReportsControl extends Component {
     };
 
     renderSeparator = () => {
-        return <View style={{ height: 1, backgroundColor: Colors.appDarkGray }} />;
+        return <View style={{ height: 1, backgroundColor: Colors.appGray4 }} />;
     };
 
     renderHeader = () => {

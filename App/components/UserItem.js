@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Platform, TouchableNativeFeedback } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Avatar, Button } from 'react-native-elements';
 import { BaseButton } from 'react-native-gesture-handler';
 import { Colors } from '../constants';
@@ -19,12 +19,11 @@ const UserItem = ({
 }) => {
     return (
         <View style={[styles.outerContainer, outerContainerStyle]}>
-            <TouchableNativeFeedback
+            <BaseButton
                 style={[styles.container, style]}
                 onPress={onPress}
-                background={TouchableNativeFeedback.Ripple(Colors.appGray, true)}
-                // underlayColor={Colors.appGray}
-                // rippleColor={Colors.appGray}
+                underlayColor={Colors.appGray2}
+                rippleColor={Colors.appGray2}
                 {...others}
             >
                 <View style={styles.contents}>
@@ -48,7 +47,7 @@ const UserItem = ({
                     </View>
                     <View style={styles.rightElementContainer}>{rightElement()}</View>
                 </View>
-            </TouchableNativeFeedback>
+            </BaseButton>
         </View>
     );
 };

@@ -13,7 +13,6 @@ const mapStateToProps = (state) => {
 
 class MenuScreen extends Component {
     state = {
-        testVisible: false,
         signOutVisible: false,
     };
 
@@ -26,41 +25,26 @@ class MenuScreen extends Component {
         this.props.navigation.push('MyProfile');
     };
 
-    goToAdmin = () => {
-        this.props.navigation.push('AdminNav');
+    goToMyQR = () => {
+        this.props.navigation.push('MyQR');
     };
 
     goToFriends = () => {
         this.props.navigation.push('Friends');
     };
 
-    goToSettings = () => {
-        this.props.navigation.push('Settings');
+    goToAdmin = () => {
+        this.props.navigation.push('AdminNav');
     };
 
-    toggleTestingVisibility = () => {
-        this.setState({
-            testVisible: !this.state.testVisible,
-        });
+    goToSettings = () => {
+        this.props.navigation.push('Settings');
     };
 
     toggleSignOutVisibility = () => {
         this.setState({
             signOutVisible: !this.state.signOutVisible,
         });
-    };
-
-    renderTestingPopup = () => {
-        return (
-            <Popup
-                imageType={'Testing'}
-                isVisible={this.state.testVisible}
-                title={'Not available'}
-                body={'Under Maintenance... \nAwait for our upcoming features'}
-                buttonText={'Close'}
-                callback={this.toggleTestingVisibility}
-            />
-        );
     };
 
     renderSignOutPopup = () => {
@@ -101,7 +85,6 @@ class MenuScreen extends Component {
         }
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                {this.renderTestingPopup()}
                 {this.renderSignOutPopup()}
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
@@ -124,7 +107,7 @@ class MenuScreen extends Component {
                         <MenuButton type={'Friends'} onPress={this.goToFriends}>
                             Friends
                         </MenuButton>
-                        <MenuButton type={'QRCode'} onPress={this.toggleTestingVisibility}>
+                        <MenuButton type={'QRCode'} onPress={this.goToMyQR}>
                             Scan QR Code
                         </MenuButton>
                         {admin && (

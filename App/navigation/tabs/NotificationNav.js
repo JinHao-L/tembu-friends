@@ -3,9 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { NotificationScreen } from '../../screens';
 import { Colors } from '../../constants';
 import { MAIN_FONT, MainText } from '../../components';
+import { NotificationScreen } from '../../screens';
+import { FriendRequests } from '../../screens/Menu';
 import { ModuleEdit, MyProfile, PostCreate, ProfileEdit, UserProfile } from '../../screens/Profile';
 
 const NotificationStack = createStackNavigator();
@@ -50,7 +51,11 @@ function NotificationNav() {
                     },
                 }}
             />
-
+            <NotificationStack.Screen
+                name="FriendRequests"
+                component={FriendRequests}
+                options={{ headerTitle: 'Friend Requests' }}
+            />
             <NotificationStack.Screen
                 name="MyProfile"
                 component={MyProfile}
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         color: Colors.appWhite,
         fontSize: 24,
-        left: 30,
+        left: 15,
     },
 });
 

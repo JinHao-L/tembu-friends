@@ -643,7 +643,7 @@ class ProfileEdit extends Component {
                         <TextInput
                             style={styles.input}
                             placeholder={'Add your first name'}
-                            placeholderTextColor={Colors.appGray}
+                            placeholderTextColor={Colors.appGray2}
                             underlineColorAndroid="transparent"
                             value={firstName}
                             textContentType={'name'}
@@ -656,7 +656,7 @@ class ProfileEdit extends Component {
                         <TextInput
                             style={styles.input}
                             placeholder={'Add your last name'}
-                            placeholderTextColor={Colors.appGray}
+                            placeholderTextColor={Colors.appGray2}
                             underlineColorAndroid="transparent"
                             value={lastName}
                             textContentType={'name'}
@@ -669,7 +669,7 @@ class ProfileEdit extends Component {
                         <TextInput
                             style={styles.input}
                             placeholder={'Add your role in college'}
-                            placeholderTextColor={Colors.appGray}
+                            placeholderTextColor={Colors.appGray2}
                             underlineColorAndroid="transparent"
                             value={role}
                             autoCapitalize={'words'}
@@ -680,7 +680,7 @@ class ProfileEdit extends Component {
                         <MainText style={styles.label}>Major</MainText>
                         <MainText onPress={this.toggleMajorEditPopup} style={styles.input}>
                             {major || (
-                                <Text style={{ color: Colors.appGray }}>Select your major</Text>
+                                <Text style={{ color: Colors.appGray2 }}>Select your major</Text>
                             )}
                         </MainText>
                     </View>
@@ -696,7 +696,7 @@ class ProfileEdit extends Component {
                             <Picker.Item
                                 label={'Select year of study'}
                                 value={''}
-                                color={Colors.appGray}
+                                color={Colors.appGray2}
                             />
                             <Picker.Item label={'Year 1'} value={'Y1'} />
                             <Picker.Item label={'Year 2'} value={'Y2'} />
@@ -717,7 +717,7 @@ class ProfileEdit extends Component {
                             <Picker.Item
                                 label="Select your house"
                                 value=""
-                                color={Colors.appGray}
+                                color={Colors.appGray2}
                             />
                             <Picker.Item label={'Shan'} value={'Shan'} color={Colors.shanHouse} />
                             <Picker.Item label={'Ora'} value={'Ora'} color={Colors.oraHouse} />
@@ -740,7 +740,7 @@ class ProfileEdit extends Component {
                             style={styles.input}
                             placeholder={'Add your room number'}
                             maxLength={7}
-                            placeholderTextColor={Colors.appGray}
+                            placeholderTextColor={Colors.appGray2}
                             underlineColorAndroid="transparent"
                             value={roomNumber}
                             textContentType={'postalCode'}
@@ -763,7 +763,7 @@ class ProfileEdit extends Component {
                                     'or anything that you’re interested in! It’s a ' +
                                     'great way to introduce yourself to others!'
                                 }
-                                placeholderTextColor={Colors.appGray}
+                                placeholderTextColor={Colors.appGray2}
                                 underlineColorAndroid="transparent"
                                 value={aboutText}
                                 autoCapitalize={'sentences'}
@@ -791,7 +791,7 @@ class ProfileEdit extends Component {
                                 size={20}
                                 name={'edit'}
                                 onPress={this.goToModuleEdit}
-                                color={Colors.appDarkGray}
+                                color={Colors.appGray4}
                             />
                         </View>
                         <View>
@@ -800,7 +800,7 @@ class ProfileEdit extends Component {
                                     title={'None'}
                                     titleStyle={{
                                         fontFamily: MAIN_FONT,
-                                        color: Colors.appDarkGray,
+                                        color: Colors.appGray4,
                                         fontSize: 12,
                                         textAlign: 'center',
                                     }}
@@ -854,7 +854,7 @@ const styles = StyleSheet.create({
     },
     box: {
         borderTopWidth: 1,
-        borderTopColor: Colors.appGray,
+        borderTopColor: Colors.appGray2,
         flexDirection: 'row',
         alignItems: 'center',
         minHeight: 40,
@@ -862,13 +862,13 @@ const styles = StyleSheet.create({
     },
     box2: {
         borderTopWidth: 1,
-        borderTopColor: Colors.appGray,
+        borderTopColor: Colors.appGray2,
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
     aboutTextContainer: {
         borderWidth: 1,
-        borderColor: Colors.appGray,
+        borderColor: Colors.appGray2,
         borderRadius: 5,
         maxHeight: 80,
         paddingHorizontal: 5,

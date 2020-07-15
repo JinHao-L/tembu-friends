@@ -92,6 +92,9 @@ export const listenFriendList = (uid) => {
                                 [data.initiator_uid]: {
                                     status: 'respond',
                                     id: data.friendship_id,
+                                    time_requested: data.time_requested,
+                                    seen: data.seen,
+                                    expoPushToken: data.expoPushToken,
                                 },
                             };
                         } else if (data.status === 'friends') {

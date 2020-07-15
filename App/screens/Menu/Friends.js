@@ -12,12 +12,12 @@ const mapStateToProps = (state) => {
     return {
         userData: state.userData,
         friends: state.friends,
+        respondList: state.respondList,
     };
 };
 
 class Friends extends Component {
     state = {
-        pendingList: [],
         friendList: [],
         refreshing: false,
         loading: true,
@@ -32,13 +32,10 @@ class Friends extends Component {
             refreshing: true,
         });
         const friendList = [];
-        const pendingList = [];
         Object.entries(this.props.friends).forEach((entry) => {
             const status = entry[1].status;
             if (status === 'friends') {
                 friendList.push({ uid: entry[0] });
-            } else if (status === 'respond') {
-                pendingList.push({ uid: entry[0] });
             }
         });
 
@@ -51,7 +48,6 @@ class Friends extends Component {
             })
             .finally(() => {
                 this.setState({
-                    pendingList: pendingList,
                     refreshing: false,
                     loading: false,
                 });
@@ -73,7 +69,6 @@ class Friends extends Component {
     goToFriendRequests = () => {
         return this.props.navigation.navigate('FriendRequests', {
             onGoBack: this.refresh,
-            pendingList: this.state.pendingList,
         });
     };
 
@@ -106,9 +101,8 @@ class Friends extends Component {
                 subtitle={'Approve or ignore requests'}
                 subtitleStyle={styles.subtitleStyle}
                 badge={{
-                    value: this.state.pendingList.length,
+                    value: this.props.respondList.length,
                     badgeStyle: { backgroundColor: Colors.appGreen },
-                    textStyle: styles.titleStyle,
                 }}
                 onPress={this.goToFriendRequests}
             />
@@ -143,6 +137,7 @@ class Friends extends Component {
                             ListEmptyComponent={this.renderEmpty}
                             refreshing={refreshing}
                             onRefresh={this.refresh}
+                            // ItemSeparatorComponent={() => <View style={styles.separator} />}
                         />
                     )}
                 </LinearGradient>
@@ -156,9 +151,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     emptyContainerStyle: {
-        backgroundColor: Colors.appGray,
+        backgroundColor: Colors.appGray2,
         paddingVertical: 7,
-        marginTop: 12,
         alignItems: 'center',
         flex: 1,
     },
@@ -170,6 +164,10 @@ const styles = StyleSheet.create({
     subtitleStyle: {
         fontFamily: MAIN_FONT,
         fontSize: 13,
+    },
+    separator: {
+        height: 5,
+        backgroundColor: Colors.appGray2,
     },
 });
 

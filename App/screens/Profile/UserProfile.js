@@ -169,7 +169,7 @@ class UserProfile extends Component {
         return this.props.firebase
             .sendFriendRequest(uid, {
                 expoPushToken: expoPushToken,
-                permissions: pushPermissions,
+                pushPermissions: pushPermissions,
             })
             .catch((error) => console.log('Friend request error', error))
             .finally(() => {
@@ -187,7 +187,7 @@ class UserProfile extends Component {
         return this.props.firebase
             .acceptFriendRequest(friendshipId, {
                 expoPushToken: expoPushToken,
-                permissions: pushPermissions,
+                pushPermissions: pushPermissions,
             })
             .catch((error) => console.log('Accept friend error', error))
             .finally(() => {
@@ -284,10 +284,10 @@ class UserProfile extends Component {
                         containerStyle={{
                             marginRight: 10,
                             borderWidth: StyleSheet.hairlineWidth,
-                            borderColor: Colors.appGray,
+                            borderColor: Colors.appGray2,
                         }}
                     />
-                    <MainText style={{ color: Colors.appGray }}>
+                    <MainText style={{ color: Colors.appGray2 }}>
                         Write something to {firstName}...
                     </MainText>
                 </View>
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontFamily: MAIN_FONT,
-        color: Colors.appDarkGray,
+        color: Colors.appGray4,
         fontSize: 12,
         textAlign: 'center',
         marginBottom: 5,
