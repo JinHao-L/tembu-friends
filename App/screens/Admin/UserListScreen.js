@@ -220,12 +220,10 @@ class UserListScreen extends React.Component {
                 {this.renderAdminSettings()}
                 <FlatList
                     data={users.sort((x, y) => x.displayName.localeCompare(y.displayName))}
-                    // ItemSeparatorComponent={() => <View style={styles.separator} />}
                     renderItem={({ item }) => this.renderUser(item)}
                     keyExtractor={(item) => item.uid}
-                    ListHeaderComponent={this.renderHeader}
                     ListEmptyComponent={() => (
-                        <MainText style={{ alignSelf: 'center' }}>No User</MainText>
+                        <MainText style={{ alignSelf: 'center', paddingTop: 5 }}>No User</MainText>
                     )}
                     refreshing={isLoading}
                     onRefresh={this.refresh}

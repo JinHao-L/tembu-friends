@@ -6,7 +6,6 @@ import { Button, Icon } from 'react-native-elements';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { BaseButton } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
-import { useIsFocused } from '@react-navigation/native';
 
 import { Colors } from '../../constants';
 import { MainText } from '../../components';
@@ -41,6 +40,7 @@ class ScanQR extends Component {
         this.setState({
             uri: null,
             message: '',
+            canScan: false,
         });
         const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
         if (status !== 'granted') {
@@ -64,12 +64,10 @@ class ScanQR extends Component {
                     if (result.length === 0) {
                         this.setState({
                             message: 'No QR detected',
-                            canScan: false,
                         });
                     } else if (result.length > 1) {
                         this.setState({
                             message: 'Multiple QR detected. Please use only one',
-                            canScan: false,
                         });
                     } else {
                         this.handleScan(result[0]);
@@ -253,7 +251,7 @@ const styles = StyleSheet.create({
     image: {
         width: 200,
         height: 200,
-        resizeMode: 'center',
+        resizeMode: 'cover',
     },
     message: {
         textAlign: 'center',

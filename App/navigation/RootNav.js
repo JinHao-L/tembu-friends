@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
-import Icon from 'react-native-vector-icons/Ionicons';
+import ProgressBar from 'react-native-progress/Bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -107,9 +107,11 @@ class RootNav extends Component {
         return await Promise.all([
             Asset.loadAsync([
                 require('../assets/images/logo.png'),
+                require('../assets/images/QR_background.jpg'),
+
                 require('../assets/images/default/profile.png'),
                 require('../assets/images/default/banner.png'),
-                require('../assets/images/menu/robot-prod.png'),
+
                 require('../assets/images/menu/SettingsIcon.png'),
                 require('../assets/images/menu/QRcode.png'),
                 require('../assets/images/menu/FriendsIcon.png'),
@@ -117,12 +119,12 @@ class RootNav extends Component {
                 require('../assets/images/popup/success-icon.png'),
                 require('../assets/images/popup/warning-icon.png'),
                 require('../assets/images/popup/invalid-icon.png'),
-                require('../assets/images/popup/robot-dev.png'),
 
                 require('../assets/images/profile/verified-icon.png'),
                 require('../assets/images/profile/house-icon.png'),
                 require('../assets/images/profile/job-icon.png'),
                 require('../assets/images/profile/study-icon.png'),
+                require('../assets/images/profile/QR-Code.png'),
             ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
@@ -138,16 +140,16 @@ class RootNav extends Component {
                 <View style={styles.container}>
                     <AppLogo style={styles.logo} />
                     <View style={styles.text}>
-                        <ActivityIndicator size="small" />
-                        <Text>Fetching resources...{isAssetsLoading ? '' : ' Done'}</Text>
-                        <Text>Fetching user data...{isUserLoading ? '' : ' Done'}</Text>
-                        {!isUserLoading &&
-                            !isAssetsLoading &&
-                            (isUserSignedIn ? (
-                                <Text>Signing you in</Text>
-                            ) : (
-                                <Text>Proceed to login</Text>
-                            ))}
+                        <ProgressBar width={200} color={Colors.appGreen} indeterminate={true} />
+                        {isAssetsLoading ? (
+                            <Text style={{ marginTop: 5 }}>Fetching resources...</Text>
+                        ) : isUserLoading ? (
+                            <Text style={{ marginTop: 5 }}>Fetching user data...</Text>
+                        ) : isUserSignedIn ? (
+                            <Text style={{ marginTop: 5 }}>Signing you in</Text>
+                        ) : (
+                            <Text style={{ marginTop: 5 }}>Proceed to login</Text>
+                        )}
                     </View>
                 </View>
             );

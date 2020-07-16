@@ -28,7 +28,7 @@ class MyQR extends Component {
             this.setState({
                 ready: true,
             });
-        }, 1000);
+        }, 100);
     }
 
     goToScan = () => {
@@ -205,7 +205,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textAlignVertical: 'center',
     },
-    name: {},
+    name: {
+        fontSize: 15,
+        fontWeight: '600',
+    },
     scanText: {
         position: 'absolute',
         bottom: 0,

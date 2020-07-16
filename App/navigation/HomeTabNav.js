@@ -15,6 +15,7 @@ class HomeTabNav extends Component {
         super(props);
         this.props.navigation.setOptions({
             headerShown: false,
+            headerBackTitleVisible: false,
         });
     }
 

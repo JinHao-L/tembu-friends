@@ -45,7 +45,7 @@
         "web": {
             "favicon": "./assets/images/favicon.png"
         },
-        "description": "A social app for Tembusians (An Apollo-11 Project)",
+        "description": "A Social App for Tembusians.\nAn Orbital Project - Apollo 11",
         "privacy": "public"
     }
 }

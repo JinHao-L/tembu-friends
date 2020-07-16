@@ -13,7 +13,6 @@ const MenuButton = (property) => {
         avatarPlaceholder,
         style,
         borderStyle,
-        backgroundColor,
         onPress,
         children,
         textStyle,
@@ -69,7 +68,7 @@ const getImage = (img) => {
         case 'QRCode':
             return require('../assets/images/menu/QRcode.png');
         case 'Default':
-            return require('../assets/images/menu/robot-prod.png');
+            return null;
     }
 };
 

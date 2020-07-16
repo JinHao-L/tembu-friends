@@ -79,8 +79,6 @@ function getImage(type) {
             return require('../assets/images/popup/success-icon.png');
         case 'Failure':
             return require('../assets/images/popup/invalid-icon.png');
-        case 'Testing':
-            return require('../assets/images/popup/robot-dev.png');
         case 'Warning':
             return require('../assets/images/popup/warning-icon.png');
         default:

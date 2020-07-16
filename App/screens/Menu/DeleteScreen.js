@@ -13,6 +13,11 @@ import { withFirebase } from '../../helper/Firebase';
 import { Colors, Layout } from '../../constants';
 import { AuthButton, FormInput, MainText } from '../../components';
 import ErrorMessage from '../../components/Auth/ErrorMessage';
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state) => {
+    return { friendSubscriber: state.friendSubscriber };
+};
 
 class SignUpScreen extends Component {
     state = {
@@ -154,6 +159,7 @@ class SignUpScreen extends Component {
             await user.delete();
 
             console.log('Cleaning Up');
+            this.props.friendSubscriber();
             this.onDeleteSuccess.bind(this)();
 
             console.log('Signing out');
@@ -337,4 +343,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default withFirebase(SignUpScreen);
+export default connect(mapStateToProps)(withFirebase(SignUpScreen));

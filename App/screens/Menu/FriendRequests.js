@@ -55,6 +55,8 @@ class FriendRequests extends Component {
         if (this.props.respondList.length === 0) {
             this.setState({
                 requests: [],
+                refreshing: false,
+                loading: false,
             });
         } else {
             this.setState({ refreshing: true });
@@ -131,8 +133,6 @@ class FriendRequests extends Component {
     };
 
     renderFriendRequests = (request, index) => {
-        let confirmLoading = false;
-        let deleteLoading = false;
         return (
             <NotificationItem
                 message={request.displayName}
@@ -157,16 +157,14 @@ class FriendRequests extends Component {
                                 marginRight: 5,
                             }}
                             containerStyle={{ flex: 1 }}
-                            loading={confirmLoading}
-                            onPress={() => {
-                                confirmLoading = true;
+                            onPress={() =>
                                 this.acceptFriend(
                                     index,
                                     request.id,
                                     request.expoPushToken,
                                     request.pushPermissions
-                                );
-                            }}
+                                )
+                            }
                         />
                         <Button
                             title={'Delete'}
@@ -177,11 +175,7 @@ class FriendRequests extends Component {
                                 marginLeft: 5,
                             }}
                             containerStyle={{ flex: 1 }}
-                            loading={deleteLoading}
-                            onPress={() => {
-                                deleteLoading = true;
-                                this.removeFriend(index, request.id);
-                            }}
+                            onPress={() => this.removeFriend(index, request.id)}
                         />
                     </View>
                 }

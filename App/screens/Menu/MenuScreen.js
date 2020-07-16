@@ -93,33 +93,35 @@ class MenuScreen extends Component {
                     <View style={styles.header}>
                         <MainText style={styles.title}>Menu</MainText>
                     </View>
-                    <ScrollView style={styles.contentContainer}>
-                        <MenuButton
-                            type={'Profile'}
-                            avatar={profileImg || null}
-                            avatarPlaceholder={firstName && firstName[0]}
-                            onPress={this.goToProfile}
-                        >
-                            <Text style={{ color: 'green' }}>{firstName}</Text>
-                            {'\n'}
-                            <Text style={{ fontSize: 13 }}>See your profile</Text>
-                        </MenuButton>
-                        <MenuButton type={'Friends'} onPress={this.goToFriends}>
-                            Friends
-                        </MenuButton>
-                        <MenuButton type={'QRCode'} onPress={this.goToMyQR}>
-                            Scan QR Code
-                        </MenuButton>
-                        {admin && (
-                            <MenuButton type={'Admin'} onPress={this.goToAdmin}>
-                                Admin
+                    <ScrollView contentContainerStyle={styles.contentContainer}>
+                        <View>
+                            <MenuButton
+                                type={'Profile'}
+                                avatar={profileImg || null}
+                                avatarPlaceholder={firstName && firstName[0]}
+                                onPress={this.goToProfile}
+                            >
+                                <Text style={{ color: 'green' }}>{firstName}</Text>
+                                {'\n'}
+                                <Text style={{ fontSize: 13 }}>See your profile</Text>
                             </MenuButton>
-                        )}
-                        <MenuButton type={'Settings'} onPress={this.goToSettings}>
-                            Settings
-                        </MenuButton>
+                            <MenuButton type={'Friends'} onPress={this.goToFriends}>
+                                Friends
+                            </MenuButton>
+                            <MenuButton type={'QRCode'} onPress={this.goToMyQR}>
+                                Scan QR Code
+                            </MenuButton>
+                            {admin && (
+                                <MenuButton type={'Admin'} onPress={this.goToAdmin}>
+                                    Admin
+                                </MenuButton>
+                            )}
+                            <MenuButton type={'Settings'} onPress={this.goToSettings}>
+                                Settings
+                            </MenuButton>
+                        </View>
                         <MenuButton
-                            style={styles.centralButton}
+                            style={[styles.centralButton, { marginTop: 'auto' }]}
                             textStyle={{ color: 'white' }}
                             onPress={this.toggleSignOutVisibility}
                         >
@@ -143,6 +145,8 @@ const styles = StyleSheet.create({
     contentContainer: {
         paddingTop: 15,
         paddingHorizontal: 30,
+        flexGrow: 1,
+        justifyContent: 'space-between',
     },
     title: {
         textAlign: 'left',

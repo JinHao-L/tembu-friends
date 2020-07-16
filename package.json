@@ -39,6 +39,7 @@
         "react-native-elements": "^2.0.4",
         "react-native-gesture-handler": "~1.6.0",
         "react-native-image-zoom-viewer": "^3.0.1",
+        "react-native-progress": "^4.1.2",
         "react-native-read-more-text": "^1.1.2",
         "react-native-reanimated": "~1.9.0",
         "react-native-safe-area-context": "~3.0.7",
