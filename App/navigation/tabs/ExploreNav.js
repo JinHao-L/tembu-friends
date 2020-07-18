@@ -2,9 +2,9 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { ExploreScreen } from '../../screens';
+import { SearchNav } from '../topbarNav/index';
 import { Colors } from '../../constants';
-import { MAIN_FONT, MainText } from '../../components';
+import { MAIN_FONT } from '../../components';
 import {
     ModuleEdit,
     MyProfile,
@@ -14,10 +14,10 @@ import {
     ScanQR,
     UserProfile,
 } from '../../screens/Profile';
-import { StyleSheet, View } from 'react-native';
+import { ExploreScreen } from '../../screens/Explore';
 
 const ExploreStack = createStackNavigator();
-const INITIAL_ROUTE_NAME = 'Search';
+const INITIAL_ROUTE_NAME = 'Explore';
 
 function ExploreNav() {
     return (
@@ -26,6 +26,10 @@ function ExploreNav() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
+                    elevation: 0,
+                    // shadowOpacity: 0,
+                    // borderBottomWidth: 0,
+                    // shadowOffset: { height: 0, width: 0 },
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -42,19 +46,15 @@ function ExploreNav() {
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { marginLeft: 5 },
+                headerLeftContainerStyle: { paddingLeft: 5 },
             }}
         >
             <ExploreStack.Screen
-                name="Search"
+                name="Explore"
                 component={ExploreScreen}
                 options={{
-                    header: (props) => {
-                        return (
-                            <View style={styles.header}>
-                                <MainText style={styles.title}>Explore</MainText>
-                            </View>
-                        );
+                    headerTitleContainerStyle: {
+                        marginLeft: 0,
                     },
                 }}
             />
@@ -92,18 +92,5 @@ function ExploreNav() {
         </ExploreStack.Navigator>
     );
 }
-const styles = StyleSheet.create({
-    header: {
-        backgroundColor: Colors.appGreen,
-        paddingBottom: 10,
-        paddingTop: 20,
-    },
-    title: {
-        textAlign: 'left',
-        color: Colors.appWhite,
-        fontSize: 24,
-        left: 15,
-    },
-});
 
 export default ExploreNav;

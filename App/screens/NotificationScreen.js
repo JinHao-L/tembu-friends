@@ -18,6 +18,9 @@ class NotificationScreen extends Component {
     state = {
         notifications: null,
         friendRequest: null,
+        friendRequestStatus: '',
+        pressed: false,
+
         limit: 8,
         lastLoaded: null,
         fetchingMore: false,
@@ -28,17 +31,22 @@ class NotificationScreen extends Component {
         notificationOptionsVisible: false,
         notificationOptionsProps: null,
     };
+    navigating = false;
 
     componentDidMount() {
-        this.retrieveNotifications()
-            .then(this.getLatestFriendRequest)
-            .then(() => this.setState({ loading: false }));
+        this.onRefresh().then(() => this.setState({ loading: false }));
     }
+
+    onRefresh = () => {
+        return this.retrieveNotifications().then(this.getLatestFriendRequest);
+    };
 
     getLatestFriendRequest = () => {
         if (this.props.respondList.length === 0) {
             this.setState({
                 friendRequest: null,
+                friendRequestStatus: '',
+                pressed: false,
             });
         } else {
             this.setState({ refreshing: true });
@@ -53,6 +61,8 @@ class NotificationScreen extends Component {
                 .then((friendRequest) => {
                     this.setState({
                         friendRequest: friendRequest,
+                        friendRequestStatus: '',
+                        pressed: false,
                     });
                 })
                 .finally(() => {
@@ -124,6 +134,11 @@ class NotificationScreen extends Component {
     };
 
     goToProfile = (uid) => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         if (!uid || uid === 'deleted') {
             console.log('User does not exist');
         } else if (uid === this.props.userData.uid) {
@@ -133,6 +148,11 @@ class NotificationScreen extends Component {
         }
     };
     goToFriendRequests = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.navigate('FriendRequests', {
             onGoBack: this.getLatestFriendRequest,
         });
@@ -229,24 +249,26 @@ class NotificationScreen extends Component {
     };
 
     acceptFriend = (friendshipId, expoPushToken, pushPermissions) => {
+        this.setState({ pressed: true });
         return this.props.firebase
             .acceptFriendRequest(friendshipId, {
                 expoPushToken: expoPushToken,
                 pushPermissions: pushPermissions,
             })
-            .then(this.getLatestFriendRequest)
+            .then(() => this.setState({ friendRequestStatus: 'Friend request accepted' }))
             .catch((error) => console.log('Accept friend error', error));
     };
     removeFriend = (friendshipId) => {
+        this.setState({ pressed: true });
         return this.props.firebase
             .deleteFriend(friendshipId)
-            .then(this.getLatestFriendRequest)
+            .then(() => this.setState({ friendRequestStatus: 'Friend request deleted' }))
             .catch((error) => console.log('Remove friend error', error));
     };
-    renderFriendRequests = (request) => {
+    renderFriendRequests = (request, responseStatus) => {
         return (
             <NotificationItem
-                message={request.displayName + ' sent you a friend request'}
+                message={request.displayName + ' sent you a friend request.'}
                 seen={request.seen}
                 timeCreated={request.time_requested}
                 avatarImg={request.profileImg}
@@ -257,40 +279,49 @@ class NotificationScreen extends Component {
                     this.goToProfile(request.uid);
                 }}
                 subtitleElement={
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                        <Button
-                            title={'Confirm'}
-                            titleStyle={styles.confirmTitle}
-                            buttonStyle={{
-                                backgroundColor: Colors.appGreen,
-                                height: 30,
-                                marginRight: 5,
-                            }}
-                            containerStyle={{ flex: 1 }}
-                            onPress={() => {
-                                this.acceptFriend(
-                                    request.id,
-                                    request.expoPushToken,
-                                    request.pushPermissions
-                                );
-                            }}
-                        />
-                        <Button
-                            title={'Delete'}
-                            titleStyle={styles.deleteTitle}
-                            buttonStyle={{
-                                backgroundColor: Colors.appGray3,
-                                height: 30,
-                                marginLeft: 5,
-                            }}
-                            containerStyle={{ flex: 1 }}
-                            onPress={() => {
-                                this.removeFriend(request.id);
-                            }}
-                        />
-                    </View>
+                    responseStatus ? (
+                        <MainText
+                            style={{ color: Colors.appGray5, paddingVertical: 5, marginTop: 5 }}
+                        >
+                            {responseStatus}
+                        </MainText>
+                    ) : (
+                        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                            <Button
+                                title={'Confirm'}
+                                titleStyle={styles.confirmTitle}
+                                buttonStyle={{
+                                    backgroundColor: Colors.appGreen,
+                                    paddingVertical: 5,
+                                    marginRight: 5,
+                                }}
+                                containerStyle={{ flex: 1 }}
+                                disabled={this.state.pressed}
+                                onPress={() => {
+                                    this.acceptFriend(
+                                        request.id,
+                                        request.expoPushToken,
+                                        request.pushPermissions
+                                    );
+                                }}
+                            />
+                            <Button
+                                title={'Delete'}
+                                titleStyle={styles.deleteTitle}
+                                buttonStyle={{
+                                    backgroundColor: Colors.appGray3,
+                                    paddingVertical: 5,
+                                    marginLeft: 5,
+                                }}
+                                containerStyle={{ flex: 1 }}
+                                disabled={this.state.pressed}
+                                onPress={() => {
+                                    this.removeFriend(request.id);
+                                }}
+                            />
+                        </View>
+                    )
                 }
-                bottomBorder={true}
             />
         );
     };
@@ -304,34 +335,37 @@ class NotificationScreen extends Component {
     };
 
     renderHeader = () => {
-        if (this.state.friendRequest) {
-            return (
-                <View>
-                    <View style={styles.listHeader}>
-                        <MainText style={styles.listHeaderText}>Friend Requests</MainText>
-                        <MainText
-                            onPress={this.goToFriendRequests}
-                            style={{ color: Colors.appGreen }}
-                        >
-                            See all ({this.props.respondList.length})
+        const { friendRequest, friendRequestStatus } = this.state;
+        return (
+            <View>
+                <View style={styles.listHeader}>
+                    <MainText style={styles.listHeaderText}>Friend Requests</MainText>
+                    <MainText onPress={this.goToFriendRequests} style={{ color: Colors.appGreen }}>
+                        See all ({this.props.respondList.length})
+                    </MainText>
+                </View>
+                {friendRequest ? (
+                    this.renderFriendRequests(friendRequest, friendRequestStatus)
+                ) : (
+                    <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
+                        <MainText style={styles.emptyText}>
+                            You have no friend requests at the moment
                         </MainText>
                     </View>
-                    {this.renderFriendRequests(this.state.friendRequest)}
-                    <View style={styles.separator} />
-                    <View style={styles.listHeader}>
-                        <MainText style={styles.listHeaderText}>Activity</MainText>
-                    </View>
+                )}
+                <View style={styles.separator} />
+                <View style={styles.listHeader}>
+                    <MainText style={styles.listHeaderText}>Activity</MainText>
                 </View>
-            );
-        } else {
-            return null;
-        }
+            </View>
+        );
     };
     renderEmptyNotifications = () => {
         return (
-            <View style={{ alignItems: 'center', paddingTop: 10 }}>
-                <MainText>All cleared</MainText>
-                <MainText>No new notification</MainText>
+            <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
+                <MainText style={styles.emptyText}>
+                    You have no new activity notifications at the moment
+                </MainText>
             </View>
         );
     };
@@ -422,7 +456,7 @@ class NotificationScreen extends Component {
         }
 
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <View style={styles.container}>
                     {this.renderNotificationOptions()}
                     <FlatList
@@ -433,13 +467,13 @@ class NotificationScreen extends Component {
                         ListEmptyComponent={this.renderEmptyNotifications}
                         ListFooterComponent={this.renderFooter}
                         refreshing={refreshing}
-                        onRefresh={this.retrieveNotifications}
+                        onRefresh={this.onRefresh}
                         onEndReached={this.retrieveMoreNotifications}
                         onEndReachedThreshold={0}
                         ItemSeparatorComponent={() => <View style={styles.separator} />}
                     />
                 </View>
-            </SafeAreaView>
+            </View>
         );
     }
 }
@@ -464,13 +498,13 @@ const styles = StyleSheet.create({
     },
     confirmTitle: {
         fontFamily: MAIN_FONT,
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: '600',
         color: Colors.appWhite,
     },
     deleteTitle: {
         fontFamily: MAIN_FONT,
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: '600',
         color: Colors.appBlack,
     },
@@ -481,7 +515,12 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         textAlign: 'left',
     },
-    separator: { height: 5, backgroundColor: Colors.appGray2 },
+    separator: { height: 3, backgroundColor: Colors.appGray2 },
+    emptyText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: Colors.appGray5,
+    },
 });
 
 export default connect(mapStateToProps)(withFirebase(NotificationScreen));

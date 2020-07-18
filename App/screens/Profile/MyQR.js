@@ -22,8 +22,26 @@ class MyQR extends Component {
             ready: false,
         };
     }
+    navigating = false;
 
     componentDidMount() {
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <Button
+                    icon={{
+                        name: 'share',
+                        size: 25,
+                        color: Colors.appWhite,
+                    }}
+                    onPress={this.snapAndShare}
+                    type={'clear'}
+                    disabled={!this.state.ready}
+                    buttonStyle={{ paddingHorizontal: 0, paddingVertical: 5 }}
+                    containerStyle={{ borderRadius: 20, marginRight: 10 }}
+                    titleStyle={{ color: Colors.appWhite }}
+                />
+            ),
+        });
         this.timer = setTimeout(() => {
             this.setState({
                 ready: true,
@@ -32,6 +50,11 @@ class MyQR extends Component {
     }
 
     goToScan = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('ScanQR');
     };
 
@@ -61,7 +84,7 @@ class MyQR extends Component {
                 logoSize={50}
                 size={250}
                 ecl={'Q'}
-                backgroundImage={require('../../assets/images/QR_background.jpg')}
+                backgroundImage={require('../../assets/images/misc/QR_background.jpg')}
                 content={'tf:' + userData.uid}
             />
         );
@@ -99,40 +122,11 @@ class MyQR extends Component {
             );
         }
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    <View style={styles.header}>
-                        <Button
-                            containerStyle={{ borderRadius: 28 }}
-                            titleStyle={{ color: Colors.appWhite }}
-                            buttonStyle={{ padding: 0, height: 28, width: 28 }}
-                            icon={{
-                                type: 'ionicon',
-                                name: 'ios-arrow-back',
-                                size: 28,
-                                color: Colors.appWhite,
-                            }}
-                            onPress={this.props.navigation.goBack}
-                            type={'clear'}
-                        />
-                        <MainText style={[styles.title]}>My QR Code</MainText>
-                        <Button
-                            containerStyle={{ borderRadius: 28, marginLeft: 'auto' }}
-                            titleStyle={{ color: Colors.appWhite }}
-                            buttonStyle={{ padding: 0, height: 40, width: 40 }}
-                            icon={{
-                                name: 'share',
-                                size: 28,
-                                color: Colors.appWhite,
-                            }}
-                            onPress={this.snapAndShare}
-                            type={'clear'}
-                            disabled={!this.state.ready}
-                        />
-                    </View>
                     <ViewShot ref={this.qrCardRef}>
                         <View style={styles.QRContainer}>
                             {this.generateQRCode()}
@@ -153,7 +147,7 @@ class MyQR extends Component {
                         Scan a QR Code
                     </MainText>
                 </LinearGradient>
-            </SafeAreaView>
+            </View>
         );
     }
 }

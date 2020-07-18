@@ -102,11 +102,11 @@ function NotificationItem({
 
 const styles = StyleSheet.create({
     titleText: {
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: '600',
     },
     dateTimeText: {
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: '600',
         color: Colors.appGray5,
         marginLeft: 'auto',
@@ -121,12 +121,6 @@ const styles = StyleSheet.create({
     notificationItem: {
         backgroundColor: 'rgba(52, 192, 128, 0.25)',
         paddingVertical: 15,
-    },
-    notificationText: {
-        fontFamily: MAIN_FONT,
-        fontSize: 15,
-        fontWeight: '600',
-        color: Colors.appBlack,
     },
 });
 

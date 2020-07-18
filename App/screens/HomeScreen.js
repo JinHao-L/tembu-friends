@@ -56,7 +56,7 @@ class HomeScreen extends Component {
     render() {
         const { canGoForward, canGoBack } = this.state;
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <WebView
                     source={{ uri: this.state.currentUrl }}
                     style={{ width: Layout.window.width }}
@@ -86,7 +86,7 @@ class HomeScreen extends Component {
                         title={'Forward'}
                     />
                 </View>
-            </SafeAreaView>
+            </View>
         );
     }
 }

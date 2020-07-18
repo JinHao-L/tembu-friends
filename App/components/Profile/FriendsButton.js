@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements';
 import { Colors } from '../../constants';
 import { MAIN_FONT } from '../MyAppText';
 
-const FriendsButton = ({ type = 'solid', title, onPress, loading }) => {
+function FriendsButton({ type = 'solid', title, onPress, loading }) {
     return (
         <Button
             containerStyle={styles.friendButtonContainer}
@@ -26,7 +26,7 @@ const FriendsButton = ({ type = 'solid', title, onPress, loading }) => {
             onPress={onPress}
         />
     );
-};
+}
 
 const styles = StyleSheet.create({
     friendButtonContainer: {
@@ -35,11 +35,11 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     friendButton: {
-        paddingVertical: 5,
-        height: 25,
+        paddingVertical: 2,
         width: 86,
         borderRadius: 20,
         paddingHorizontal: 0,
+        alignItems: 'center',
     },
     friendButtonText: {
         fontFamily: MAIN_FONT,

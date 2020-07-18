@@ -7,6 +7,7 @@ import { MAIN_FONT, MainText, UserItem } from '../../components';
 import { withFirebase } from '../../helper/Firebase';
 import { connect } from 'react-redux';
 import { Colors } from '../../constants';
+import SearchBar from '../../components/SearchBar';
 
 const mapStateToProps = (state) => {
     return {
@@ -18,10 +19,14 @@ const mapStateToProps = (state) => {
 
 class Friends extends Component {
     state = {
-        friendList: [],
+        filteredList: [],
         refreshing: false,
         loading: true,
+
+        //Search filter
+        searchValue: '',
     };
+    friendList = [];
 
     componentDidMount() {
         this.refresh();
@@ -41,11 +46,14 @@ class Friends extends Component {
 
         return this.props.firebase
             .getUsers(friendList)
+            .then((list) => list.sort((a, b) => a.displayName.localeCompare(b.displayName)))
             .then((list) => {
+                this.friendList = list;
                 this.setState({
-                    friendList: list,
+                    filteredList: list,
                 });
             })
+            .then(() => this.setSearchValue(this.state.searchValue))
             .finally(() => {
                 this.setState({
                     refreshing: false,
@@ -54,7 +62,13 @@ class Friends extends Component {
             });
     };
 
+    navigating = false;
     goToProfile = (uid) => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         if (!uid || uid === 'deleted') {
             console.log('User does not exist', uid);
         } else if (uid === this.props.userData.uid) {
@@ -64,24 +78,22 @@ class Friends extends Component {
         }
     };
     goToExplore = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         return this.props.navigation.navigate('Explore');
-    };
-    goToFriendRequests = () => {
-        return this.props.navigation.navigate('FriendRequests', {
-            onGoBack: this.refresh,
-        });
     };
 
     renderProfile = (userData) => {
         const { displayName, profileImg, uid } = userData;
         return (
-            <View style={{ paddingHorizontal: 25 }}>
-                <UserItem
-                    name={displayName || 'undefined'}
-                    profileImg={profileImg || ''}
-                    onPress={() => this.goToProfile(uid)}
-                />
-            </View>
+            <UserItem
+                name={displayName || 'undefined'}
+                profileImg={profileImg || ''}
+                onPress={() => this.goToProfile(uid)}
+            />
         );
     };
     renderEmpty = () => {
@@ -93,55 +105,60 @@ class Friends extends Component {
             </View>
         );
     };
+
+    setSearchValue = (text) => {
+        this.setState({
+            searchValue: text,
+        });
+        const filteredUsers = this.friendList.filter((data) => {
+            return data.displayName.indexOf(text) > -1;
+        });
+        this.setState({
+            filteredList: filteredUsers,
+        });
+    };
+
     renderHeader = () => {
         return (
-            <ListItem
-                title={'Friend Requests'}
-                titleStyle={styles.titleStyle}
-                subtitle={'Approve or ignore requests'}
-                subtitleStyle={styles.subtitleStyle}
-                badge={{
-                    value: this.props.respondList.length,
-                    badgeStyle: { backgroundColor: Colors.appGreen },
+            <SearchBar
+                value={this.state.searchValue}
+                onChangeText={this.setSearchValue}
+                onCancel={() => this.setSearchValue('')}
+                style={{
+                    paddingVertical: 10,
+                    borderBottomWidth: 1,
+                    borderColor: Colors.appGray2,
                 }}
-                onPress={this.goToFriendRequests}
+                autoCapitalize={'words'}
             />
         );
     };
 
     render() {
-        const { friendList, refreshing, loading } = this.state;
+        const { filteredList, refreshing, loading } = this.state;
         return (
-            <SafeAreaView style={{ flex: 1 }}>
-                <LinearGradient
-                    colors={[Colors.appGreen, Colors.appLightGreen]}
-                    style={styles.container}
-                >
-                    {loading ? (
-                        <View
-                            style={[
-                                styles.container,
-                                { justifyContent: 'center', alignItems: 'center' },
-                            ]}
-                        >
-                            <ActivityIndicator color={Colors.appWhite} />
-                        </View>
-                    ) : (
-                        <FlatList
-                            data={friendList.sort((a, b) =>
-                                a.displayName.localeCompare(b.displayName)
-                            )}
-                            renderItem={({ item }) => this.renderProfile(item)}
-                            keyExtractor={(friend) => friend.uid}
-                            ListHeaderComponent={this.renderHeader}
-                            ListEmptyComponent={this.renderEmpty}
-                            refreshing={refreshing}
-                            onRefresh={this.refresh}
-                            // ItemSeparatorComponent={() => <View style={styles.separator} />}
-                        />
-                    )}
-                </LinearGradient>
-            </SafeAreaView>
+            <View style={styles.container}>
+                {loading ? (
+                    <View
+                        style={[
+                            styles.container,
+                            { justifyContent: 'center', alignItems: 'center' },
+                        ]}
+                    >
+                        <ActivityIndicator color={Colors.appGreen} />
+                    </View>
+                ) : (
+                    <FlatList
+                        data={filteredList}
+                        renderItem={({ item }) => this.renderProfile(item)}
+                        keyExtractor={(friend) => friend.uid}
+                        ListHeaderComponent={this.renderHeader}
+                        ListEmptyComponent={this.renderEmpty}
+                        refreshing={refreshing}
+                        onRefresh={this.refresh}
+                    />
+                )}
+            </View>
         );
     }
 }
@@ -149,6 +166,7 @@ class Friends extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.appWhite,
     },
     emptyContainerStyle: {
         backgroundColor: Colors.appGray2,
@@ -164,10 +182,6 @@ const styles = StyleSheet.create({
     subtitleStyle: {
         fontFamily: MAIN_FONT,
         fontSize: 13,
-    },
-    separator: {
-        height: 5,
-        backgroundColor: Colors.appGray2,
     },
 });
 

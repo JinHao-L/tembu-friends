@@ -15,6 +15,7 @@ class MenuScreen extends Component {
     state = {
         signOutVisible: false,
     };
+    navigating = false;
 
     signOut = () => {
         this.props.friendSubscriber();
@@ -22,22 +23,47 @@ class MenuScreen extends Component {
     };
 
     goToProfile = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('MyProfile');
     };
 
     goToMyQR = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('MyQR');
     };
 
     goToFriends = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('Friends');
     };
 
     goToAdmin = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('AdminNav');
     };
 
     goToSettings = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('Settings');
     };
 
@@ -84,15 +110,12 @@ class MenuScreen extends Component {
             );
         }
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                 {this.renderSignOutPopup()}
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    <View style={styles.header}>
-                        <MainText style={styles.title}>Menu</MainText>
-                    </View>
                     <ScrollView contentContainerStyle={styles.contentContainer}>
                         <View>
                             <MenuButton
@@ -121,7 +144,7 @@ class MenuScreen extends Component {
                             </MenuButton>
                         </View>
                         <MenuButton
-                            style={[styles.centralButton, { marginTop: 'auto' }]}
+                            style={styles.centralButton}
                             textStyle={{ color: 'white' }}
                             onPress={this.toggleSignOutVisibility}
                         >
@@ -129,32 +152,23 @@ class MenuScreen extends Component {
                         </MenuButton>
                     </ScrollView>
                 </LinearGradient>
-            </SafeAreaView>
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    header: {
-        paddingBottom: 10,
-        paddingTop: 20,
-    },
     container: {
         flex: 1,
     },
     contentContainer: {
         paddingTop: 15,
-        paddingHorizontal: 30,
+        paddingHorizontal: 15,
         flexGrow: 1,
         justifyContent: 'space-between',
     },
-    title: {
-        textAlign: 'left',
-        color: 'white',
-        fontSize: 24,
-        left: 30,
-    },
     centralButton: {
+        height: 40,
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
     },

@@ -474,11 +474,11 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
     },
     privatePostButton: {
-        paddingVertical: 5,
+        paddingVertical: 2,
         width: 90,
-        height: 25,
         borderRadius: 20,
         paddingHorizontal: 0,
+        alignItems: 'center',
     },
     privatePostButtonText: {
         fontFamily: MAIN_FONT,

@@ -8,3 +8,4 @@ export Popup from './Popup';
 export RadioButton from './RadioButton';
 export UserItem from './UserItem';
 export NotificationItem from './NotificationItem';
+export SearchBar from './SearchBar';

@@ -5,47 +5,13 @@ import { Avatar, ListItem } from 'react-native-elements';
 import { Colors, Layout } from '../../constants';
 import { MAIN_FONT, MainText } from '../MyAppText';
 
-const renderHouseText = (house) => {
-    let color = Colors.appBlack;
-    switch (house) {
-        case 'Shan':
-            color = Colors.shanHouse;
-            break;
-        case 'Ora':
-            color = Colors.oraHouse;
-            break;
-        case 'Gaja':
-            color = Colors.gajaHouse;
-            break;
-        case 'Tancho':
-            color = Colors.tanchoHouse;
-            break;
-        case 'Ponya':
-            color = Colors.ponyaHouse;
-            break;
-    }
-    return <Text style={{ color: color }}>{house}</Text>;
-};
-const getStatusColor = (type) => {
-    switch (type) {
-        case 'green':
-            return Colors.statusGreen;
-        case 'yellow':
-            return Colors.statusYellow;
-        case 'red':
-            return Colors.statusRed;
-        default:
-            return Colors.statusYellow;
-    }
-};
-
-const ProfileHeader = ({
+function ProfileHeader({
     userData,
     onAccessoryPress = undefined,
     button = null,
     bottomElement,
     bottomElementStyle,
-}) => {
+}) {
     const {
         bannerImg,
         profileImg,
@@ -180,7 +146,7 @@ const ProfileHeader = ({
             ) : null}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     header: {},

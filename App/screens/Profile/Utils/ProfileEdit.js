@@ -282,7 +282,13 @@ class ProfileEdit extends Component {
     goBackToProfile = () => {
         this.props.navigation.goBack();
     };
+    navigating = false;
     goToModuleEdit = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.navigate('ModuleEdit', {
             moduleCodes: this.state.moduleCodes || this.props.userData.moduleCodes || [],
             moduleNames: this.state.moduleNames || this.props.userData.moduleNames || [],
@@ -789,7 +795,7 @@ class ProfileEdit extends Component {
                             <Icon
                                 style={{ marginLeft: 'auto' }}
                                 size={20}
-                                name={'edit'}
+                                name={'add'}
                                 onPress={this.goToModuleEdit}
                                 color={Colors.appGray4}
                             />

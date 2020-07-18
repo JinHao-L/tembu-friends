@@ -158,7 +158,7 @@ class UserListScreen extends React.Component {
                         )}
                         {isVerified ? (
                             <Button
-                                title={'Remove Verified'}
+                                title={'Remove Verification'}
                                 type={'clear'}
                                 titleStyle={styles.iconTitleStyle}
                                 icon={{
@@ -216,7 +216,7 @@ class UserListScreen extends React.Component {
         const { users, isLoading } = this.state;
 
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 {this.renderAdminSettings()}
                 <FlatList
                     data={users.sort((x, y) => x.displayName.localeCompare(y.displayName))}
@@ -228,7 +228,7 @@ class UserListScreen extends React.Component {
                     refreshing={isLoading}
                     onRefresh={this.refresh}
                 />
-            </SafeAreaView>
+            </View>
         );
     }
 }

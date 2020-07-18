@@ -13,6 +13,7 @@ function Popup({
     body,
     buttonText,
     callback,
+    defaultCallback = callback,
     imageType,
     additionalButtonText,
     additionalButtonCall,
@@ -22,7 +23,7 @@ function Popup({
             animationType={'fade'}
             animated={true}
             isVisible={isVisible}
-            onBackdropPress={callback}
+            onBackdropPress={defaultCallback}
             overlayStyle={styles.container}
         >
             <View style={styles.message}>

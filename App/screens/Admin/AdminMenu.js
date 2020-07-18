@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 
-import { MainText, MenuButton } from '../../components';
+import { MenuButton } from '../../components';
 import { Colors } from '../../constants';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button } from 'react-native-elements';
 
 class AdminMenu extends Component {
+    navigating = false;
     goToReports = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         return this.props.navigation.navigate('Reports');
     };
 
     goToUsers = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         return this.props.navigation.navigate('Users');
     };
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
@@ -39,7 +49,7 @@ class AdminMenu extends Component {
                         </MenuButton>
                     </ScrollView>
                 </LinearGradient>
-            </SafeAreaView>
+            </View>
         );
     }
 }
@@ -57,8 +67,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     contentContainer: {
-        paddingTop: 15,
-        marginHorizontal: 30,
+        marginHorizontal: 15,
     },
     title: {
         textAlign: 'left',
@@ -67,6 +76,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
     },
     adminButton: {
+        height: 40,
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
     },

@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Colors } from '../../constants';
-import { MAIN_FONT, MainText } from '../../components';
+import { MAIN_FONT } from '../../components';
 import { NotificationScreen } from '../../screens';
 import { FriendRequests } from '../../screens/Menu';
 import {
@@ -27,6 +26,7 @@ function NotificationNav() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
+                    elevation: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -43,19 +43,15 @@ function NotificationNav() {
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { marginLeft: 5 },
+                headerLeftContainerStyle: { paddingLeft: 5 },
             }}
         >
             <NotificationStack.Screen
                 name="Notifications"
                 component={NotificationScreen}
                 options={{
-                    header: (props) => {
-                        return (
-                            <View style={styles.header}>
-                                <MainText style={styles.title}>Notifications</MainText>
-                            </View>
-                        );
+                    headerTitleContainerStyle: {
+                        marginLeft: 0,
                     },
                 }}
             />
@@ -102,18 +98,5 @@ function NotificationNav() {
         </NotificationStack.Navigator>
     );
 }
-const styles = StyleSheet.create({
-    header: {
-        backgroundColor: Colors.appGreen,
-        paddingBottom: 10,
-        paddingTop: 20,
-    },
-    title: {
-        textAlign: 'left',
-        color: Colors.appWhite,
-        fontSize: 24,
-        left: 15,
-    },
-});
 
 export default NotificationNav;

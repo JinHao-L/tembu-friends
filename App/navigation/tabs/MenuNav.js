@@ -32,6 +32,7 @@ function MenuNav() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
+                    elevation: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -48,10 +49,18 @@ function MenuNav() {
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { marginLeft: 5 },
+                headerLeftContainerStyle: { paddingLeft: 5 },
             }}
         >
-            <MenuStack.Screen name="Menu" component={MenuScreen} options={{ headerShown: false }} />
+            <MenuStack.Screen
+                name="Menu"
+                component={MenuScreen}
+                options={{
+                    headerTitleContainerStyle: {
+                        marginLeft: 0,
+                    },
+                }}
+            />
             <MenuStack.Screen
                 name="AdminNav"
                 component={AdminNav}
@@ -94,8 +103,16 @@ function MenuNav() {
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
             />
-            <MenuStack.Screen name="MyQR" component={MyQR} options={{ headerShown: false }} />
-            <MenuStack.Screen name="ScanQR" component={ScanQR} options={{ headerShown: false }} />
+            <MenuStack.Screen
+                name="MyQR"
+                component={MyQR}
+                options={{ headerTitle: 'My QR Code' }}
+            />
+            <MenuStack.Screen
+                name="ScanQR"
+                component={ScanQR}
+                options={{ headerTitle: 'Scan QR Code' }}
+            />
         </MenuStack.Navigator>
     );
 }

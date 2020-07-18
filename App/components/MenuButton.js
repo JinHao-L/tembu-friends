@@ -6,7 +6,7 @@ import { Avatar, Icon } from 'react-native-elements';
 import { Colors } from '../constants';
 import { MainText } from './MyAppText';
 
-const MenuButton = (property) => {
+function MenuButton(property) {
     const {
         type,
         avatar,
@@ -57,7 +57,7 @@ const MenuButton = (property) => {
             </BaseButton>
         </View>
     );
-};
+}
 
 const getImage = (img) => {
     switch (img) {
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
                 elevation: 5,
             },
         }),
-        height: 50,
+        // height: 50,
         margin: 1,
         borderWidth: 1,
         borderColor: Colors.appGray2,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
         paddingHorizontal: 5,
-        paddingVertical: 7,
+        paddingVertical: 5,
         alignItems: 'flex-start',
         justifyContent: 'center',
         borderRadius: 10,
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     contents: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
     },
     textContainer: {
         justifyContent: 'center',

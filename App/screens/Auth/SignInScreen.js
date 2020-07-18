@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, LogoText, MainText, Popup } from '../../components';
+import { AuthButton, FormInput, LogoText, MainText, Popup } from '../../components';
 
 class SignInScreen extends Component {
     state = {
@@ -36,6 +36,7 @@ class SignInScreen extends Component {
         emailSentPopup: false,
         notVerifiedPopup: false,
     };
+    navigating = false;
 
     clearInputs() {
         this.setState({
@@ -116,11 +117,21 @@ class SignInScreen extends Component {
     }
 
     goToRegister() {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignUp');
     }
 
     goToForgetPassword() {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('ForgetPassword');
     }

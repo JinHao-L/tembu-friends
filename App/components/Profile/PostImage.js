@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import { Image, TouchableOpacity, View, ScrollView, StyleSheet, Modal } from 'react-native';
-// import ImageView from 'react-native-image-view';
+import {
+    Image,
+    TouchableOpacity,
+    View,
+    ScrollView,
+    StyleSheet,
+    Modal,
+    ActivityIndicator,
+} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { Layout } from '../../constants';
+import { Layout, Colors } from '../../constants';
+import { Icon } from 'react-native-elements';
 
 let ratio = 2 / 3;
 
@@ -35,8 +43,22 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
                 <ImageViewer
                     imageUrls={[{ url: imgUrl }]}
                     index={0}
-                    saveToLocalByLongPress={true}
                     onCancel={() => setImgVisibility(false)}
+                    renderHeader={() => (
+                        <Icon
+                            name={'clear'}
+                            onPress={() => setImgVisibility(false)}
+                            color={Colors.appWhite}
+                            containerStyle={{
+                                top: 5,
+                                right: 5,
+                                position: 'absolute',
+                                zIndex: 9999,
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                borderRadius: 20,
+                            }}
+                        />
+                    )}
                     renderFooter={() => (
                         <ScrollView
                             style={{ maxHeight: Layout.window.height / 2 }}
@@ -49,6 +71,7 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
                     renderIndicator={() => null}
                     enableSwipeDown={true}
                     backgroundColor={'rgba(0,0,0, 0.8)'}
+                    loadingRender={() => <ActivityIndicator color={Colors.appWhite} />}
                 />
             </Modal>
         </View>

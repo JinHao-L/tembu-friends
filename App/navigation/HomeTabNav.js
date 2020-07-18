@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TabBarIcon } from '../components';
 import { HomeScreen } from '../screens';
@@ -23,7 +24,15 @@ class HomeTabNav extends Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 {Platform.OS === 'ios' ? (
-                    <StatusBar barStyle="dark-content" />
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 20,
+                            backgroundColor: Colors.appRed,
+                        }}
+                    >
+                        <StatusBar barStyle={'light-content'} backgroundColor={Colors.appGreen} />
+                    </View>
                 ) : (
                     <StatusBar backgroundColor={Colors.appGreen} barStyle="light-content" />
                 )}
@@ -45,7 +54,7 @@ class HomeTabNav extends Component {
                         }}
                     />
                     <BottomTab.Screen
-                        name="Explore"
+                        name="ExploreNav"
                         component={ExploreNav}
                         options={{
                             tabBarIcon: ({ focused }) => (

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import { MAIN_FONT, MainText, NotificationItem } from '../../components';
@@ -23,6 +23,7 @@ class FriendRequests extends Component {
         fetchingMore: false,
         limit: 10,
 
+        pressed: [],
         loading: true,
     };
 
@@ -48,7 +49,6 @@ class FriendRequests extends Component {
             ),
         });
         this.getFriendRequest();
-        console.log(this.state.requests);
     }
 
     getFriendRequest = () => {
@@ -74,15 +74,28 @@ class FriendRequests extends Component {
                 .then((requests) => {
                     this.setState({
                         requests: requests,
+                        refreshing: false,
+                        loading: false,
                     });
                 })
-                .finally(() => {
-                    this.setState({ refreshing: false, loading: false });
+                .catch((error) => {
+                    console.log(error);
+                    this.setState({
+                        requests: [],
+                        refreshing: false,
+                        loading: false,
+                    });
                 });
         }
     };
 
+    navigating = false;
     goToProfile = (uid) => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         if (!uid || uid === 'deleted') {
             console.log('User does not exist', uid);
         } else if (uid === this.props.userData.uid) {
@@ -93,34 +106,46 @@ class FriendRequests extends Component {
     };
 
     acceptFriend = (index, friendshipId, expoPushToken, pushPermissions) => {
+        this.setState({
+            pressed: [...this.state.pressed, friendshipId],
+        });
         return this.props.firebase
             .acceptFriendRequest(friendshipId, {
                 expoPushToken: expoPushToken,
                 pushPermissions: pushPermissions,
             })
-            .catch((error) => console.log('Accept friend error', error))
-            .finally(() => {
+            .then(() => {
+                this.state.requests[index].respondStatus = 'Friend request accepted';
+                this.state.requests[index].seen = true;
                 this.setState({
                     requests: [
                         ...this.state.requests.slice(0, index),
+                        this.state.requests[index],
                         ...this.state.requests.slice(index + 1),
                     ],
                 });
-            });
+            })
+            .catch((error) => console.log('Accept friend error', error));
     };
 
     removeFriend = (index, friendshipId) => {
+        this.setState({
+            pressed: [...this.state.pressed, friendshipId],
+        });
         return this.props.firebase
             .deleteFriend(friendshipId)
-            .catch((error) => console.log('Remove friend error', error))
-            .finally(() => {
+            .then(() => {
+                this.state.requests[index].respondStatus = 'Friend request deleted';
+                this.state.requests[index].seen = true;
                 this.setState({
                     requests: [
                         ...this.state.requests.slice(0, index),
+                        this.state.requests[index],
                         ...this.state.requests.slice(index + 1),
                     ],
                 });
-            });
+            })
+            .catch((error) => console.log('Remove friend error', error));
     };
 
     markRequestAsRead = (id, index) => {
@@ -147,37 +172,47 @@ class FriendRequests extends Component {
                     this.goToProfile(request.uid);
                 }}
                 subtitleElement={
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                        <Button
-                            title={'Confirm'}
-                            titleStyle={styles.confirmTitle}
-                            buttonStyle={{
-                                backgroundColor: Colors.appGreen,
-                                height: 30,
-                                marginRight: 5,
-                            }}
-                            containerStyle={{ flex: 1 }}
-                            onPress={() =>
-                                this.acceptFriend(
-                                    index,
-                                    request.id,
-                                    request.expoPushToken,
-                                    request.pushPermissions
-                                )
-                            }
-                        />
-                        <Button
-                            title={'Delete'}
-                            titleStyle={styles.deleteTitle}
-                            buttonStyle={{
-                                backgroundColor: Colors.appGray3,
-                                height: 30,
-                                marginLeft: 5,
-                            }}
-                            containerStyle={{ flex: 1 }}
-                            onPress={() => this.removeFriend(index, request.id)}
-                        />
-                    </View>
+                    request.respondStatus ? (
+                        <MainText
+                            style={{ color: Colors.appGray5, paddingVertical: 5, marginTop: 5 }}
+                        >
+                            {request.respondStatus}
+                        </MainText>
+                    ) : (
+                        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                            <Button
+                                title={'Confirm'}
+                                titleStyle={styles.confirmTitle}
+                                buttonStyle={{
+                                    backgroundColor: Colors.appGreen,
+                                    paddingVertical: 5,
+                                    marginRight: 5,
+                                }}
+                                containerStyle={{ flex: 1 }}
+                                disabled={this.state.pressed.includes(request.id)}
+                                onPress={() =>
+                                    this.acceptFriend(
+                                        index,
+                                        request.id,
+                                        request.expoPushToken,
+                                        request.pushPermissions
+                                    )
+                                }
+                            />
+                            <Button
+                                title={'Delete'}
+                                titleStyle={styles.deleteTitle}
+                                buttonStyle={{
+                                    backgroundColor: Colors.appGray3,
+                                    paddingVertical: 5,
+                                    marginLeft: 5,
+                                }}
+                                containerStyle={{ flex: 1 }}
+                                disabled={this.state.pressed.includes(request.id)}
+                                onPress={() => this.removeFriend(index, request.id)}
+                            />
+                        </View>
+                    )
                 }
             />
         );
@@ -186,11 +221,13 @@ class FriendRequests extends Component {
     renderEmpty = () => {
         return (
             <View style={styles.emptyContainerStyle}>
-                <MainText
-                    onPress={this.goToExplore}
-                    style={{ color: Colors.appBlack, textAlign: 'center' }}
-                >
-                    No Friend Requests
+                <Image
+                    source={require('../../assets/images/misc/friend-request-icon.png')}
+                    style={{ marginBottom: 30, width: 100, height: 100 }}
+                />
+                <MainText style={styles.emptyText}>
+                    When other Tembusians ask to add you as a friend, you will see their requests
+                    here.
                 </MainText>
             </View>
         );
@@ -209,8 +246,9 @@ class FriendRequests extends Component {
         }
 
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <FlatList
+                    contentContainerStyle={{ minHeight: '100%' }}
                     data={requests.sort(
                         (x, y) => y.time_requested.toMillis() - x.time_requested.toMillis()
                     )}
@@ -221,7 +259,7 @@ class FriendRequests extends Component {
                     onRefresh={this.getFriendRequest}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                 />
-            </SafeAreaView>
+            </View>
         );
     }
 }
@@ -232,10 +270,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     emptyContainerStyle: {
-        marginTop: 10,
-        paddingVertical: 10,
-        alignItems: 'center',
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     confirmTitle: {
         fontFamily: MAIN_FONT,
@@ -250,6 +287,13 @@ const styles = StyleSheet.create({
         color: Colors.appBlack,
     },
     separator: { height: 5, backgroundColor: Colors.appGray2 },
+    emptyText: {
+        marginHorizontal: 30,
+        fontSize: 15,
+        fontWeight: '600',
+        color: Colors.appBlack,
+        textAlign: 'center',
+    },
 });
 
 export default connect(mapStateToProps)(withFirebase(FriendRequests));

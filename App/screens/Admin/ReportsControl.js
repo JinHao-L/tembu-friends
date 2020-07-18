@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet } from 'react-native';
 import { ListItem, Button, Overlay } from 'react-native-elements';
 
 import { Colors } from '../../constants';
@@ -95,7 +95,7 @@ class ReportsControl extends Component {
 
     render() {
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 <Overlay
                     isVisible={this.state.visible}
                     animationType={'fade'}
@@ -149,7 +149,7 @@ class ReportsControl extends Component {
                     refreshing={this.state.isLoading}
                     onRefresh={this.getPostReport}
                 />
-            </SafeAreaView>
+            </View>
         );
     }
 }
@@ -157,8 +157,6 @@ class ReportsControl extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 20,
         // backgroundColor: Colors.appWhite,
     },
     overlayContainer: {

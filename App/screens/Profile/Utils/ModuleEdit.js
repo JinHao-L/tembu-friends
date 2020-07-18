@@ -3,22 +3,38 @@ import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet } from 'rea
 import { Button, ButtonGroup, Input, ListItem } from 'react-native-elements';
 import Colors from '../../../constants/Colors';
 import { MAIN_FONT, Popup } from '../../../components';
+import SearchBar from '../../../components/SearchBar';
+import Layout from '../../../constants/Layout';
+import { TabBar, TabView } from 'react-native-tab-view';
+import AllModules from './AllModules';
+import MyModules from './MyModule';
 
 class ModuleEdit extends Component {
     state = {
         isLoading: true,
-        year: '2019-2020',
         searchTerm: '',
 
         filteredData: [],
+        filteredSelectedCodes: [],
+        filteredSelectedNames: [],
+
+        index: 0,
+        routes: [
+            { key: 'allMods', title: 'All Modules' },
+            { key: 'myMods', title: 'My Modules' },
+        ],
 
         selectedCodes: this.props.route.params.moduleCodes,
         selectedNames: this.props.route.params.moduleNames,
 
         // Control
-        selectedIndex: 0,
         moduleLimitPopupShown: false,
+        exitConfirmationPopupVisible: false,
+        allLoaded: false,
+        myLoaded: false,
+        changes: false,
     };
+    year = '2019-2020';
     allData = [];
     limit = 50;
 
@@ -36,8 +52,26 @@ class ModuleEdit extends Component {
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
                 />
             ),
+            headerLeft: () => (
+                <Button
+                    containerStyle={{ borderRadius: 28 }}
+                    titleStyle={{ color: Colors.appWhite }}
+                    buttonStyle={{ padding: 0, height: 28, width: 28 }}
+                    icon={{
+                        type: 'ionicon',
+                        name: 'ios-arrow-back',
+                        size: 28,
+                        color: Colors.appWhite,
+                    }}
+                    onPress={
+                        this.state.changes
+                            ? this.toggleExitConfirmationPopup
+                            : this.props.navigation.goBack
+                    }
+                    type={'clear'}
+                />
+            ),
         });
-
         this.fetchData();
     }
 
@@ -47,7 +81,7 @@ class ModuleEdit extends Component {
     };
 
     fetchData = () => {
-        const url = `https://api.nusmods.com/v2/${this.state.year}/moduleList.json`;
+        const url = `https://api.nusmods.com/v2/${this.year}/moduleList.json`;
         this.setState({ isLoading: true });
         return fetch(url)
             .then((response) => response.json())
@@ -66,13 +100,39 @@ class ModuleEdit extends Component {
             });
     };
 
-    searchFilter = (searchTerm) => {
-        if (searchTerm === undefined) {
-            searchTerm = this.state.searchTerm;
-        } else {
-            this.setState({ searchTerm: searchTerm });
-        }
+    setSearchTerm = (text) => {
+        this.setState(
+            {
+                searchTerm: text,
+                allLoaded: false,
+                myLoaded: false,
+            },
+            () => this.search()
+        );
+    };
+    setIndex = (index) => {
+        this.setState(
+            {
+                index: index,
+            },
+            () => this.search()
+        );
+    };
 
+    search = () => {
+        const searchTerm = this.state.searchTerm;
+        const key = this.state.routes[this.state.index].key;
+        if (key === 'allMods') {
+            return this.filterAllMods(searchTerm);
+        } else if (key === 'myMods') {
+            return this.filterSelected(searchTerm);
+        }
+    };
+
+    filterAllMods = (searchTerm) => {
+        if (this.state.allLoaded) {
+            return;
+        }
         const newData = this.allData.filter((data) => {
             const moduleCode = data.moduleCode;
             const moduleName = data.title.toUpperCase();
@@ -86,115 +146,40 @@ class ModuleEdit extends Component {
         });
         this.setState({
             filteredData: newData,
+            allLoaded: true,
         });
     };
 
-    select = (moduleCode, moduleName) => {
-        const { selectedCodes, selectedNames, filteredData } = this.state;
-
-        if (!selectedCodes.includes(moduleCode)) {
-            if (selectedCodes.length >= this.limit) {
-                this.toggleModuleLimitPopup();
-            } else {
-                this.setState({
-                    selectedCodes: [...selectedCodes, moduleCode],
-                    selectedNames: [...selectedNames, moduleName],
-                    filteredData: filteredData.filter((m) => m.moduleCode !== moduleCode),
-                });
-            }
-        } else {
-            const index = selectedCodes.findIndex((x) => x === moduleCode);
-            this.setState(
-                {
-                    selectedCodes: [
-                        ...selectedCodes.slice(0, index),
-                        ...selectedCodes.slice(index + 1),
-                    ],
-                    selectedNames: [
-                        ...selectedNames.slice(0, index),
-                        ...selectedNames.slice(index + 1),
-                    ],
-                },
-                () => this.searchFilter()
-            );
+    filterSelected = (searchTerm) => {
+        if (this.state.myLoaded) {
+            return;
         }
-    };
+        if (!searchTerm) {
+            this.setState({
+                filteredSelectedCodes: this.state.selectedCodes,
+                filteredSelectedNames: this.state.selectedNames,
+            });
+            return;
+        }
+        const filteredCode = [];
+        const filteredName = [];
+        this.state.selectedCodes.forEach((value, index) => {
+            const moduleCode = value;
+            const moduleName = this.state.selectedNames[index];
 
-    updateIndex = (selectedIndex) => {
-        this.setState({ selectedIndex });
-    };
+            const standardName = moduleName.toUpperCase();
+            const searchData = searchTerm.toUpperCase();
 
-    renderItem = (moduleCode, moduleName, override) => {
-        const found = override || this.state.selectedCodes.includes(moduleCode);
-
-        return (
-            <ListItem
-                title={moduleCode}
-                titleStyle={styles.titleStyle}
-                subtitle={moduleName}
-                subtitleStyle={styles.subtitleStyle}
-                checkBox={{
-                    iconType: 'material',
-                    checkedIcon: 'remove',
-                    uncheckedIcon: 'add',
-                    checkedColor: Colors.appGreen,
-                    uncheckedColor: Colors.appGreen,
-                    checked: found,
-                    onPress: () => this.select(moduleCode, moduleName),
-                }}
-            />
-        );
-    };
-    renderHeader = () => {
-        const { selectedIndex, searchTerm } = this.state;
-        const buttons = ['All Modules', 'My Modules'];
-
-        return (
-            <View>
-                <ButtonGroup
-                    buttons={buttons}
-                    selectedIndex={selectedIndex}
-                    onPress={this.updateIndex}
-                    textStyle={styles.titleStyle}
-                    selectedButtonStyle={{ backgroundColor: Colors.appGreen }}
-                />
-                {selectedIndex === 0 && (
-                    <View style={styles.searchBarContainer}>
-                        <Input
-                            style={{ flex: 1 }}
-                            testID="searchInput"
-                            value={searchTerm}
-                            placeholder={'Type Here...'}
-                            autoCorrect={true}
-                            renderErrorMessage={false}
-                            onChangeText={this.searchFilter}
-                            placeholderTextColor={Colors.appGray4}
-                            inputStyle={styles.searchBarInput}
-                            inputContainerStyle={styles.inputContentContainer}
-                            leftIcon={{
-                                type: 'material',
-                                size: 18,
-                                name: 'search',
-                                color: Colors.appGray4,
-                            }}
-                            leftIconContainerStyle={styles.leftIconContainerStyle}
-                        />
-                        {/*<Picker*/}
-                        {/*    style={{ flex: 1, height: 30 }}*/}
-                        {/*    itemStyle={{ fontSize: 15, fontFamily: MAIN_FONT }}*/}
-                        {/*    // mode="dropdown"*/}
-                        {/*    selectedValue={this.state.year}*/}
-                        {/*    onValueChange={(val) => {*/}
-                        {/*        this.setState({ year: val }, this.fetchData);*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    <Picker.Item label={'AY 19/20'} value={'2019-2020'} />*/}
-                        {/*    <Picker.Item label={'AY 18/19'} value={'2018-2019'} />*/}
-                        {/*</Picker>*/}
-                    </View>
-                )}
-            </View>
-        );
+            if (moduleCode.indexOf(searchData) > -1 || standardName.indexOf(searchData) > -1) {
+                filteredCode.push(moduleCode);
+                filteredName.push(moduleName);
+            }
+        });
+        this.setState({
+            filteredSelectedCodes: filteredCode,
+            filteredSelectedNames: filteredName,
+            myLoaded: false,
+        });
     };
 
     toggleModuleLimitPopup = () => {
@@ -214,46 +199,129 @@ class ModuleEdit extends Component {
             />
         );
     };
-    renderFooter = () => {
-        if (this.state.isLoading) {
-            return <ActivityIndicator color={Colors.appGreen} />;
+
+    toggleExitConfirmationPopup = () => {
+        this.setState({
+            exitConfirmationPopupVisible: !this.state.exitConfirmationPopupVisible,
+        });
+    };
+    renderExitConfirmationPopup = () => {
+        return (
+            <Popup
+                imageType={'Warning'}
+                isVisible={this.state.exitConfirmationPopupVisible}
+                title={'Unsaved Changes'}
+                body={'Do you want to save your changes?'}
+                additionalButtonText={'Yes'}
+                additionalButtonCall={() => {
+                    this.toggleExitConfirmationPopup();
+                    this.onConfirm();
+                }}
+                buttonText={'No'}
+                callback={() => {
+                    this.toggleExitConfirmationPopup();
+                    this.props.navigation.goBack();
+                }}
+                defaultCallback={this.toggleExitConfirmationPopup}
+            />
+        );
+    };
+
+    unselect = (moduleCode) => {
+        const { selectedCodes, selectedNames } = this.state;
+        const index = selectedCodes.findIndex((x) => x === moduleCode);
+        this.setState(
+            {
+                selectedCodes: [
+                    ...selectedCodes.slice(0, index),
+                    ...selectedCodes.slice(index + 1),
+                ],
+                selectedNames: [
+                    ...selectedNames.slice(0, index),
+                    ...selectedNames.slice(index + 1),
+                ],
+                changes: true,
+            },
+            () => this.search()
+        );
+    };
+
+    select = (moduleCode, moduleName) => {
+        const { selectedCodes, selectedNames, filteredData } = this.state;
+
+        if (selectedCodes.length >= this.limit) {
+            this.toggleModuleLimitPopup();
         } else {
-            return null;
+            this.setState(
+                {
+                    selectedCodes: [...selectedCodes, moduleCode],
+                    selectedNames: [...selectedNames, moduleName],
+                    filteredData: filteredData.filter((m) => m.moduleCode !== moduleCode),
+                    changes: true,
+                },
+                () => this.search()
+            );
+        }
+    };
+
+    renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'allMods':
+                return (
+                    <AllModules
+                        select={this.select}
+                        filteredData={this.state.filteredData}
+                        searchTerm={this.state.searchTerm}
+                    />
+                );
+            case 'myMods':
+                return (
+                    <MyModules
+                        filteredSelectedCodes={this.state.filteredSelectedCodes}
+                        filteredSelectedNames={this.state.filteredSelectedNames}
+                        unselect={this.unselect}
+                        searchTerm={this.state.searchTerm}
+                    />
+                );
         }
     };
 
     render() {
-        const { filteredData, selectedCodes, selectedNames, selectedIndex } = this.state;
+        const { searchTerm, index, routes } = this.state;
         return (
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
                 {this.renderModuleLimitPopup()}
-                {selectedIndex === 0 ? (
-                    <FlatList
-                        data={filteredData}
-                        ItemSeparatorComponent={() => <View style={styles.separator} />}
-                        renderItem={({ item }) => this.renderItem(item.moduleCode, item.title)}
-                        ListHeaderComponent={this.renderHeader}
-                        ListFooterComponent={this.renderFooter}
-                        keyExtractor={(item) => item.moduleCode}
-                    />
-                ) : (
-                    <FlatList
-                        data={selectedCodes}
-                        ItemSeparatorComponent={() => <View style={styles.separator} />}
-                        renderItem={({ item, index }) =>
-                            this.renderItem(item, selectedNames[index], true)
-                        }
-                        keyExtractor={(item) => item}
-                        ListHeaderComponent={this.renderHeader}
-                        ListEmptyComponent={() => (
-                            <ListItem
-                                titleStyle={{ textAlign: 'center' }}
-                                title={'No saved modules'}
-                            />
-                        )}
-                    />
-                )}
-            </SafeAreaView>
+                {this.renderExitConfirmationPopup()}
+                <SearchBar
+                    value={searchTerm}
+                    onChangeText={this.setSearchTerm}
+                    onCancel={() => this.setSearchTerm('')}
+                    style={{ paddingVertical: 10 }}
+                    autoCapitalize={'words'}
+                />
+                <TabView
+                    renderScene={this.renderScene}
+                    onIndexChange={this.setIndex}
+                    navigationState={{ index, routes }}
+                    lazy={true}
+                    swipeEnabled={true}
+                    initialLayout={{ width: Layout.window.width }}
+                    renderTabBar={(props) => (
+                        <TabBar
+                            {...props}
+                            style={{ backgroundColor: Colors.appWhite, elevation: 2 }}
+                            tabStyle={{ minHeight: 40, alignItems: 'center' }}
+                            getLabelText={({ route }) => route.title}
+                            labelStyle={{
+                                color: Colors.appBlack,
+                                fontFamily: MAIN_FONT,
+                                fontSize: 12,
+                            }}
+                            indicatorStyle={{ backgroundColor: Colors.appGreen }}
+                        />
+                    )}
+                />
+            </View>
         );
     }
 }

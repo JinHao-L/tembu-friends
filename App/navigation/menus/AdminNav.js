@@ -16,6 +16,7 @@ function AdminNav() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
+                    elevation: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -32,7 +33,7 @@ function AdminNav() {
                     <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { marginLeft: 5 },
+                headerLeftContainerStyle: { paddingLeft: 5 },
             }}
         >
             <AdminStack.Screen

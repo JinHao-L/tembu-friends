@@ -30,6 +30,7 @@ class ScanQR extends Component {
                 canScan: false,
             });
         });
+        this.navigating = false;
     }
 
     componentWillUnmount() {
@@ -37,6 +38,11 @@ class ScanQR extends Component {
     }
 
     openGallery = async () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.setState({
             uri: null,
             message: '',
@@ -144,27 +150,11 @@ class ScanQR extends Component {
     render() {
         const { uri, message, canScan, barcodeTypes } = this.state;
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                 <LinearGradient
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    <View style={styles.header}>
-                        <Button
-                            containerStyle={{ borderRadius: 28 }}
-                            titleStyle={{ color: Colors.appWhite }}
-                            buttonStyle={{ padding: 0, height: 28, width: 28 }}
-                            icon={{
-                                type: 'ionicon',
-                                name: 'ios-arrow-back',
-                                size: 28,
-                                color: Colors.appWhite,
-                            }}
-                            onPress={this.props.navigation.goBack}
-                            type={'clear'}
-                        />
-                        <MainText style={styles.title}>Scan QR Code</MainText>
-                    </View>
                     {canScan ? (
                         <BaseButton
                             style={styles.QRContainer}
@@ -198,7 +188,7 @@ class ScanQR extends Component {
                         Choose from gallery
                     </MainText>
                 </LinearGradient>
-            </SafeAreaView>
+            </View>
         );
     }
 }

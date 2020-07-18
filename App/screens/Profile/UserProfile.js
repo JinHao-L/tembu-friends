@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
-import { Avatar, Button } from 'react-native-elements';
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import { Avatar, Button, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
@@ -34,6 +43,7 @@ class UserProfile extends Component {
         unfriendPopupVisible: false,
         respondPopupVisible: false,
     };
+    navigating = false;
 
     componentDidMount() {
         const { userData, user_uid } = this.props.route.params;
@@ -50,6 +60,11 @@ class UserProfile extends Component {
     }
 
     goToProfile = (uid) => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         if (!uid || uid === 'deleted') {
             console.log('User does not exist');
         } else if (uid === this.props.userData.uid) {
@@ -60,6 +75,11 @@ class UserProfile extends Component {
     };
 
     goToWritePost = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.navigate('PostCreate', {
             myName: this.props.userData.displayName,
             profileImg: this.props.userData.profileImg,
@@ -212,53 +232,208 @@ class UserProfile extends Component {
             });
     };
 
+    renderHouseText = (house) => {
+        let color = Colors.appBlack;
+        switch (house) {
+            case 'Shan':
+                color = Colors.shanHouse;
+                break;
+            case 'Ora':
+                color = Colors.oraHouse;
+                break;
+            case 'Gaja':
+                color = Colors.gajaHouse;
+                break;
+            case 'Tancho':
+                color = Colors.tanchoHouse;
+                break;
+            case 'Ponya':
+                color = Colors.ponyaHouse;
+                break;
+        }
+        return <Text style={{ color: color }}>{house}</Text>;
+    };
+    getStatusColor = (type) => {
+        switch (type) {
+            case 'green':
+                return Colors.statusGreen;
+            case 'yellow':
+                return Colors.statusYellow;
+            case 'red':
+                return Colors.statusRed;
+            default:
+                return Colors.statusYellow;
+        }
+    };
+
     renderHeader = () => {
-        const { uid } = this.state.profileData;
+        const {
+            uid,
+            bannerImg,
+            profileImg,
+            displayName,
+            role = 'Resident',
+            major = 'Undeclared',
+            year = 'Y0',
+            house = 'Undeclared',
+            roomNumber = '',
+            friendsCount = 0,
+            aboutText = "Hello, I'm new to TembuFriends",
+            moduleCodes = [],
+            moduleNames = [],
+            verified,
+            statusType,
+        } = this.state.profileData;
         const friendStatus = this.props.friends[uid]?.status;
         return (
-            <ProfileHeader
-                userData={this.state.profileData}
-                button={
-                    friendStatus === 'friends' ? (
-                        <FriendsButton
-                            title="Friends"
-                            type="solid"
-                            loading={this.state.buttonLoading}
-                            onPress={() =>
-                                this.setState({
-                                    unfriendPopupVisible: true,
-                                })
+            <View>
+                <View style={styles.header}>
+                    <Image
+                        style={styles.bannerImg}
+                        source={
+                            bannerImg
+                                ? { uri: bannerImg }
+                                : require('../../assets/images/default/banner.png')
+                        }
+                    />
+
+                    <View style={styles.avatarContainerStyle}>
+                        <Avatar
+                            size={80}
+                            containerStyle={styles.profileImg}
+                            rounded
+                            source={
+                                profileImg
+                                    ? { uri: profileImg }
+                                    : require('../../assets/images/default/profile.png')
                             }
+                            showAccessory
+                            accessory={{
+                                color: this.getStatusColor(statusType),
+                                size: 22,
+                                name: 'lens',
+                                style: {
+                                    backgroundColor: Colors.appWhite,
+                                    borderRadius: 50,
+                                },
+                            }}
                         />
-                    ) : friendStatus === 'respond' ? (
-                        <FriendsButton
-                            title="Respond"
-                            type="outline"
-                            loading={this.state.buttonLoading}
-                            onPress={() =>
-                                this.setState({
-                                    respondPopupVisible: true,
-                                })
-                            }
+                        {friendStatus === 'friends' ? (
+                            <FriendsButton
+                                title="Friends"
+                                type="solid"
+                                loading={this.state.buttonLoading}
+                                onPress={() =>
+                                    this.setState({
+                                        unfriendPopupVisible: true,
+                                    })
+                                }
+                            />
+                        ) : friendStatus === 'respond' ? (
+                            <FriendsButton
+                                title="Respond"
+                                type="outline"
+                                loading={this.state.buttonLoading}
+                                onPress={() =>
+                                    this.setState({
+                                        respondPopupVisible: true,
+                                    })
+                                }
+                            />
+                        ) : friendStatus === 'requested' ? (
+                            <FriendsButton
+                                title="Requested"
+                                type="solid"
+                                loading={this.state.buttonLoading}
+                                onPress={this.removeFriend}
+                            />
+                        ) : (
+                            <FriendsButton
+                                title="Add Friend"
+                                type="outline"
+                                loading={this.state.buttonLoading}
+                                onPress={this.requestFriend}
+                            />
+                        )}
+                    </View>
+                </View>
+                <View style={styles.spacing} />
+                <View style={[styles.box, { paddingTop: 0 }]}>
+                    <View style={styles.userDetails}>
+                        <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
+                            {displayName}
+                        </MainText>
+                        {verified && (
+                            <Image
+                                style={{ height: 18, width: 18, marginHorizontal: 5 }}
+                                source={require('../../assets/images/profile/verified-icon.png')}
+                            />
+                        )}
+                    </View>
+                    <View style={styles.userDetails}>
+                        <Image
+                            source={require('../../assets/images/profile/job-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
-                    ) : friendStatus === 'requested' ? (
-                        <FriendsButton
-                            title="Requested"
-                            type="solid"
-                            loading={this.state.buttonLoading}
-                            onPress={this.removeFriend}
+                        <MainText style={{ fontSize: 15 }}>{role}</MainText>
+                    </View>
+                    <View style={styles.userDetails}>
+                        <Image
+                            source={require('../../assets/images/profile/study-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
-                    ) : (
-                        <FriendsButton
-                            title="Add Friend"
-                            type="outline"
-                            loading={this.state.buttonLoading}
-                            onPress={this.requestFriend}
+                        <MainText style={{ fontSize: 15 }}>
+                            {major}, {year}
+                        </MainText>
+                    </View>
+                    <View style={styles.userDetails}>
+                        <Image
+                            source={require('../../assets/images/profile/house-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
                         />
-                    )
-                }
-                bottomElement={this.renderWritePost()}
-            />
+                        <MainText style={{ fontSize: 15 }}>
+                            {this.renderHouseText(house)} {roomNumber}
+                            {roomNumber ? ' ' : ''}• {friendsCount}{' '}
+                            {friendsCount <= 1 ? 'Friend' : 'Friends'}
+                        </MainText>
+                    </View>
+                </View>
+                <View style={styles.box}>
+                    <MainText style={styles.title}>About</MainText>
+                    <MainText>{aboutText}</MainText>
+                </View>
+                <View style={styles.box}>
+                    <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
+                    <ScrollView style={{ maxHeight: 150 }}>
+                        {moduleCodes.length === 0 ? (
+                            <MainText style={styles.emptyText}>None</MainText>
+                        ) : (
+                            moduleCodes.map((item, index) => (
+                                <ListItem
+                                    key={item}
+                                    leftElement={<MainText>•</MainText>}
+                                    title={`${item} ${moduleNames[index]}`}
+                                    titleStyle={{
+                                        fontFamily: MAIN_FONT,
+                                        fontSize: 13,
+                                    }}
+                                    containerStyle={{
+                                        padding: 0,
+                                        paddingBottom: 1,
+                                    }}
+                                />
+                            ))
+                        )}
+                    </ScrollView>
+                </View>
+                <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+                    <MainText style={styles.title}>Posts</MainText>
+                </View>
+                <View style={styles.box}>{this.renderWritePost()}</View>
+            </View>
         );
     };
     renderWritePost = () => {
@@ -287,7 +462,7 @@ class UserProfile extends Component {
                             borderColor: Colors.appGray2,
                         }}
                     />
-                    <MainText style={{ color: Colors.appGray2 }}>
+                    <MainText style={{ color: Colors.appGray2 }} onPress={this.goToWritePost}>
                         Write something to {firstName}...
                     </MainText>
                 </View>
@@ -295,7 +470,7 @@ class UserProfile extends Component {
                     title={'Write Post'}
                     titleStyle={styles.postButtonText}
                     containerStyle={styles.postButtonContainer}
-                    buttonStyle={{ backgroundColor: Colors.appGreen }}
+                    buttonStyle={styles.postButton}
                     onPress={this.goToWritePost}
                 />
             </View>
@@ -426,7 +601,7 @@ class UserProfile extends Component {
             );
         } else {
             return (
-                <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
                     {this.renderRespondPopup()}
                     {this.renderUnfriendPopup()}
                     <FlatList
@@ -443,7 +618,7 @@ class UserProfile extends Component {
                             return <MainText style={styles.emptyText}>No Posts</MainText>;
                         }}
                     />
-                </SafeAreaView>
+                </View>
             );
         }
     }
@@ -460,10 +635,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     postButtonContainer: {
-        height: 30,
+        // height: 30,
         borderRadius: 5,
         marginVertical: 5,
         justifyContent: 'center',
+    },
+    postButton: {
+        backgroundColor: Colors.appGreen,
+        paddingVertical: 2,
+        alignItems: 'center',
     },
     emptyText: {
         fontFamily: MAIN_FONT,

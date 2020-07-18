@@ -45,6 +45,7 @@ class SignUpScreen extends Component {
         keyboardHeight: 0,
         emailSentPopup: false,
     };
+    navigating = false;
 
     clearInputs() {
         this.setState({
@@ -119,6 +120,11 @@ class SignUpScreen extends Component {
     }
 
     goToSignIn() {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignIn');
     }

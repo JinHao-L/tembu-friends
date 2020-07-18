@@ -4,15 +4,15 @@ import {
     StyleSheet,
     FlatList,
     ActivityIndicator,
-    SafeAreaView,
-    Alert,
     Image,
+    ScrollView,
+    Text,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Button } from 'react-native-elements';
+import { Avatar, Button, ListItem } from 'react-native-elements';
 
 import { MAIN_FONT, MainText, Popup, ProfilePost, ProfileHeader } from '../../components';
-import { Colors } from '../../constants';
+import { Colors, Layout } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
 import { fetchUserData, updateProfile } from '../../redux';
 
@@ -77,6 +77,7 @@ class MyProfile extends Component {
         postOptionsProps: null,
         roomStatusPopupVisible: false,
     };
+    navigating = false;
 
     componentDidMount() {
         this.props.navigation.setOptions({
@@ -89,7 +90,7 @@ class MyProfile extends Component {
                             style={{ width: 25, height: 25 }}
                         />
                     }
-                    buttonStyle={{ backgroundColor: 'transparent' }}
+                    type={'clear'}
                     titleStyle={{ color: Colors.appWhite }}
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
                 />
@@ -169,9 +170,19 @@ class MyProfile extends Component {
     };
 
     goToProfileEdit = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         return this.props.navigation.navigate('ProfileEdit');
     };
     goToOtherProfile = (uid) => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         if (!uid || uid === 'deleted') {
             console.log('User does not exist', uid);
         } else {
@@ -179,6 +190,11 @@ class MyProfile extends Component {
         }
     };
     goToMyQR = () => {
+        if (this.navigating) {
+            return;
+        }
+        this.navigating = true;
+        setTimeout(() => (this.navigating = false), 500);
         this.props.navigation.push('MyQR');
     };
 
@@ -322,25 +338,177 @@ class MyProfile extends Component {
         );
     };
 
+    renderHouseText = (house) => {
+        let color = Colors.appBlack;
+        switch (house) {
+            case 'Shan':
+                color = Colors.shanHouse;
+                break;
+            case 'Ora':
+                color = Colors.oraHouse;
+                break;
+            case 'Gaja':
+                color = Colors.gajaHouse;
+                break;
+            case 'Tancho':
+                color = Colors.tanchoHouse;
+                break;
+            case 'Ponya':
+                color = Colors.ponyaHouse;
+                break;
+        }
+        return <Text style={{ color: color }}>{house}</Text>;
+    };
+    getStatusColor = (type) => {
+        switch (type) {
+            case 'green':
+                return Colors.statusGreen;
+            case 'yellow':
+                return Colors.statusYellow;
+            case 'red':
+                return Colors.statusRed;
+            default:
+                return Colors.statusYellow;
+        }
+    };
+
     renderHeader = () => {
+        const {
+            bannerImg,
+            profileImg,
+            displayName,
+            role = 'Resident',
+            major = 'Undeclared',
+            year = 'Y0',
+            house = 'Undeclared',
+            roomNumber = '',
+            friendsCount = 0,
+            aboutText = "Hello, I'm new to TembuFriends",
+            moduleCodes = [],
+            moduleNames = [],
+            verified,
+            statusType,
+        } = this.props.userData;
         return (
-            <ProfileHeader
-                userData={this.props.userData}
-                onAccessoryPress={this.toggleRoomStatusPopup}
-                button={
-                    <Button
-                        containerStyle={styles.editButtonContainer}
-                        buttonStyle={[
-                            styles.editButton,
-                            { borderColor: Colors.appGreen, borderWidth: 1 },
-                        ]}
-                        title="Edit Profile"
-                        titleStyle={[styles.editButtonText, { color: Colors.appGreen }]}
-                        type={'outline'}
-                        onPress={this.goToProfileEdit}
+            <View>
+                <View style={styles.header}>
+                    <Image
+                        style={styles.bannerImg}
+                        source={
+                            bannerImg
+                                ? { uri: bannerImg }
+                                : require('../../assets/images/default/banner.png')
+                        }
                     />
-                }
-            />
+
+                    <View style={styles.avatarContainerStyle}>
+                        <Avatar
+                            size={80}
+                            containerStyle={styles.profileImg}
+                            rounded
+                            source={
+                                profileImg
+                                    ? { uri: profileImg }
+                                    : require('../../assets/images/default/profile.png')
+                            }
+                            showAccessory
+                            accessory={{
+                                color: this.getStatusColor(statusType),
+                                size: 22,
+                                name: 'lens',
+                                style: {
+                                    backgroundColor: Colors.appWhite,
+                                    borderRadius: 50,
+                                },
+                            }}
+                            onAccessoryPress={this.toggleRoomStatusPopup}
+                        />
+                        <Button
+                            containerStyle={styles.editButtonContainer}
+                            buttonStyle={styles.editButton}
+                            title="Edit Profile"
+                            titleStyle={styles.editButtonText}
+                            type={'outline'}
+                            onPress={this.goToProfileEdit}
+                        />
+                    </View>
+                </View>
+                <View style={styles.spacing} />
+                <View style={[styles.box, { paddingTop: 0 }]}>
+                    <View style={styles.userDetails}>
+                        <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
+                            {displayName}
+                        </MainText>
+                        {verified && (
+                            <Image
+                                style={{ height: 18, width: 18, marginHorizontal: 5 }}
+                                source={require('../../assets/images/profile/verified-icon.png')}
+                            />
+                        )}
+                    </View>
+                    <View style={styles.userDetails}>
+                        <Image
+                            source={require('../../assets/images/profile/job-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                        />
+                        <MainText style={{ fontSize: 15 }}>{role}</MainText>
+                    </View>
+                    <View style={styles.userDetails}>
+                        <Image
+                            source={require('../../assets/images/profile/study-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                        />
+                        <MainText style={{ fontSize: 15 }}>
+                            {major}, {year}
+                        </MainText>
+                    </View>
+                    <View style={styles.userDetails}>
+                        <Image
+                            source={require('../../assets/images/profile/house-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                        />
+                        <MainText style={{ fontSize: 15 }}>
+                            {this.renderHouseText(house)} {roomNumber}
+                            {roomNumber ? ' ' : ''}• {friendsCount}{' '}
+                            {friendsCount <= 1 ? 'Friend' : 'Friends'}
+                        </MainText>
+                    </View>
+                </View>
+                <View style={styles.box}>
+                    <MainText style={styles.title}>About</MainText>
+                    <MainText>{aboutText}</MainText>
+                </View>
+                <View style={styles.box}>
+                    <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
+                    <ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled={true}>
+                        {moduleCodes.length === 0 ? (
+                            <MainText style={styles.emptyText}>None</MainText>
+                        ) : (
+                            moduleCodes.map((item, index) => (
+                                <ListItem
+                                    key={item}
+                                    leftElement={<MainText>•</MainText>}
+                                    title={`${item} ${moduleNames[index]}`}
+                                    titleStyle={{
+                                        fontFamily: MAIN_FONT,
+                                        fontSize: 13,
+                                    }}
+                                    containerStyle={{
+                                        padding: 0,
+                                        paddingBottom: 1,
+                                    }}
+                                />
+                            ))
+                        )}
+                    </ScrollView>
+                </View>
+                <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+                    <MainText style={styles.title}>Posts</MainText>
+                </View>
+            </View>
         );
     };
     renderFooter = () => {
@@ -381,7 +549,7 @@ class MyProfile extends Component {
             );
         } else {
             return (
-                <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
                     {this.renderRoomStatusPopup()}
                     {this.renderPostOptions()}
                     <FlatList
@@ -398,7 +566,7 @@ class MyProfile extends Component {
                             return <MainText style={styles.emptyText}>No Posts</MainText>;
                         }}
                     />
-                </SafeAreaView>
+                </View>
             );
         }
     }
@@ -409,21 +577,70 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
         flex: 1,
     },
+    bannerImg: {
+        width: Layout.window.width,
+        height: Layout.window.width / 3,
+        justifyContent: 'flex-end',
+    },
+    profileImg: {
+        backgroundColor: Colors.appWhite,
+        borderColor: Colors.appWhite,
+        borderWidth: 4,
+        marginLeft: 20,
+    },
+    avatarContainerStyle: {
+        position: 'absolute',
+        top: Layout.window.width / 3 - 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        width: '100%',
+    },
+    spacing: {
+        height: 40,
+    },
+    userDetails: {
+        marginBottom: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    title: {
+        fontFamily: MAIN_FONT,
+        fontSize: 15,
+        color: Colors.appGreen,
+        marginBottom: 2,
+    },
+    icon: {
+        marginLeft: 3,
+        marginRight: 8,
+        width: 15,
+        height: 15,
+    },
+    box: {
+        borderBottomWidth: 5,
+        borderColor: Colors.appGray2,
+        backgroundColor: Colors.appWhite,
+        paddingHorizontal: 20,
+        paddingTop: 5,
+        paddingBottom: 10,
+    },
     editButtonContainer: {
         marginRight: 20,
         borderRadius: 20,
         marginBottom: 5,
     },
     editButton: {
-        paddingVertical: 5,
+        paddingVertical: 2,
         width: 86,
-        height: 25,
         borderRadius: 20,
         paddingHorizontal: 0,
+        borderColor: Colors.appGreen,
+        borderWidth: 1,
     },
     editButtonText: {
         fontFamily: MAIN_FONT,
         fontSize: 12,
+        color: Colors.appGreen,
     },
     emptyText: {
         fontFamily: MAIN_FONT,

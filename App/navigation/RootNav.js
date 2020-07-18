@@ -107,7 +107,6 @@ class RootNav extends Component {
         return await Promise.all([
             Asset.loadAsync([
                 require('../assets/images/logo.png'),
-                require('../assets/images/QR_background.jpg'),
 
                 require('../assets/images/default/profile.png'),
                 require('../assets/images/default/banner.png'),
@@ -115,6 +114,10 @@ class RootNav extends Component {
                 require('../assets/images/menu/SettingsIcon.png'),
                 require('../assets/images/menu/QRcode.png'),
                 require('../assets/images/menu/FriendsIcon.png'),
+
+                require('../assets/images/misc/search-guide.png'),
+                require('../assets/images/misc/friend-request-icon.png'),
+                require('../assets/images/misc/QR_background.jpg'),
 
                 require('../assets/images/popup/success-icon.png'),
                 require('../assets/images/popup/warning-icon.png'),
@@ -125,6 +128,9 @@ class RootNav extends Component {
                 require('../assets/images/profile/job-icon.png'),
                 require('../assets/images/profile/study-icon.png'),
                 require('../assets/images/profile/QR-Code.png'),
+
+                require('../assets/images/settings/contact-us.png'),
+                require('../assets/images/settings/FAQ-icon.png'),
             ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
