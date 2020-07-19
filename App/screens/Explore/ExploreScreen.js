@@ -283,7 +283,7 @@ class ExploreScreen extends Component {
                     onIndexChange={this.setIndex}
                     navigationState={{ index, routes }}
                     lazy={true}
-                    swipeEnabled={false}
+                    swipeEnabled={true}
                     initialLayout={{ width: Layout.window.width }}
                     renderTabBar={(props) => (
                         <TabBar

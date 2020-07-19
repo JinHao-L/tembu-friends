@@ -12,7 +12,7 @@ import {
 import { Avatar, Button, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors } from '../../constants';
+import { Colors, Layout } from '../../constants';
 import {
     MainText,
     MAIN_FONT,
@@ -658,6 +658,53 @@ const styles = StyleSheet.create({
         color: Colors.appBlack,
         flexShrink: 1,
         textAlign: 'left',
+    },
+    bannerImg: {
+        width: Layout.window.width,
+        height: Layout.window.width / 3,
+        justifyContent: 'flex-end',
+    },
+    profileImg: {
+        backgroundColor: Colors.appWhite,
+        borderColor: Colors.appWhite,
+        borderWidth: 4,
+        marginLeft: 20,
+    },
+    avatarContainerStyle: {
+        position: 'absolute',
+        top: Layout.window.width / 3 - 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        width: '100%',
+    },
+    spacing: {
+        height: 40,
+    },
+    userDetails: {
+        marginBottom: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    title: {
+        fontFamily: MAIN_FONT,
+        fontSize: 15,
+        color: Colors.appGreen,
+        marginBottom: 2,
+    },
+    icon: {
+        marginLeft: 3,
+        marginRight: 8,
+        width: 15,
+        height: 15,
+    },
+    box: {
+        borderBottomWidth: 5,
+        borderColor: Colors.appGray2,
+        backgroundColor: Colors.appWhite,
+        paddingHorizontal: 20,
+        paddingTop: 5,
+        paddingBottom: 10,
     },
 });
 

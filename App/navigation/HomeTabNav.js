@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StatusBar, View } from 'react-native';
+import { StatusBar } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -24,15 +24,7 @@ class HomeTabNav extends Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 {Platform.OS === 'ios' ? (
-                    <View
-                        style={{
-                            width: '100%',
-                            height: 20,
-                            backgroundColor: Colors.appRed,
-                        }}
-                    >
-                        <StatusBar barStyle={'light-content'} backgroundColor={Colors.appGreen} />
-                    </View>
+                    <StatusBar barStyle="dark-content" />
                 ) : (
                     <StatusBar backgroundColor={Colors.appGreen} barStyle="light-content" />
                 )}
