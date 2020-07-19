@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { ActivityIndicator, StyleSheet, Text, SafeAreaView, View } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import ProgressBar from 'react-native-progress/Bar';
@@ -161,15 +161,20 @@ class RootNav extends Component {
             );
         } else {
             return (
-                <NavigationContainer>
-                    <RootStack.Navigator>
-                        {isUserSignedIn ? (
-                            <RootStack.Screen name="App" component={HomeTabNav} />
-                        ) : (
-                            <RootStack.Screen name="Auth" component={AuthNav} />
-                        )}
-                    </RootStack.Navigator>
-                </NavigationContainer>
+                <Fragment>
+                    <SafeAreaView style={{ flex: 0, backgroundColor: Colors.appGreen }} />
+                    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.appWhite }}>
+                        <NavigationContainer>
+                            <RootStack.Navigator>
+                                {isUserSignedIn ? (
+                                    <RootStack.Screen name="App" component={HomeTabNav} />
+                                ) : (
+                                    <RootStack.Screen name="Auth" component={AuthNav} />
+                                )}
+                            </RootStack.Navigator>
+                        </NavigationContainer>
+                    </SafeAreaView>
+                </Fragment>
             );
         }
     }

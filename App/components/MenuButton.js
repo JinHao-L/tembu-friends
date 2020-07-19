@@ -40,13 +40,6 @@ function MenuButton(property) {
                             }
                             containerStyle={styles.profileContainer}
                         />
-                    ) : type === 'Admin' ? (
-                        <Icon
-                            type={'font-awesome-5'}
-                            name={'users-cog'}
-                            style={styles.imageContainer}
-                            color={Colors.appGreen}
-                        />
                     ) : type ? (
                         <Image source={getImage(type)} style={styles.imageContainer} />
                     ) : null}
@@ -63,10 +56,12 @@ const getImage = (img) => {
     switch (img) {
         case 'Friends':
             return require('../assets/images/menu/FriendsIcon.png');
-        case 'Settings':
-            return require('../assets/images/menu/SettingsIcon.png');
         case 'QRCode':
             return require('../assets/images/menu/QRcode.png');
+        case 'Admin':
+            return require('../assets/images/menu/AdminIcon.png');
+        case 'Settings':
+            return require('../assets/images/menu/SettingsIcon.png');
         case 'Default':
             return null;
     }
@@ -120,12 +115,12 @@ const styles = StyleSheet.create({
         width: 30,
         resizeMode: 'contain',
         marginVertical: 5,
-        marginLeft: 8,
+        marginLeft: 15,
         marginRight: 10,
     },
     profileContainer: {
         marginVertical: 2,
-        marginLeft: 4,
+        marginLeft: 10,
         marginRight: 6,
     },
 });

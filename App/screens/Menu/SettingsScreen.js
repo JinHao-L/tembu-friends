@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, SafeAreaView, ScrollView, Image } from 'react-native';
 import { Button, ListItem } from 'react-native-elements';
-import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
 import { MAIN_FONT, MainText, MenuButton, Popup } from '../../components';
@@ -65,6 +64,14 @@ class SettingsScreen extends Component {
         this.props.navigation.push('Delete');
     };
 
+    goToContactUs = () => {
+        this.props.navigation.push('ContactUs');
+    };
+
+    goToFAQ = () => {
+        this.props.navigation.push('FAQ');
+    };
+
     render() {
         const { disableFriendNotification, disablePostNotifications } = this.state;
         return (
@@ -80,7 +87,7 @@ class SettingsScreen extends Component {
                         leftIcon={
                             <Image
                                 source={require('../../assets/images/menu/FriendsIcon.png')}
-                                style={styles.icon}
+                                style={styles.nonSquareIcon}
                             />
                         }
                         switch={{
@@ -104,11 +111,12 @@ class SettingsScreen extends Component {
                                     disablePostNotifications: !disablePostNotifications,
                                 }),
                         }}
-                        leftIcon={{
-                            name: 'text',
-                            type: 'material-community',
-                            color: Colors.appGreen,
-                        }}
+                        leftIcon={
+                            <Image
+                                source={require('../../assets/images/settings/post-icon.png')}
+                                style={styles.postIcon}
+                            />
+                        }
                     />
                 </View>
                 <View>
@@ -119,31 +127,43 @@ class SettingsScreen extends Component {
                         title={'Frequently Asked Questions'}
                         titleStyle={styles.title}
                         containerStyle={styles.settingsItem}
+                        onPress={this.goToFAQ}
                         leftIcon={
                             <Image
                                 source={require('../../assets/images/settings/FAQ-icon.png')}
                                 style={styles.icon}
                             />
                         }
-                        chevron={true}
+                        rightIcon={
+                            <Image
+                                source={require('../../assets/images/settings/next-icon.png')}
+                                style={styles.nextIcon}
+                            />
+                        }
                     />
                     <ListItem
                         title={'Contact Us'}
                         titleStyle={styles.title}
                         containerStyle={styles.settingsItem}
+                        onPress={this.goToContactUs}
                         leftIcon={
                             <Image
                                 source={require('../../assets/images/settings/contact-us.png')}
-                                style={styles.icon}
+                                style={styles.nonSquareIcon}
                             />
                         }
-                        chevron={true}
+                        rightIcon={
+                            <Image
+                                source={require('../../assets/images/settings/next-icon.png')}
+                                style={styles.nextIcon}
+                            />
+                        }
                     />
                 </View>
                 <View style={{ height: 30 }} />
                 <ListItem
                     contentContainerStyle={{ alignItems: 'center' }}
-                    title={'Delete account'}
+                    title={'Delete Account'}
                     titleStyle={styles.deleteTitle}
                     containerStyle={styles.deleteContainer}
                     onPress={this.goToDelete}
@@ -164,11 +184,11 @@ const styles = StyleSheet.create({
     title: {
         fontFamily: MAIN_FONT,
         color: Colors.appBlack,
-        fontSize: 13,
+        fontSize: 15,
     },
     deleteTitle: {
         fontFamily: MAIN_FONT,
-        fontSize: 13,
+        fontSize: 15,
         color: Colors.appRed,
         textAlign: 'center',
     },
@@ -178,27 +198,32 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderColor: Colors.appGray5,
         paddingVertical: 8,
+        height: 40,
     },
     settingsItem: {
         backgroundColor: Colors.appGray1,
         borderBottomWidth: 1,
         borderColor: Colors.appGray5,
         paddingVertical: 8,
+        height: 40,
     },
     sectionHeader: {
         backgroundColor: Colors.appWhite,
         paddingTop: 20,
         paddingBottom: 10,
-        paddingLeft: 30,
+        paddingLeft: 20,
         borderBottomWidth: 1,
         borderColor: Colors.appGray5,
     },
     sectionHeaderText: {
-        fontSize: 15,
+        fontSize: 18,
         fontWeight: '600',
         color: Colors.appBlack,
     },
-    icon: { width: 25, height: 25, resizeMode: 'contain' },
+    nonSquareIcon: { paddingLeft: 40, width: 25, height: 19, resizeMode: 'contain' },
+    postIcon: { paddingLeft: 40, width: 25, height: 15.78, resizeMode: 'contain' },
+    icon: { paddingLeft: 40, width: 25, height: 25, resizeMode: 'contain' },
+    nextIcon: { paddingRight: 20, width: 20, height: 20, resizeMode: 'contain' },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingsScreen);

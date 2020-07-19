@@ -193,7 +193,7 @@ class SignUpScreen extends Component {
         if (confirmation !== 'DELETE') {
             this.setState({
                 confirmation: '',
-                confirmationError: "Please write 'DELETE' to confirm deletion",
+                confirmationError: "Type 'DELETE' to confirm deletion",
             });
         }
         console.log('Valid Input');
@@ -232,8 +232,10 @@ class SignUpScreen extends Component {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View>
                         <View style={styles.titleContainer}>
-                            <MainText style={styles.title}>Deleting...</MainText>
-                            <MainText style={{ left: 40 }}>We are sorry to see you go</MainText>
+                            <MainText style={styles.title}>Delete Account</MainText>
+                            <MainText style={{ left: 40, fontSize: 15 }}>
+                                We are sorry to see you go
+                            </MainText>
                         </View>
 
                         <View style={styles.form}>
@@ -294,7 +296,7 @@ class SignUpScreen extends Component {
                                     style={styles.button}
                                     loading={isLoading}
                                 >
-                                    DELETE
+                                    Delete My Account
                                 </AuthButton>
                                 <ErrorMessage
                                     style={{ textAlign: 'center' }}

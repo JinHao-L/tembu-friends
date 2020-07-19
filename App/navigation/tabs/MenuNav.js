@@ -8,6 +8,8 @@ import {
     DeleteScreen,
     MenuScreen,
     SettingsScreen,
+    ContactUsScreen,
+    FAQScreen,
 } from '../../screens/Menu';
 import { AdminNav } from '../menus';
 import { Colors } from '../../constants';
@@ -39,17 +41,18 @@ function MenuNav() {
                 headerTitleAlign: 'left',
                 headerTitleStyle: {
                     fontFamily: MAIN_FONT,
-                    fontSize: 24,
+                    fontSize: 26,
                 },
                 headerTitleContainerStyle: {
                     left: 0,
-                    marginLeft: 40,
+                    marginLeft: 50,
+                    paddingBottom: 3,
                 },
                 headerBackImage: () => (
-                    <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
+                    <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { paddingLeft: 5 },
+                headerLeftContainerStyle: { paddingLeft: 20 },
             }}
         >
             <MenuStack.Screen
@@ -68,9 +71,15 @@ function MenuNav() {
             />
             <MenuStack.Screen name="Settings" component={SettingsScreen} />
             <MenuStack.Screen
+                name="ContactUs"
+                component={ContactUsScreen}
+                options={{ headerTitle: 'Contact Us' }}
+            />
+            <MenuStack.Screen name="FAQ" component={FAQScreen} options={{ headerTitle: 'FAQ' }} />
+            <MenuStack.Screen
                 name="Delete"
                 component={DeleteScreen}
-                options={{ headerTitle: 'Deleting Account' }}
+                options={{ headerTitle: 'Delete Account' }}
             />
             <MenuStack.Screen
                 name="MyProfile"

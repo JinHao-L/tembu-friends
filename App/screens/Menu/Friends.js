@@ -125,7 +125,7 @@ class Friends extends Component {
                 onChangeText={this.setSearchValue}
                 onCancel={() => this.setSearchValue('')}
                 style={{
-                    paddingVertical: 10,
+                    paddingVertical: 15,
                     borderBottomWidth: 1,
                     borderColor: Colors.appGray2,
                 }}

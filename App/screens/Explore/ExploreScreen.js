@@ -276,7 +276,7 @@ class ExploreScreen extends Component {
                     onEndEditing={this.setSearchValue}
                     onCancel={() => this.setValue('')}
                     loading={loading}
-                    style={{ marginTop: 10, marginBottom: 5 }}
+                    style={{ marginTop: 15, marginBottom: 5 }}
                 />
                 <TabView
                     renderScene={this.renderScene}
@@ -294,7 +294,7 @@ class ExploreScreen extends Component {
                             labelStyle={{
                                 color: Colors.appBlack,
                                 fontFamily: MAIN_FONT,
-                                fontSize: 12,
+                                fontSize: 15,
                             }}
                             indicatorStyle={{ backgroundColor: Colors.appGreen }}
                         />

@@ -23,17 +23,18 @@ function AdminNav() {
                 headerTitleAlign: 'left',
                 headerTitleStyle: {
                     fontFamily: MAIN_FONT,
-                    fontSize: 24,
+                    fontSize: 26,
                 },
                 headerTitleContainerStyle: {
                     left: 0,
-                    marginLeft: 40,
+                    marginLeft: 50,
+                    paddingBottom: 3,
                 },
                 headerBackImage: () => (
-                    <Icon name={'ios-arrow-back'} size={28} color={Colors.appWhite} />
+                    <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { paddingLeft: 5 },
+                headerLeftContainerStyle: { paddingLeft: 20 },
             }}
         >
             <AdminStack.Screen

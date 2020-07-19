@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     listHeaderText: {
-        fontSize: 15,
+        fontSize: 18,
         fontWeight: '600',
         color: Colors.appBlack,
     },

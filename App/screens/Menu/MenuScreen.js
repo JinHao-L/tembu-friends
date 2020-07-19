@@ -19,7 +19,7 @@ class MenuScreen extends Component {
 
     signOut = () => {
         this.props.friendSubscriber();
-        return this.props.firebase.signOut().catch((error) => console.log('Sign out fail', error));
+        return this.props.firebase.signOut().catch((error) => console.log('Log out fail', error));
     };
 
     goToProfile = () => {
@@ -80,7 +80,7 @@ class MenuScreen extends Component {
                 isVisible={this.state.signOutVisible}
                 title={'Signing you out'}
                 body={'Are you sure?'}
-                additionalButtonText={'Sign out'}
+                additionalButtonText={'Log out'}
                 additionalButtonCall={() => {
                     this.toggleSignOutVisibility();
                     this.signOut();
@@ -148,7 +148,7 @@ class MenuScreen extends Component {
                             textStyle={{ color: 'white' }}
                             onPress={this.toggleSignOutVisibility}
                         >
-                            Sign Out
+                            Log Out
                         </MenuButton>
                     </ScrollView>
                 </LinearGradient>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     centralButton: {
-        height: 40,
+        height: 50,
         alignItems: 'center',
         backgroundColor: Colors.appGreen,
     },

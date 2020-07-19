@@ -35,17 +35,17 @@ class AdminMenu extends Component {
                     <ScrollView style={styles.contentContainer}>
                         <MenuButton
                             style={styles.adminButton}
-                            textStyle={{ color: 'white' }}
+                            textStyle={{ color: Colors.appGreen }}
                             onPress={this.goToUsers}
                         >
                             Users
                         </MenuButton>
                         <MenuButton
                             style={styles.adminButton}
-                            textStyle={{ color: 'white' }}
+                            textStyle={{ color: Colors.appGreen }}
                             onPress={this.goToReports}
                         >
-                            Reports
+                            Reported Posts
                         </MenuButton>
                     </ScrollView>
                 </LinearGradient>
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     contentContainer: {
+        paddingTop: 15,
         marginHorizontal: 15,
     },
     title: {
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     adminButton: {
         height: 40,
         alignItems: 'center',
-        backgroundColor: Colors.appGreen,
+        backgroundColor: Colors.appWhite,
     },
 });
 
