@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     contentContainer: {
         paddingTop: 15,
         paddingHorizontal: 15,
+        paddingBottom: 25,
         flexGrow: 1,
         justifyContent: 'space-between',
     },

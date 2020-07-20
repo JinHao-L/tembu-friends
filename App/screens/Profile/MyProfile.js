@@ -31,37 +31,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-const RoomStatusButton = ({ text, color }) => {
-    let actualColor = Colors.statusYellow;
-    switch (color) {
-        case 'green':
-            actualColor = Colors.statusGreen;
-            break;
-        case 'yellow':
-            actualColor = Colors.statusYellow;
-            break;
-        case 'red':
-            actualColor = Colors.statusRed;
-            break;
-    }
-    return (
-        <Button
-            title={text}
-            type={'clear'}
-            titleStyle={styles.optionsTitle}
-            icon={{
-                name: 'lens',
-                color: actualColor,
-                size: 25,
-                containerStyle: { paddingHorizontal: 20 },
-            }}
-            buttonStyle={{ justifyContent: 'flex-start' }}
-            containerStyle={{ borderRadius: 0 }}
-            onPress={() => this.handleStatus(color)}
-        />
-    );
-};
-
 class MyProfile extends Component {
     state = {
         // Post retrieval
@@ -263,6 +232,37 @@ class MyProfile extends Component {
         }
     };
 
+    RoomStatusButton = (text, color) => {
+        let actualColor = Colors.statusYellow;
+        switch (color) {
+            case 'green':
+                actualColor = Colors.statusGreen;
+                break;
+            case 'yellow':
+                actualColor = Colors.statusYellow;
+                break;
+            case 'red':
+                actualColor = Colors.statusRed;
+                break;
+        }
+        return (
+            <Button
+                title={text}
+                type={'clear'}
+                titleStyle={styles.optionsTitle}
+                icon={{
+                    name: 'lens',
+                    color: actualColor,
+                    size: 25,
+                    containerStyle: { paddingHorizontal: 20 },
+                }}
+                buttonStyle={{ justifyContent: 'flex-start' }}
+                containerStyle={{ borderRadius: 0 }}
+                onPress={() => this.handleStatus(color)}
+            />
+        );
+    };
+
     renderRoomStatusPopup = () => {
         return (
             <Popup
@@ -271,11 +271,11 @@ class MyProfile extends Component {
                 title={'Room Status'}
                 body={
                     <View>
-                        <RoomStatusButton text="I'm in my room!" color="green" />
+                        {this.RoomStatusButton("I'm in my room!", 'green')}
                         <Popup.Separator />
-                        <RoomStatusButton text="I'm not in my room :(" color="yellow" />
+                        {this.RoomStatusButton("I'm not in my room :(", 'yellow')}
                         <Popup.Separator />
-                        <RoomStatusButton text="Do not disturb!" color="red" />
+                        {this.RoomStatusButton('Do not disturb!', 'red')}
                     </View>
                 }
                 buttonText={'Cancel'}
@@ -338,90 +338,12 @@ class MyProfile extends Component {
         );
     };
 
-    renderHouseText = (house) => {
-        let color = Colors.appBlack;
-        switch (house) {
-            case 'Shan':
-                color = Colors.shanHouse;
-                break;
-            case 'Ora':
-                color = Colors.oraHouse;
-                break;
-            case 'Gaja':
-                color = Colors.gajaHouse;
-                break;
-            case 'Tancho':
-                color = Colors.tanchoHouse;
-                break;
-            case 'Ponya':
-                color = Colors.ponyaHouse;
-                break;
-        }
-        return <Text style={{ color: color }}>{house}</Text>;
-    };
-    getStatusColor = (type) => {
-        switch (type) {
-            case 'green':
-                return Colors.statusGreen;
-            case 'yellow':
-                return Colors.statusYellow;
-            case 'red':
-                return Colors.statusRed;
-            default:
-                return Colors.statusYellow;
-        }
-    };
-
     renderHeader = () => {
-        const {
-            bannerImg,
-            profileImg,
-            displayName,
-            role = 'Resident',
-            major = 'Undeclared',
-            year = 'Y0',
-            house = 'Undeclared',
-            roomNumber = '',
-            friendsCount = 0,
-            aboutText = "Hello, I'm new to TembuFriends",
-            moduleCodes = [],
-            moduleNames = [],
-            verified,
-            statusType,
-        } = this.props.userData;
         return (
-            <View>
-                <Image
-                    style={styles.bannerImg}
-                    source={
-                        bannerImg
-                            ? { uri: bannerImg }
-                            : require('../../assets/images/default/banner.png')
-                    }
-                />
-                <View style={styles.spacing} />
-                <View style={styles.avatarContainerStyle}>
-                    <Avatar
-                        size={80}
-                        containerStyle={styles.profileImg}
-                        rounded
-                        source={
-                            profileImg
-                                ? { uri: profileImg }
-                                : require('../../assets/images/default/profile.png')
-                        }
-                        showAccessory
-                        accessory={{
-                            color: this.getStatusColor(statusType),
-                            size: 22,
-                            name: 'lens',
-                            style: {
-                                backgroundColor: Colors.appWhite,
-                                borderRadius: 50,
-                            },
-                        }}
-                        onAccessoryPress={this.toggleRoomStatusPopup}
-                    />
+            <ProfileHeader
+                userData={this.props.userData}
+                onAccessoryPress={this.toggleRoomStatusPopup}
+                button={
                     <Button
                         containerStyle={styles.editButtonContainer}
                         buttonStyle={styles.editButton}
@@ -430,82 +352,124 @@ class MyProfile extends Component {
                         type={'outline'}
                         onPress={this.goToProfileEdit}
                     />
-                </View>
-                <View style={styles.box}>
-                    <View style={styles.userDetails}>
-                        <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
-                            {displayName}
-                        </MainText>
-                        {verified && (
-                            <Image
-                                style={{ height: 18, width: 18, marginHorizontal: 5 }}
-                                source={require('../../assets/images/profile/verified-icon.png')}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/job-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>{role}</MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/study-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {major}, {year}
-                        </MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/house-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {this.renderHouseText(house)} {roomNumber}
-                            {roomNumber ? ' ' : ''}• {friendsCount}{' '}
-                            {friendsCount <= 1 ? 'Friend' : 'Friends'}
-                        </MainText>
-                    </View>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>About</MainText>
-                    <MainText>{aboutText}</MainText>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
-                    <ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled={true}>
-                        {moduleCodes.length === 0 ? (
-                            <MainText style={styles.emptyText}>None</MainText>
-                        ) : (
-                            moduleCodes.map((item, index) => (
-                                <ListItem
-                                    key={item}
-                                    leftElement={<MainText>•</MainText>}
-                                    title={`${item} ${moduleNames[index]}`}
-                                    titleStyle={{
-                                        fontFamily: MAIN_FONT,
-                                        fontSize: 13,
-                                    }}
-                                    containerStyle={{
-                                        padding: 0,
-                                        paddingBottom: 1,
-                                    }}
-                                />
-                            ))
-                        )}
-                    </ScrollView>
-                </View>
-                <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
-                    <MainText style={styles.title}>Posts</MainText>
-                </View>
-            </View>
+                }
+            />
+            // <View>
+            //     <Image
+            //         style={styles.bannerImg}
+            //         source={
+            //             bannerImg
+            //                 ? { uri: bannerImg }
+            //                 : require('../../assets/images/default/banner.png')
+            //         }
+            //     />
+            //     <View style={styles.spacing} />
+            //     <View style={styles.avatarContainerStyle}>
+            //         <Avatar
+            //             size={80}
+            //             containerStyle={styles.profileImg}
+            //             rounded
+            //             source={
+            //                 profileImg
+            //                     ? { uri: profileImg }
+            //                     : require('../../assets/images/default/profile.png')
+            //             }
+            //             showAccessory
+            //             accessory={{
+            //                 color: this.getStatusColor(statusType),
+            //                 size: 22,
+            //                 name: 'lens',
+            //                 style: {
+            //                     backgroundColor: Colors.appWhite,
+            //                     borderRadius: 50,
+            //                 },
+            //             }}
+            //             onAccessoryPress={this.toggleRoomStatusPopup}
+            //         />
+            //         <Button
+            //             containerStyle={styles.editButtonContainer}
+            //             buttonStyle={styles.editButton}
+            //             title="Edit Profile"
+            //             titleStyle={styles.editButtonText}
+            //             type={'outline'}
+            //             onPress={this.goToProfileEdit}
+            //         />
+            //     </View>
+            //     <View style={styles.box}>
+            //         <View style={styles.userDetails}>
+            //             <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
+            //                 {displayName}
+            //             </MainText>
+            //             {verified && (
+            //                 <Image
+            //                     style={{ height: 18, width: 18, marginHorizontal: 5 }}
+            //                     source={require('../../assets/images/profile/verified-icon.png')}
+            //                 />
+            //             )}
+            //         </View>
+            //         <View style={styles.userDetails}>
+            //             <Image
+            //                 source={require('../../assets/images/profile/job-icon.png')}
+            //                 style={styles.icon}
+            //                 resizeMode={'contain'}
+            //             />
+            //             <MainText style={{ fontSize: 15 }}>{role}</MainText>
+            //         </View>
+            //         <View style={styles.userDetails}>
+            //             <Image
+            //                 source={require('../../assets/images/profile/study-icon.png')}
+            //                 style={styles.icon}
+            //                 resizeMode={'contain'}
+            //             />
+            //             <MainText style={{ fontSize: 15 }}>
+            //                 {major}, {year}
+            //             </MainText>
+            //         </View>
+            //         <View style={styles.userDetails}>
+            //             <Image
+            //                 source={require('../../assets/images/profile/house-icon.png')}
+            //                 style={styles.icon}
+            //                 resizeMode={'contain'}
+            //             />
+            //             <MainText style={{ fontSize: 15 }}>
+            //                 {this.renderHouseText(house)} {roomNumber}
+            //                 {roomNumber ? ' ' : ''}• {friendsCount}{' '}
+            //                 {friendsCount <= 1 ? 'Friend' : 'Friends'}
+            //             </MainText>
+            //         </View>
+            //     </View>
+            //     <View style={styles.box}>
+            //         <MainText style={styles.title}>About</MainText>
+            //         <MainText>{aboutText}</MainText>
+            //     </View>
+            //     <View style={styles.box}>
+            //         <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
+            //         <ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled={true}>
+            //             {moduleCodes.length === 0 ? (
+            //                 <MainText style={styles.emptyText}>None</MainText>
+            //             ) : (
+            //                 moduleCodes.map((item, index) => (
+            //                     <ListItem
+            //                         key={item}
+            //                         leftElement={<MainText>•</MainText>}
+            //                         title={`${item} ${moduleNames[index]}`}
+            //                         titleStyle={{
+            //                             fontFamily: MAIN_FONT,
+            //                             fontSize: 13,
+            //                         }}
+            //                         containerStyle={{
+            //                             padding: 0,
+            //                             paddingBottom: 1,
+            //                         }}
+            //                     />
+            //                 ))
+            //             )}
+            //         </ScrollView>
+            //     </View>
+            //     <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+            //         <MainText style={styles.title}>Posts</MainText>
+            //     </View>
+            // </View>
         );
     };
     renderFooter = () => {
@@ -574,53 +538,53 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
         flex: 1,
     },
-    bannerImg: {
-        width: Layout.window.width,
-        height: Layout.window.width / 3,
-        justifyContent: 'flex-end',
-    },
-    profileImg: {
-        backgroundColor: Colors.appWhite,
-        borderColor: Colors.appWhite,
-        borderWidth: 4,
-        marginLeft: 20,
-    },
-    avatarContainerStyle: {
-        position: 'absolute',
-        top: Layout.window.width / 3 - 40,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        width: '100%',
-    },
-    spacing: {
-        height: 40,
-    },
-    userDetails: {
-        marginBottom: 2,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    title: {
-        fontFamily: MAIN_FONT,
-        fontSize: 15,
-        color: Colors.appGreen,
-        marginBottom: 2,
-    },
-    icon: {
-        marginLeft: 3,
-        marginRight: 8,
-        width: 15,
-        height: 15,
-    },
-    box: {
-        borderBottomWidth: 5,
-        borderColor: Colors.appGray2,
-        backgroundColor: Colors.appWhite,
-        paddingHorizontal: 20,
-        paddingTop: 5,
-        paddingBottom: 10,
-    },
+    // bannerImg: {
+    //     width: Layout.window.width,
+    //     height: Layout.window.width / 3,
+    //     justifyContent: 'flex-end',
+    // },
+    // profileImg: {
+    //     backgroundColor: Colors.appWhite,
+    //     borderColor: Colors.appWhite,
+    //     borderWidth: 4,
+    //     marginLeft: 20,
+    // },
+    // avatarContainerStyle: {
+    //     position: 'absolute',
+    //     top: Layout.window.width / 3 - 40,
+    //     flexDirection: 'row',
+    //     justifyContent: 'space-between',
+    //     alignItems: 'flex-end',
+    //     width: '100%',
+    // },
+    // spacing: {
+    //     height: 40,
+    // },
+    // userDetails: {
+    //     marginBottom: 2,
+    //     flexDirection: 'row',
+    //     alignItems: 'center',
+    // },
+    // title: {
+    //     fontFamily: MAIN_FONT,
+    //     fontSize: 15,
+    //     color: Colors.appGreen,
+    //     marginBottom: 2,
+    // },
+    // icon: {
+    //     marginLeft: 3,
+    //     marginRight: 8,
+    //     width: 15,
+    //     height: 15,
+    // },
+    // box: {
+    //     borderBottomWidth: 5,
+    //     borderColor: Colors.appGray2,
+    //     backgroundColor: Colors.appWhite,
+    //     paddingHorizontal: 20,
+    //     paddingTop: 5,
+    //     paddingBottom: 10,
+    // },
     editButtonContainer: {
         marginRight: 20,
         borderRadius: 20,
@@ -628,7 +592,7 @@ const styles = StyleSheet.create({
     },
     editButton: {
         paddingVertical: 2,
-        width: 86,
+        minWidth: 86,
         borderRadius: 20,
         paddingHorizontal: 0,
         borderColor: Colors.appGreen,

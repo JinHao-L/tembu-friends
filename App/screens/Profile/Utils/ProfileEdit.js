@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import {
-    View,
-    StyleSheet,
-    TextInput,
-    ScrollView,
-    Text,
+    ActivityIndicator,
     ImageBackground,
     Picker,
-    ActivityIndicator,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { Colors, Layout } from '../../../constants';
 import { withFirebase } from '../../../helper/Firebase';
-import { MainText, Popup, RadioButton, MAIN_FONT } from '../../../components';
+import { MAIN_FONT, MainText, Popup, RadioButton } from '../../../components';
 import { updateProfile } from '../../../redux';
 
 const mapStateToProps = (state) => {
@@ -394,102 +395,187 @@ class ProfileEdit extends Component {
                 isVisible={this.state.majorEditPopupVisible}
                 title={'Major Selection'}
                 body={
-                    <View>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                flexWrap: 'wrap',
-                                justifyContent: 'center',
-                                marginVertical: 5,
-                            }}
-                        >
-                            <RadioButton
-                                selected={this.state.majorType === 'single'}
-                                onPress={() => this.setState({ majorType: 'single' })}
-                                tintColor={Colors.appLightGreen}
-                                text={'Single Major'}
-                            />
-                            <RadioButton
-                                selected={this.state.majorType === 'dblMajor'}
-                                onPress={() => this.setState({ majorType: 'dblMajor' })}
-                                tintColor={Colors.appLightGreen}
-                                text={'Double Major'}
-                            />
-                            <RadioButton
-                                selected={this.state.majorType === 'ddp'}
-                                onPress={() => this.setState({ majorType: 'ddp' })}
-                                tintColor={Colors.appLightGreen}
-                                text={'Double Degree'}
-                            />
+                    !this.state.facultyOptions ? (
+                        <View style={{ minHeight: 50, justifyContent: 'center' }}>
+                            <ActivityIndicator color={Colors.appGreen} />
                         </View>
-                        {this.state.majorType !== 'single' && <Popup.Separator />}
-                        <View style={{ marginTop: 5, paddingLeft: 10 }}>
-                            {this.state.majorType !== 'single' && <MainText> Major 1: </MainText>}
-                            <Picker
-                                style={{ width: '100%' }}
-                                mode="dropdown"
-                                selectedValue={this.state.majorOptions1}
-                                onValueChange={(val) => this.setState({ majorOptions1: val })}
+                    ) : (
+                        <View>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    flexWrap: 'wrap',
+                                    justifyContent: 'center',
+                                    marginVertical: 5,
+                                }}
                             >
-                                <Picker.Item label={'Select your faculty'} value={[]} />
-                                {this.state.facultyOptions &&
-                                    Object.keys(this.state.facultyOptions).map((key) => {
-                                        return (
-                                            <Picker.Item
-                                                label={key}
-                                                value={this.state.facultyOptions[key]}
-                                                key={key}
-                                            />
-                                        );
-                                    })}
-                            </Picker>
-                            <Picker
-                                style={{ width: '100%' }}
-                                mode="dropdown"
-                                selectedValue={this.state.major1 || ''}
-                                onValueChange={(val) => this.setState({ major1: val })}
-                            >
-                                <Picker.Item label={'Select your major'} value={''} />
-                                {this.state.majorOptions1.map((item) => {
-                                    return <Picker.Item label={item} value={item} key={item} />;
-                                })}
-                            </Picker>
-                        </View>
-                        {this.state.majorType !== 'single' && <Popup.Separator />}
-                        {this.state.majorType !== 'single' && (
-                            <View style={{ marginTop: 5, paddingLeft: 10 }}>
-                                <MainText> Major 2: </MainText>
-                                <Picker
-                                    style={{ width: '100%' }}
-                                    mode="dropdown"
-                                    selectedValue={this.state.majorOptions2}
-                                    onValueChange={(val) => this.setState({ majorOptions2: val })}
-                                >
-                                    <Picker.Item label={'Select your faculty'} value={[]} />
-                                    {Object.keys(this.state.facultyOptions).map((key) => {
-                                        return (
-                                            <Picker.Item
-                                                label={key}
-                                                value={this.state.facultyOptions[key]}
-                                                key={key}
-                                            />
-                                        );
-                                    })}
-                                </Picker>
-                                <Picker
-                                    style={{ width: '100%' }}
-                                    mode="dropdown"
-                                    selectedValue={this.state.major2 || ''}
-                                    onValueChange={(val) => this.setState({ major2: val })}
-                                >
-                                    <Picker.Item label={'Select your major'} value={''} />
-                                    {this.state.majorOptions2.map((item) => {
-                                        return <Picker.Item label={item} value={item} key={item} />;
-                                    })}
-                                </Picker>
+                                <RadioButton
+                                    selected={this.state.majorType === 'single'}
+                                    onPress={() => this.setState({ majorType: 'single' })}
+                                    tintColor={Colors.appLightGreen}
+                                    text={'Single Major'}
+                                />
+                                <RadioButton
+                                    selected={this.state.majorType === 'dblMajor'}
+                                    onPress={() => this.setState({ majorType: 'dblMajor' })}
+                                    tintColor={Colors.appLightGreen}
+                                    text={'Double Major'}
+                                />
+                                <RadioButton
+                                    selected={this.state.majorType === 'ddp'}
+                                    onPress={() => this.setState({ majorType: 'ddp' })}
+                                    tintColor={Colors.appLightGreen}
+                                    text={'Double Degree'}
+                                />
                             </View>
-                        )}
-                    </View>
+                            {this.state.majorType !== 'single' && <Popup.Separator />}
+                            <View style={{ marginTop: 5, paddingLeft: 10 }}>
+                                {this.state.majorType !== 'single' && (
+                                    <MainText> Major 1: </MainText>
+                                )}
+                                <RNPickerSelect
+                                    value={this.state.majorOptions1}
+                                    placeholder={{
+                                        label: 'Select your faculty',
+                                        value: [],
+                                        color: Colors.appGray2,
+                                    }}
+                                    items={Object.keys(this.state.facultyOptions).map((key) => {
+                                        return {
+                                            label: key,
+                                            value: this.state.facultyOptions[key],
+                                            color: Colors.appBlack,
+                                        };
+                                    })}
+                                    onValueChange={(val) => this.setState({ majorOptions1: val })}
+                                    useNativeAndroidPickerStyle={false}
+                                    Icon={() => (
+                                        <Icon
+                                            name={'arrow-drop-down'}
+                                            size={26}
+                                            color={Colors.appGray5}
+                                        />
+                                    )}
+                                    style={pickerSelectStyles}
+                                />
+                                <RNPickerSelect
+                                    value={this.state.major1 || ''}
+                                    placeholder={{
+                                        label: 'Select your major',
+                                        value: '',
+                                        color: Colors.appGray2,
+                                    }}
+                                    items={this.state.majorOptions1.map((item) => {
+                                        return {
+                                            label: item,
+                                            value: item,
+                                            color: Colors.appBlack,
+                                        };
+                                    })}
+                                    onValueChange={(val) => this.setState({ major1: val })}
+                                    useNativeAndroidPickerStyle={false}
+                                    Icon={() => (
+                                        <Icon
+                                            name={'arrow-drop-down'}
+                                            size={26}
+                                            color={Colors.appGray5}
+                                        />
+                                    )}
+                                    style={pickerSelectStyles}
+                                />
+                            </View>
+                            {this.state.majorType !== 'single' && <Popup.Separator />}
+                            {this.state.majorType !== 'single' && (
+                                <View style={{ marginTop: 5, paddingLeft: 10 }}>
+                                    <MainText> Major 2: </MainText>
+                                    <RNPickerSelect
+                                        value={this.state.majorOptions2}
+                                        placeholder={{
+                                            label: 'Select your faculty',
+                                            value: [],
+                                            color: Colors.appGray2,
+                                        }}
+                                        items={Object.keys(this.state.facultyOptions).map((key) => {
+                                            return {
+                                                label: key,
+                                                value: this.state.facultyOptions[key],
+                                                color: Colors.appBlack,
+                                            };
+                                        })}
+                                        onValueChange={(val) =>
+                                            this.setState({ majorOptions2: val })
+                                        }
+                                        useNativeAndroidPickerStyle={false}
+                                        Icon={() => (
+                                            <Icon
+                                                name={'arrow-drop-down'}
+                                                size={26}
+                                                color={Colors.appGray5}
+                                            />
+                                        )}
+                                        style={pickerSelectStyles}
+                                    />
+                                    <RNPickerSelect
+                                        value={this.state.major2 || ''}
+                                        placeholder={{
+                                            label: 'Select your major',
+                                            value: '',
+                                            color: Colors.appGray2,
+                                        }}
+                                        items={this.state.majorOptions2.map((item) => {
+                                            return {
+                                                label: item,
+                                                value: item,
+                                                color: Colors.appBlack,
+                                            };
+                                        })}
+                                        onValueChange={(val) => this.setState({ major2: val })}
+                                        useNativeAndroidPickerStyle={false}
+                                        Icon={() => (
+                                            <Icon
+                                                name={'arrow-drop-down'}
+                                                size={26}
+                                                color={Colors.appGray5}
+                                            />
+                                        )}
+                                        style={pickerSelectStyles}
+                                    />
+                                    {/*<Picker*/}
+                                    {/*    style={{ width: '100%' }}*/}
+                                    {/*    mode="dropdown"*/}
+                                    {/*    selectedValue={this.state.majorOptions2}*/}
+                                    {/*    onValueChange={(val) =>*/}
+                                    {/*        this.setState({ majorOptions2: val })*/}
+                                    {/*    }*/}
+                                    {/*>*/}
+                                    {/*    <Picker.Item label={'Select your faculty'} value={[]} />*/}
+                                    {/*    {Object.keys(this.state.facultyOptions).map((key) => {*/}
+                                    {/*        return (*/}
+                                    {/*            <Picker.Item*/}
+                                    {/*                label={key}*/}
+                                    {/*                value={this.state.facultyOptions[key]}*/}
+                                    {/*                key={key}*/}
+                                    {/*            />*/}
+                                    {/*        );*/}
+                                    {/*    })}*/}
+                                    {/*</Picker>*/}
+                                    {/*<Picker*/}
+                                    {/*    style={{ width: '100%' }}*/}
+                                    {/*    mode="dropdown"*/}
+                                    {/*    selectedValue={this.state.major2 || ''}*/}
+                                    {/*    onValueChange={(val) => this.setState({ major2: val })}*/}
+                                    {/*>*/}
+                                    {/*    <Picker.Item label={'Select your major'} value={''} />*/}
+                                    {/*    {this.state.majorOptions2.map((item) => {*/}
+                                    {/*        return (*/}
+                                    {/*            <Picker.Item label={item} value={item} key={item} />*/}
+                                    {/*        );*/}
+                                    {/*    })}*/}
+                                    {/*</Picker>*/}
+                                </View>
+                            )}
+                        </View>
+                    )
                 }
                 additionalButtonText={'Save'}
                 additionalButtonCall={() => {
@@ -591,6 +677,24 @@ class ProfileEdit extends Component {
             moduleCodes = userData.moduleCodes || [],
             moduleNames = userData.moduleNames || [],
         } = this.state;
+        let houseColor = Colors.appBlack;
+        switch (house) {
+            case 'Shan':
+                houseColor = Colors.shanHouse;
+                break;
+            case 'Ora':
+                houseColor = Colors.oraHouse;
+                break;
+            case 'Gaja':
+                houseColor = Colors.gajaHouse;
+                break;
+            case 'Tancho':
+                houseColor = Colors.tanchoHouse;
+                break;
+            case 'Ponya':
+                houseColor = Colors.ponyaHouse;
+                break;
+        }
         return (
             <ScrollView style={styles.container}>
                 <View>
@@ -600,51 +704,49 @@ class ProfileEdit extends Component {
                     {this.renderMajorEditPopup()}
                     {this.renderExitConfirmationPopup()}
 
-                    <View style={styles.images}>
-                        <ImageBackground
-                            style={styles.bannerImg}
-                            source={
-                                bannerImg
-                                    ? { uri: bannerImg }
-                                    : require('../../../assets/images/default/banner.png')
-                            }
-                        >
-                            <Icon
-                                containerStyle={styles.addBannerIcon}
-                                raised
-                                size={15}
-                                name={'add-a-photo'}
-                                onPress={this.onChangeBannerImgPress}
-                                color={Colors.appGreen}
-                            />
-                        </ImageBackground>
-
-                        <Avatar
-                            size={80}
-                            containerStyle={styles.profileImg}
-                            rounded
-                            title={userData.displayName[0]}
-                            source={
-                                profileImg
-                                    ? { uri: profileImg }
-                                    : require('../../../assets/images/default/profile.png')
-                            }
-                            showAccessory={true}
-                            accessory={{
-                                containerStyle: {
-                                    bottom: 5,
-                                },
-                                raised: true,
-                                size: 12,
-                                name: 'add-a-photo',
-                                color: Colors.appGreen,
-                                overlayColor: Colors.appWhite,
-                                onPress: this.onChangeProfileImgPress,
-                            }}
+                    <ImageBackground
+                        style={styles.bannerImg}
+                        source={
+                            bannerImg
+                                ? { uri: bannerImg }
+                                : require('../../../assets/images/default/banner.png')
+                        }
+                    >
+                        <Icon
+                            containerStyle={styles.addBannerIcon}
+                            raised
+                            size={15}
+                            name={'add-a-photo'}
+                            onPress={this.onChangeBannerImgPress}
+                            color={Colors.appGreen}
                         />
-                    </View>
+                    </ImageBackground>
 
                     <View style={styles.spacing} />
+                    <Avatar
+                        size={80}
+                        containerStyle={styles.profileImg}
+                        rounded
+                        title={userData.displayName[0]}
+                        source={
+                            profileImg
+                                ? { uri: profileImg }
+                                : require('../../../assets/images/default/profile.png')
+                        }
+                        showAccessory={true}
+                        accessory={{
+                            containerStyle: {
+                                bottom: 5,
+                            },
+                            raised: true,
+                            size: 12,
+                            name: 'add-a-photo',
+                            color: Colors.appGreen,
+                            overlayColor: Colors.appWhite,
+                            onPress: this.onChangeProfileImgPress,
+                        }}
+                    />
+
                     <View style={styles.box}>
                         <MainText style={styles.label}>First Name</MainText>
                         <TextInput
@@ -693,53 +795,120 @@ class ProfileEdit extends Component {
                     </View>
                     <View style={[styles.box, { paddingRight: 0, height: 40 }]}>
                         <MainText style={styles.label}>Year of Study</MainText>
-                        <Picker
-                            itemStyle={styles.text}
-                            selectedValue={year}
-                            style={styles.picker}
+                        <RNPickerSelect
+                            value={year}
+                            placeholder={{
+                                label: 'Select year of study',
+                                value: '',
+                                color: Colors.appGray2,
+                            }}
+                            items={[
+                                { label: 'Year 1', value: 'Y1', color: Colors.appBlack },
+                                { label: 'Year 2', value: 'Y2', color: Colors.appBlack },
+                                { label: 'Year 3', value: 'Y3', color: Colors.appBlack },
+                                { label: 'Year 4', value: 'Y4', color: Colors.appBlack },
+                                { label: 'Year 5', value: 'Y5', color: Colors.appBlack },
+                            ]}
                             onValueChange={this.handleYear}
-                            mode={'dropdown'}
-                        >
-                            <Picker.Item
-                                label={'Select year of study'}
-                                value={''}
-                                color={Colors.appGray2}
-                            />
-                            <Picker.Item label={'Year 1'} value={'Y1'} />
-                            <Picker.Item label={'Year 2'} value={'Y2'} />
-                            <Picker.Item label={'Year 3'} value={'Y3'} />
-                            <Picker.Item label={'Year 4'} value={'Y4'} />
-                            <Picker.Item label={'Year 5'} value={'Y5'} />
-                        </Picker>
+                            Icon={() => (
+                                <Icon name={'arrow-drop-down'} size={26} color={Colors.appGray5} />
+                            )}
+                            useNativeAndroidPickerStyle={false}
+                            style={{
+                                ...pickerSelectStyles,
+                                inputAndroidContainer: {
+                                    width: (Layout.window.width / 10) * 7 - 15,
+                                },
+                                inputIOSContainer: {
+                                    width: (Layout.window.width / 10) * 7 - 15,
+                                },
+                            }}
+                        />
+
+                        {/*<Picker*/}
+                        {/*    itemStyle={styles.text}*/}
+                        {/*    selectedValue={year}*/}
+                        {/*    style={styles.picker}*/}
+                        {/*    onValueChange={this.handleYear}*/}
+                        {/*    mode={'dropdown'}*/}
+                        {/*>*/}
+                        {/*    <Picker.Item*/}
+                        {/*        label={'Select year of study'}*/}
+                        {/*        value={''}*/}
+                        {/*        color={Colors.appGray2}*/}
+                        {/*    />*/}
+                        {/*    <Picker.Item label={'Year 1'} value={'Y1'} />*/}
+                        {/*    <Picker.Item label={'Year 2'} value={'Y2'} />*/}
+                        {/*    <Picker.Item label={'Year 3'} value={'Y3'} />*/}
+                        {/*    <Picker.Item label={'Year 4'} value={'Y4'} />*/}
+                        {/*    <Picker.Item label={'Year 5'} value={'Y5'} />*/}
+                        {/*</Picker>*/}
                     </View>
                     <View style={[styles.box, { paddingRight: 0, height: 40 }]}>
                         <MainText style={styles.label}>House</MainText>
-                        <Picker
-                            itemStyle={styles.text}
-                            selectedValue={house}
-                            style={styles.picker}
+                        <RNPickerSelect
+                            value={house}
+                            placeholder={{
+                                label: 'Select your house',
+                                value: '',
+                                color: Colors.appGray2,
+                            }}
+                            items={[
+                                { label: 'Shan', value: 'Shan', color: Colors.shanHouse },
+                                { label: 'Ora', value: 'Ora', color: Colors.oraHouse },
+                                { label: 'Gaja', value: 'Gaja', color: Colors.gajaHouse },
+                                { label: 'Tancho', value: 'Tancho', color: Colors.tanchoHouse },
+                                { label: 'Ponya', value: 'Ponya', color: Colors.ponyaHouse },
+                            ]}
                             onValueChange={this.handleHouse}
-                            mode={'dropdown'}
-                        >
-                            <Picker.Item
-                                label="Select your house"
-                                value=""
-                                color={Colors.appGray2}
-                            />
-                            <Picker.Item label={'Shan'} value={'Shan'} color={Colors.shanHouse} />
-                            <Picker.Item label={'Ora'} value={'Ora'} color={Colors.oraHouse} />
-                            <Picker.Item label={'Gaja'} value={'Gaja'} color={Colors.gajaHouse} />
-                            <Picker.Item
-                                label={'Tancho'}
-                                value={'Tancho'}
-                                color={Colors.tanchoHouse}
-                            />
-                            <Picker.Item
-                                label={'Ponya'}
-                                value={'Ponya'}
-                                color={Colors.ponyaHouse}
-                            />
-                        </Picker>
+                            Icon={() => (
+                                <Icon name={'arrow-drop-down'} size={26} color={Colors.appGray5} />
+                            )}
+                            useNativeAndroidPickerStyle={false}
+                            style={{
+                                ...pickerSelectStyles,
+                                inputAndroid: {
+                                    ...pickerSelectStyles.inputAndroid,
+                                    color: houseColor,
+                                },
+                                inputIOS: {
+                                    ...pickerSelectStyles.inputIOS,
+                                    color: houseColor,
+                                },
+                                inputAndroidContainer: {
+                                    width: (Layout.window.width / 10) * 7 - 15,
+                                },
+                                inputIOSContainer: {
+                                    width: (Layout.window.width / 10) * 7 - 15,
+                                },
+                            }}
+                        />
+                        {/*<Picker*/}
+                        {/*    itemStyle={styles.text}*/}
+                        {/*    selectedValue={house}*/}
+                        {/*    style={styles.picker}*/}
+                        {/*    onValueChange={this.handleHouse}*/}
+                        {/*    mode={'dropdown'}*/}
+                        {/*>*/}
+                        {/*    <Picker.Item*/}
+                        {/*        label="Select your house"*/}
+                        {/*        value=""*/}
+                        {/*        color={Colors.appGray2}*/}
+                        {/*    />*/}
+                        {/*    <Picker.Item label={'Shan'} value={'Shan'} color={Colors.shanHouse} />*/}
+                        {/*    <Picker.Item label={'Ora'} value={'Ora'} color={Colors.oraHouse} />*/}
+                        {/*    <Picker.Item label={'Gaja'} value={'Gaja'} color={Colors.gajaHouse} />*/}
+                        {/*    <Picker.Item*/}
+                        {/*        label={'Tancho'}*/}
+                        {/*        value={'Tancho'}*/}
+                        {/*        color={Colors.tanchoHouse}*/}
+                        {/*    />*/}
+                        {/*    <Picker.Item*/}
+                        {/*        label={'Ponya'}*/}
+                        {/*        value={'Ponya'}*/}
+                        {/*        color={Colors.ponyaHouse}*/}
+                        {/*    />*/}
+                        {/*</Picker>*/}
                     </View>
                     <View style={styles.box}>
                         <MainText style={styles.label}>Room No.</MainText>
@@ -882,7 +1051,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
     },
     aboutText: {
-        fontFamily: 'Montserrat-SemiBold',
+        fontFamily: MAIN_FONT,
         fontSize: 13,
         fontWeight: '100',
     },
@@ -899,18 +1068,46 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         flexWrap: 'wrap',
     },
-    picker: {
-        // flex: 1,
-        width: '70%',
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
-        fontWeight: 'normal',
-        flexWrap: 'wrap',
-    },
+    // picker: {
+    //     // flex: 1,
+    //     width: '70%',
+    //     fontFamily: MAIN_FONT,
+    //     fontSize: 13,
+    //     fontWeight: 'normal',
+    //     flexWrap: 'wrap',
+    // },
     text: {
         fontFamily: MAIN_FONT,
         fontSize: 13,
     },
+});
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 13,
+        fontFamily: MAIN_FONT,
+        fontWeight: '100',
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        paddingRight: 30,
+        color: Colors.appBlack,
+        alignItems: 'center',
+    },
+    inputAndroid: {
+        fontSize: 13,
+        fontFamily: MAIN_FONT,
+        fontWeight: '100',
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        paddingRight: 30,
+        color: Colors.appBlack,
+        alignItems: 'center',
+    },
+    placeholder: {
+        fontSize: 13,
+        fontFamily: MAIN_FONT,
+        fontWeight: '100',
+    },
+    iconContainer: { top: 7, right: 12 },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(ProfileEdit));

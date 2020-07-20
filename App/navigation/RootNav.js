@@ -111,6 +111,7 @@ class RootNav extends Component {
                 require('../assets/images/default/profile.png'),
                 require('../assets/images/default/banner.png'),
 
+                require('../assets/images/menu/AdminIcon.png'),
                 require('../assets/images/menu/SettingsIcon.png'),
                 require('../assets/images/menu/QRcode.png'),
                 require('../assets/images/menu/FriendsIcon.png'),
@@ -131,6 +132,8 @@ class RootNav extends Component {
 
                 require('../assets/images/settings/contact-us.png'),
                 require('../assets/images/settings/FAQ-icon.png'),
+                require('../assets/images/settings/next-icon.png'),
+                require('../assets/images/settings/post-icon.png'),
             ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
                 'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),

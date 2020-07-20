@@ -267,57 +267,13 @@ class UserProfile extends Component {
     };
 
     renderHeader = () => {
-        const {
-            uid,
-            bannerImg,
-            profileImg,
-            displayName,
-            role = 'Resident',
-            major = 'Undeclared',
-            year = 'Y0',
-            house = 'Undeclared',
-            roomNumber = '',
-            friendsCount = 0,
-            aboutText = "Hello, I'm new to TembuFriends",
-            moduleCodes = [],
-            moduleNames = [],
-            verified,
-            statusType,
-        } = this.state.profileData;
+        const { uid } = this.state.profileData;
         const friendStatus = this.props.friends[uid]?.status;
         return (
-            <View>
-                <Image
-                    style={styles.bannerImg}
-                    source={
-                        bannerImg
-                            ? { uri: bannerImg }
-                            : require('../../assets/images/default/banner.png')
-                    }
-                />
-                <View style={styles.spacing} />
-                <View style={styles.avatarContainerStyle}>
-                    <Avatar
-                        size={80}
-                        containerStyle={styles.profileImg}
-                        rounded
-                        source={
-                            profileImg
-                                ? { uri: profileImg }
-                                : require('../../assets/images/default/profile.png')
-                        }
-                        showAccessory
-                        accessory={{
-                            color: this.getStatusColor(statusType),
-                            size: 22,
-                            name: 'lens',
-                            style: {
-                                backgroundColor: Colors.appWhite,
-                                borderRadius: 50,
-                            },
-                        }}
-                    />
-                    {friendStatus === 'friends' ? (
+            <ProfileHeader
+                userData={this.state.profileData}
+                button={
+                    friendStatus === 'friends' ? (
                         <FriendsButton
                             title="Friends"
                             type="solid"
@@ -353,84 +309,155 @@ class UserProfile extends Component {
                             loading={this.state.buttonLoading}
                             onPress={this.requestFriend}
                         />
-                    )}
-                </View>
-                <View style={styles.box}>
-                    <View style={styles.userDetails}>
-                        <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
-                            {displayName}
-                        </MainText>
-                        {verified && (
-                            <Image
-                                style={{ height: 18, width: 18, marginHorizontal: 5 }}
-                                source={require('../../assets/images/profile/verified-icon.png')}
-                            />
-                        )}
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/job-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>{role}</MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/study-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {major}, {year}
-                        </MainText>
-                    </View>
-                    <View style={styles.userDetails}>
-                        <Image
-                            source={require('../../assets/images/profile/house-icon.png')}
-                            style={styles.icon}
-                            resizeMode={'contain'}
-                        />
-                        <MainText style={{ fontSize: 15 }}>
-                            {this.renderHouseText(house)} {roomNumber}
-                            {roomNumber ? ' ' : ''}• {friendsCount}{' '}
-                            {friendsCount <= 1 ? 'Friend' : 'Friends'}
-                        </MainText>
-                    </View>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>About</MainText>
-                    <MainText>{aboutText}</MainText>
-                </View>
-                <View style={styles.box}>
-                    <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
-                    <ScrollView style={{ maxHeight: 150 }}>
-                        {moduleCodes.length === 0 ? (
-                            <MainText style={styles.emptyText}>None</MainText>
-                        ) : (
-                            moduleCodes.map((item, index) => (
-                                <ListItem
-                                    key={item}
-                                    leftElement={<MainText>•</MainText>}
-                                    title={`${item} ${moduleNames[index]}`}
-                                    titleStyle={{
-                                        fontFamily: MAIN_FONT,
-                                        fontSize: 13,
-                                    }}
-                                    containerStyle={{
-                                        padding: 0,
-                                        paddingBottom: 1,
-                                    }}
-                                />
-                            ))
-                        )}
-                    </ScrollView>
-                </View>
-                <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
-                    <MainText style={styles.title}>Posts</MainText>
-                </View>
-                <View style={styles.box}>{this.renderWritePost()}</View>
-            </View>
+                    )
+                }
+                bottomElement={this.renderWritePost()}
+            />
+            // <View>
+            //     <Image
+            //         style={styles.bannerImg}
+            //         source={
+            //             bannerImg
+            //                 ? { uri: bannerImg }
+            //                 : require('../../assets/images/default/banner.png')
+            //         }
+            //     />
+            //     <View style={styles.spacing} />
+            //     <View style={styles.avatarContainerStyle}>
+            //         <Avatar
+            //             size={80}
+            //             containerStyle={styles.profileImg}
+            //             rounded
+            //             source={
+            //                 profileImg
+            //                     ? { uri: profileImg }
+            //                     : require('../../assets/images/default/profile.png')
+            //             }
+            //             showAccessory
+            //             accessory={{
+            //                 color: this.getStatusColor(statusType),
+            //                 size: 22,
+            //                 name: 'lens',
+            //                 style: {
+            //                     backgroundColor: Colors.appWhite,
+            //                     borderRadius: 50,
+            //                 },
+            //             }}
+            //         />
+            //         {friendStatus === 'friends' ? (
+            //             <FriendsButton
+            //                 title="Friends"
+            //                 type="solid"
+            //                 loading={this.state.buttonLoading}
+            //                 onPress={() =>
+            //                     this.setState({
+            //                         unfriendPopupVisible: true,
+            //                     })
+            //                 }
+            //             />
+            //         ) : friendStatus === 'respond' ? (
+            //             <FriendsButton
+            //                 title="Respond"
+            //                 type="outline"
+            //                 loading={this.state.buttonLoading}
+            //                 onPress={() =>
+            //                     this.setState({
+            //                         respondPopupVisible: true,
+            //                     })
+            //                 }
+            //             />
+            //         ) : friendStatus === 'requested' ? (
+            //             <FriendsButton
+            //                 title="Requested"
+            //                 type="solid"
+            //                 loading={this.state.buttonLoading}
+            //                 onPress={this.removeFriend}
+            //             />
+            //         ) : (
+            //             <FriendsButton
+            //                 title="Add Friend"
+            //                 type="outline"
+            //                 loading={this.state.buttonLoading}
+            //                 onPress={this.requestFriend}
+            //             />
+            //         )}
+            //     </View>
+            //     <View style={styles.box}>
+            //         <View style={styles.userDetails}>
+            //             <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
+            //                 {displayName}
+            //             </MainText>
+            //             {verified && (
+            //                 <Image
+            //                     style={{ height: 18, width: 18, marginHorizontal: 5 }}
+            //                     source={require('../../assets/images/profile/verified-icon.png')}
+            //                 />
+            //             )}
+            //         </View>
+            //         <View style={styles.userDetails}>
+            //             <Image
+            //                 source={require('../../assets/images/profile/job-icon.png')}
+            //                 style={styles.icon}
+            //                 resizeMode={'contain'}
+            //             />
+            //             <MainText style={{ fontSize: 15 }}>{role}</MainText>
+            //         </View>
+            //         <View style={styles.userDetails}>
+            //             <Image
+            //                 source={require('../../assets/images/profile/study-icon.png')}
+            //                 style={styles.icon}
+            //                 resizeMode={'contain'}
+            //             />
+            //             <MainText style={{ fontSize: 15 }}>
+            //                 {major}, {year}
+            //             </MainText>
+            //         </View>
+            //         <View style={styles.userDetails}>
+            //             <Image
+            //                 source={require('../../assets/images/profile/house-icon.png')}
+            //                 style={styles.icon}
+            //                 resizeMode={'contain'}
+            //             />
+            //             <MainText style={{ fontSize: 15 }}>
+            //                 {this.renderHouseText(house)} {roomNumber}
+            //                 {roomNumber ? ' ' : ''}• {friendsCount}{' '}
+            //                 {friendsCount <= 1 ? 'Friend' : 'Friends'}
+            //             </MainText>
+            //         </View>
+            //     </View>
+            //     <View style={styles.box}>
+            //         <MainText style={styles.title}>About</MainText>
+            //         <MainText>{aboutText}</MainText>
+            //     </View>
+            //     <View style={styles.box}>
+            //         <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
+            //         <ScrollView style={{ maxHeight: 150 }}>
+            //             {moduleCodes.length === 0 ? (
+            //                 <MainText style={styles.emptyText}>None</MainText>
+            //             ) : (
+            //                 moduleCodes.map((item, index) => (
+            //                     <ListItem
+            //                         key={item}
+            //                         leftElement={<MainText>•</MainText>}
+            //                         title={`${item} ${moduleNames[index]}`}
+            //                         titleStyle={{
+            //                             fontFamily: MAIN_FONT,
+            //                             fontSize: 13,
+            //                         }}
+            //                         containerStyle={{
+            //                             padding: 0,
+            //                             paddingBottom: 1,
+            //                         }}
+            //                     />
+            //                 ))
+            //             )}
+            //         </ScrollView>
+            //     </View>
+            //     <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+            //         <MainText style={styles.title}>Posts</MainText>
+            //     </View>
+            //     <View style={styles.box}>{this.renderWritePost()}</View>
+            // </View>
         );
     };
     renderWritePost = () => {
@@ -656,53 +683,53 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         textAlign: 'left',
     },
-    bannerImg: {
-        width: Layout.window.width,
-        height: Layout.window.width / 3,
-        justifyContent: 'flex-end',
-    },
-    profileImg: {
-        backgroundColor: Colors.appWhite,
-        borderColor: Colors.appWhite,
-        borderWidth: 4,
-        marginLeft: 20,
-    },
-    avatarContainerStyle: {
-        position: 'absolute',
-        top: Layout.window.width / 3 - 40,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        width: '100%',
-    },
-    spacing: {
-        height: 40,
-    },
-    userDetails: {
-        marginBottom: 2,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    title: {
-        fontFamily: MAIN_FONT,
-        fontSize: 15,
-        color: Colors.appGreen,
-        marginBottom: 2,
-    },
-    icon: {
-        marginLeft: 3,
-        marginRight: 8,
-        width: 15,
-        height: 15,
-    },
-    box: {
-        borderBottomWidth: 5,
-        borderColor: Colors.appGray2,
-        backgroundColor: Colors.appWhite,
-        paddingHorizontal: 20,
-        paddingTop: 5,
-        paddingBottom: 10,
-    },
+    // bannerImg: {
+    //     width: Layout.window.width,
+    //     height: Layout.window.width / 3,
+    //     justifyContent: 'flex-end',
+    // },
+    // profileImg: {
+    //     backgroundColor: Colors.appWhite,
+    //     borderColor: Colors.appWhite,
+    //     borderWidth: 4,
+    //     marginLeft: 20,
+    // },
+    // avatarContainerStyle: {
+    //     position: 'absolute',
+    //     top: Layout.window.width / 3 - 40,
+    //     flexDirection: 'row',
+    //     justifyContent: 'space-between',
+    //     alignItems: 'flex-end',
+    //     width: '100%',
+    // },
+    // spacing: {
+    //     height: 40,
+    // },
+    // userDetails: {
+    //     marginBottom: 2,
+    //     flexDirection: 'row',
+    //     alignItems: 'center',
+    // },
+    // title: {
+    //     fontFamily: MAIN_FONT,
+    //     fontSize: 15,
+    //     color: Colors.appGreen,
+    //     marginBottom: 2,
+    // },
+    // icon: {
+    //     marginLeft: 3,
+    //     marginRight: 8,
+    //     width: 15,
+    //     height: 15,
+    // },
+    // box: {
+    //     borderBottomWidth: 5,
+    //     borderColor: Colors.appGray2,
+    //     backgroundColor: Colors.appWhite,
+    //     paddingHorizontal: 20,
+    //     paddingTop: 5,
+    //     paddingBottom: 10,
+    // },
 });
 
 export default connect(mapStateToProps)(withFirebase(UserProfile));

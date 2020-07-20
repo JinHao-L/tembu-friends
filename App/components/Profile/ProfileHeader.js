@@ -5,6 +5,41 @@ import { Avatar, ListItem } from 'react-native-elements';
 import { Colors, Layout } from '../../constants';
 import { MAIN_FONT, MainText } from '../MyAppText';
 
+const renderHouseText = (house) => {
+    let color = Colors.appBlack;
+    switch (house) {
+        case 'Shan':
+            color = Colors.shanHouse;
+            break;
+        case 'Ora':
+            color = Colors.oraHouse;
+            break;
+        case 'Gaja':
+            color = Colors.gajaHouse;
+            break;
+        case 'Tancho':
+            color = Colors.tanchoHouse;
+            break;
+        case 'Ponya':
+            color = Colors.ponyaHouse;
+            break;
+    }
+    return <Text style={{ color: color }}>{house}</Text>;
+};
+
+const getStatusColor = (type) => {
+    switch (type) {
+        case 'green':
+            return Colors.statusGreen;
+        case 'yellow':
+            return Colors.statusYellow;
+        case 'red':
+            return Colors.statusRed;
+        default:
+            return Colors.statusYellow;
+    }
+};
+
 function ProfileHeader({
     userData,
     onAccessoryPress = undefined,
@@ -41,6 +76,7 @@ function ProfileHeader({
                     }
                 />
 
+                <View style={styles.spacing} />
                 <View style={styles.avatarContainerStyle}>
                     <Avatar
                         size={80}
@@ -66,7 +102,6 @@ function ProfileHeader({
                     {button}
                 </View>
             </View>
-            <View style={styles.spacing} />
             <View style={[styles.box, { paddingTop: 0 }]}>
                 <View style={styles.userDetails}>
                     <MainText style={{ fontSize: 18, color: Colors.appGreen }}>

@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     },
     privatePostButton: {
         paddingVertical: 2,
-        width: 90,
+        minWidth: 90,
         borderRadius: 20,
         paddingHorizontal: 0,
         alignItems: 'center',

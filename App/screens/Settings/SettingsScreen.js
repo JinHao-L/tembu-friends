@@ -173,7 +173,7 @@ class SettingsScreen extends Component {
                 <View style={{ height: 30 }} />
                 <ListItem
                     contentContainerStyle={{ alignItems: 'center' }}
-                    title={'Delete account'}
+                    title={'Delete Account'}
                     titleStyle={styles.deleteTitle}
                     containerStyle={styles.deleteContainer}
                     onPress={this.goToDelete}

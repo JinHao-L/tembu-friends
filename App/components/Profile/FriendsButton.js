@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     friendButton: {
         paddingVertical: 2,
-        width: 86,
+        minWidth: 86,
         borderRadius: 20,
         paddingHorizontal: 0,
         alignItems: 'center',

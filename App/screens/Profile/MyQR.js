@@ -36,7 +36,6 @@ class MyQR extends Component {
                     }}
                     onPress={this.snapAndShare}
                     type={'clear'}
-                    disabled={!this.state.ready}
                     buttonStyle={{ paddingHorizontal: 0, paddingVertical: 5 }}
                     containerStyle={{ borderRadius: 20, marginRight: 10 }}
                     titleStyle={{ color: Colors.appWhite }}
@@ -47,7 +46,7 @@ class MyQR extends Component {
             this.setState({
                 ready: true,
             });
-        }, 100);
+        }, 500);
     }
 
     goToScan = () => {
@@ -92,28 +91,20 @@ class MyQR extends Component {
     };
 
     snapAndShare = () => {
-        return this.takeSnapshot().then(this.shareSnapshot);
-    };
-
-    takeSnapshot = async () => {
-        if (this.qrCardRef.current) {
-            return await captureRef(this.qrCardRef);
+        if (!this.state.ready) {
+            return;
         }
-    };
-
-    shareSnapshot = async (snapshot) => {
-        if (snapshot) {
-            const available = await Sharing.isAvailableAsync();
-            if (!available) {
-                alert('Sharing is not available on your platform');
-                return;
-            }
-
-            await Sharing.shareAsync(snapshot, {
-                mimeType: 'image/jpeg',
-                dialogTitle: 'Add me on TembuFriends!',
-                UTI: 'image/jpeg',
-            });
+        if (this.qrCardRef.current) {
+            return captureRef(this.qrCardRef)
+                .then((uri) => {
+                    console.log('Image saved to', uri);
+                    return Sharing.shareAsync('file://' + uri, {
+                        mimeType: 'image/png',
+                        dialogTitle: 'Add me on TembuFriends!',
+                        UTI: 'image/png',
+                    });
+                })
+                .catch((error) => console.log('Snap&Share failed', error));
         }
     };
 
