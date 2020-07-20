@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { ActivityIndicator, StyleSheet, Text, SafeAreaView, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, SafeAreaView, View, StatusBar } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import ProgressBar from 'react-native-progress/Bar';
@@ -162,7 +162,9 @@ class RootNav extends Component {
         } else {
             return (
                 <Fragment>
-                    <SafeAreaView style={{ flex: 0, backgroundColor: Colors.appGreen }} />
+                    {isUserSignedIn ? (
+                        <SafeAreaView style={{ flex: 0, backgroundColor: Colors.appGreen }} />
+                    ) : null}
                     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.appWhite }}>
                         <NavigationContainer>
                             <RootStack.Navigator>

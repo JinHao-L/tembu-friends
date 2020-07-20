@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    Keyboard,
-    Platform,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, Layout } from '../../constants';
@@ -230,12 +223,12 @@ class SignUpScreen extends Component {
                 ]}
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <View style={styles.contentContainer}>
                         <View style={styles.titleContainer}>
-                            <MainText style={styles.title}>Delete Account</MainText>
-                            <MainText style={{ left: 40, fontSize: 15 }}>
-                                We are sorry to see you go
+                            <MainText style={styles.title} adjustsFontSizeToFit={true}>
+                                Delete Account
                             </MainText>
+                            <MainText style={{ fontSize: 15 }}>We are sorry to see you go</MainText>
                         </View>
 
                         <View style={styles.form}>
@@ -266,16 +259,14 @@ class SignUpScreen extends Component {
                                 secureTextEntry={passwordHidden}
                                 value={password}
                                 rightIcon={
-                                    <TouchableOpacity
+                                    <Icon
+                                        type={'ionicon'}
+                                        name={passwordIcon}
+                                        size={28}
+                                        color={Colors.appGray2}
+                                        containerStyle={{ marginRight: 5 }}
                                         onPress={this.handlePasswordVisibility.bind(this)}
-                                    >
-                                        <Icon
-                                            name={passwordIcon}
-                                            size={28}
-                                            color="grey"
-                                            style={{ marginRight: 5 }}
-                                        />
-                                    </TouchableOpacity>
+                                    />
                                 }
                             />
                             <FormInput
@@ -314,22 +305,21 @@ class SignUpScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
         backgroundColor: Colors.appWhite,
     },
+    contentContainer: {
+        flex: 1,
+        justifyContent: 'center',
+    },
     title: {
-        fontSize: 40,
+        fontSize: 35,
         color: Colors.appGreen,
         marginBottom: 10,
         textAlign: 'left',
-        width: Layout.window.width,
-        left: 35,
+        // left: 35,
     },
-    header: {},
     titleContainer: {
-        justifyContent: 'flex-end',
+        paddingHorizontal: 40,
     },
     form: {
         justifyContent: 'center',
@@ -340,7 +330,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     button: {
-        color: 'red',
+        color: Colors.appRed,
         marginTop: 10,
     },
 });

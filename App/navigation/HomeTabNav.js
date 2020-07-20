@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { StatusBar, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -22,12 +22,8 @@ class HomeTabNav extends Component {
 
     render() {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
-                {Platform.OS === 'ios' ? (
-                    <StatusBar barStyle="dark-content" />
-                ) : (
-                    <StatusBar backgroundColor={Colors.appGreen} barStyle="light-content" />
-                )}
+            <View style={{ flex: 1 }}>
+                <StatusBar barStyle="light-content" backgroundColor={Colors.appGreen} />
                 <BottomTab.Navigator
                     initialRouteName={INITIAL_ROUTE_NAME}
                     tabBarOptions={{
@@ -73,7 +69,7 @@ class HomeTabNav extends Component {
                         }}
                     />
                 </BottomTab.Navigator>
-            </SafeAreaView>
+            </View>
         );
     }
 }

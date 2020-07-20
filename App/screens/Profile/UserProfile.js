@@ -287,78 +287,75 @@ class UserProfile extends Component {
         const friendStatus = this.props.friends[uid]?.status;
         return (
             <View>
-                <View style={styles.header}>
-                    <Image
-                        style={styles.bannerImg}
-                        source={
-                            bannerImg
-                                ? { uri: bannerImg }
-                                : require('../../assets/images/default/banner.png')
-                        }
-                    />
-
-                    <View style={styles.avatarContainerStyle}>
-                        <Avatar
-                            size={80}
-                            containerStyle={styles.profileImg}
-                            rounded
-                            source={
-                                profileImg
-                                    ? { uri: profileImg }
-                                    : require('../../assets/images/default/profile.png')
-                            }
-                            showAccessory
-                            accessory={{
-                                color: this.getStatusColor(statusType),
-                                size: 22,
-                                name: 'lens',
-                                style: {
-                                    backgroundColor: Colors.appWhite,
-                                    borderRadius: 50,
-                                },
-                            }}
-                        />
-                        {friendStatus === 'friends' ? (
-                            <FriendsButton
-                                title="Friends"
-                                type="solid"
-                                loading={this.state.buttonLoading}
-                                onPress={() =>
-                                    this.setState({
-                                        unfriendPopupVisible: true,
-                                    })
-                                }
-                            />
-                        ) : friendStatus === 'respond' ? (
-                            <FriendsButton
-                                title="Respond"
-                                type="outline"
-                                loading={this.state.buttonLoading}
-                                onPress={() =>
-                                    this.setState({
-                                        respondPopupVisible: true,
-                                    })
-                                }
-                            />
-                        ) : friendStatus === 'requested' ? (
-                            <FriendsButton
-                                title="Requested"
-                                type="solid"
-                                loading={this.state.buttonLoading}
-                                onPress={this.removeFriend}
-                            />
-                        ) : (
-                            <FriendsButton
-                                title="Add Friend"
-                                type="outline"
-                                loading={this.state.buttonLoading}
-                                onPress={this.requestFriend}
-                            />
-                        )}
-                    </View>
-                </View>
+                <Image
+                    style={styles.bannerImg}
+                    source={
+                        bannerImg
+                            ? { uri: bannerImg }
+                            : require('../../assets/images/default/banner.png')
+                    }
+                />
                 <View style={styles.spacing} />
-                <View style={[styles.box, { paddingTop: 0 }]}>
+                <View style={styles.avatarContainerStyle}>
+                    <Avatar
+                        size={80}
+                        containerStyle={styles.profileImg}
+                        rounded
+                        source={
+                            profileImg
+                                ? { uri: profileImg }
+                                : require('../../assets/images/default/profile.png')
+                        }
+                        showAccessory
+                        accessory={{
+                            color: this.getStatusColor(statusType),
+                            size: 22,
+                            name: 'lens',
+                            style: {
+                                backgroundColor: Colors.appWhite,
+                                borderRadius: 50,
+                            },
+                        }}
+                    />
+                    {friendStatus === 'friends' ? (
+                        <FriendsButton
+                            title="Friends"
+                            type="solid"
+                            loading={this.state.buttonLoading}
+                            onPress={() =>
+                                this.setState({
+                                    unfriendPopupVisible: true,
+                                })
+                            }
+                        />
+                    ) : friendStatus === 'respond' ? (
+                        <FriendsButton
+                            title="Respond"
+                            type="outline"
+                            loading={this.state.buttonLoading}
+                            onPress={() =>
+                                this.setState({
+                                    respondPopupVisible: true,
+                                })
+                            }
+                        />
+                    ) : friendStatus === 'requested' ? (
+                        <FriendsButton
+                            title="Requested"
+                            type="solid"
+                            loading={this.state.buttonLoading}
+                            onPress={this.removeFriend}
+                        />
+                    ) : (
+                        <FriendsButton
+                            title="Add Friend"
+                            type="outline"
+                            loading={this.state.buttonLoading}
+                            onPress={this.requestFriend}
+                        />
+                    )}
+                </View>
+                <View style={styles.box}>
                     <View style={styles.userDetails}>
                         <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
                             {displayName}

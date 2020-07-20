@@ -9,7 +9,6 @@ export default {
     appGray4: '#A9A9A9',
     appGray5: '#9C9C9C',
     appRed: '#FF0000',
-    appYellow: '#F2D51A',
 
     // House colors
     shanHouse: '#A9A9A9',

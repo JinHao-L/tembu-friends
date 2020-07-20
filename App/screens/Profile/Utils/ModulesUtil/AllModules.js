@@ -1,12 +1,12 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import React, { Component } from 'react';
-import Colors from '../../../constants/Colors';
+import Colors from '../../../../constants/Colors';
 import { ListItem } from 'react-native-elements';
-import { MAIN_FONT, MainText } from '../../../components';
+import { MAIN_FONT, MainText } from '../../../../components';
 
-class MyModules extends Component {
+class AllModules extends Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return this.props.filteredSelectedCodes !== nextProps.filteredSelectedCodes;
+        return this.props.filteredData !== nextProps.filteredData;
     }
 
     renderEmpty = () => {
@@ -18,8 +18,8 @@ class MyModules extends Component {
             );
         } else {
             return (
-                <View style={styles.emptyContainer}>
-                    <MainText style={styles.emptyText}>No saved modules</MainText>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator color={Colors.appGreen} />
                 </View>
             );
         }
@@ -38,8 +38,8 @@ class MyModules extends Component {
                     uncheckedIcon: 'add',
                     checkedColor: Colors.appGreen,
                     uncheckedColor: Colors.appGreen,
-                    checked: true,
-                    onPress: () => this.props.unselect(moduleCode, moduleName),
+                    checked: false,
+                    onPress: () => this.props.select(moduleCode, moduleName),
                 }}
             />
         );
@@ -49,13 +49,12 @@ class MyModules extends Component {
         return (
             <View style={styles.container}>
                 <FlatList
-                    data={this.props.filteredSelectedCodes}
+                    contentContainerStyle={{ minHeight: '100%' }}
+                    data={this.props.filteredData}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    renderItem={({ item, index }) =>
-                        this.renderItem(item, this.props.filteredSelectedNames[index])
-                    }
-                    keyExtractor={(item) => item}
+                    renderItem={({ item }) => this.renderItem(item.moduleCode, item.title)}
                     ListEmptyComponent={this.renderEmpty}
+                    keyExtractor={(item) => item.moduleCode}
                 />
             </View>
         );
@@ -89,4 +88,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MyModules;
+export default AllModules;

@@ -2,15 +2,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {
-    Friends,
-    FriendRequests,
-    DeleteScreen,
-    MenuScreen,
-    SettingsScreen,
-    ContactUsScreen,
-    FAQScreen,
-} from '../../screens/Menu';
+import { Friends, MenuScreen } from '../../screens/Menu';
+import { ContactUsScreen, FAQScreen, SettingsScreen, DeleteScreen } from '../../screens/Settings';
 import { AdminNav } from '../menus';
 import { Colors } from '../../constants';
 import { MAIN_FONT } from '../../components';
@@ -35,6 +28,7 @@ function MenuNav() {
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
                     elevation: 0,
+                    shadowOpacity: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -45,14 +39,14 @@ function MenuNav() {
                 },
                 headerTitleContainerStyle: {
                     left: 0,
-                    marginLeft: 50,
+                    marginLeft: Platform.OS === 'ios' ? 50 : 40,
                     paddingBottom: 3,
                 },
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { paddingLeft: 20 },
+                headerLeftContainerStyle: { marginLeft: Platform.OS === 'ios' ? 20 : 10 },
             }}
         >
             <MenuStack.Screen
@@ -97,11 +91,6 @@ function MenuNav() {
                 options={{ headerTitle: 'Edit Modules' }}
             />
             <MenuStack.Screen name="Friends" component={Friends} />
-            <MenuStack.Screen
-                name="FriendRequests"
-                component={FriendRequests}
-                options={{ headerTitle: 'Friend Requests' }}
-            />
             <MenuStack.Screen
                 name="UserProfile"
                 component={UserProfile}

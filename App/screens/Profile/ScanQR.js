@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, View, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Image, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'react-native-elements';
@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { Colors } from '../../constants';
 import { MainText } from '../../components';
+import { withHeight } from '../../helper/HeaderHeightHook';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -155,36 +156,42 @@ class ScanQR extends Component {
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    {canScan ? (
-                        <BaseButton
-                            style={styles.QRContainer}
-                            onPress={() => this.setState({ canScan: false })}
-                        >
-                            <BarCodeScanner
-                                barCodeTypes={barcodeTypes}
-                                onBarCodeScanned={canScan ? this.handleScan : undefined}
-                                style={[
-                                    StyleSheet.absoluteFill,
-                                    { alignItems: 'center', justifyContent: 'center' },
-                                ]}
-                            />
-                        </BaseButton>
-                    ) : (
-                        <BaseButton style={styles.QRContainer} onPress={this.openCamera}>
-                            <Icon name={'camera'} color={Colors.appGreen} style={{ padding: 5 }} />
-                            {message ? (
-                                <View>
-                                    {uri ? (
-                                        <Image source={{ uri: uri }} style={styles.image} />
-                                    ) : null}
-                                    <MainText style={styles.message}>{message}</MainText>
-                                </View>
-                            ) : (
-                                <MainText>Tap to scan</MainText>
-                            )}
-                        </BaseButton>
-                    )}
-                    <MainText style={styles.galleryText} onPress={this.openGallery}>
+                    <View style={{ paddingBottom: this.props.headerHeight / 2 }}>
+                        {canScan ? (
+                            <BaseButton
+                                style={styles.QRContainer}
+                                onPress={() => this.setState({ canScan: false })}
+                            >
+                                <BarCodeScanner
+                                    barCodeTypes={barcodeTypes}
+                                    onBarCodeScanned={canScan ? this.handleScan : undefined}
+                                    style={[
+                                        StyleSheet.absoluteFill,
+                                        { alignItems: 'center', justifyContent: 'center' },
+                                    ]}
+                                />
+                            </BaseButton>
+                        ) : (
+                            <BaseButton style={styles.QRContainer} onPress={this.openCamera}>
+                                <Icon
+                                    name={'camera'}
+                                    color={Colors.appGreen}
+                                    style={{ padding: 5 }}
+                                />
+                                {message ? (
+                                    <View>
+                                        {uri ? (
+                                            <Image source={{ uri: uri }} style={styles.image} />
+                                        ) : null}
+                                        <MainText style={styles.message}>{message}</MainText>
+                                    </View>
+                                ) : (
+                                    <MainText>Tap to scan</MainText>
+                                )}
+                            </BaseButton>
+                        )}
+                    </View>
+                    <MainText style={styles.hyperlinkText} onPress={this.openGallery}>
                         Choose from gallery
                     </MainText>
                 </LinearGradient>
@@ -229,7 +236,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         overflow: 'hidden',
     },
-    galleryText: {
+    hyperlinkText: {
         position: 'absolute',
         bottom: 0,
         fontSize: 15,
@@ -237,6 +244,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: Colors.appWhite,
         marginBottom: 20,
+        flexDirection: 'column',
     },
     image: {
         width: 200,
@@ -249,4 +257,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps)(ScanQR);
+export default connect(mapStateToProps)(withHeight(ScanQR));

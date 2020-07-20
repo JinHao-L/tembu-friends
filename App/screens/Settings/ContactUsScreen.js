@@ -1,37 +1,30 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { connect } from 'react-redux';
+import { View, StyleSheet, Image, Linking } from 'react-native';
 
 import { MainText } from '../../components';
 import { Colors } from '../../constants';
-import { updateProfile } from '../../redux';
-
-const mapStateToProps = (state) => {
-    return { userData: state.userData };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updatePermissions: (uid, permission) => {
-            dispatch(updateProfile(uid, { pushPermissions: permission }));
-        },
-    };
-};
 
 class ContactUsScreen extends Component {
+    mailTo = () => {
+        return Linking.openURL('mailto:tembufriends@gmail.com');
+    };
+
     render() {
         return (
             <View style={styles.container}>
                 <Image
-                    source={require('../../assets/images/misc/contactUsIcon.png')}
+                    source={require('../../assets/images/settings/contact-us.png')}
                     style={{ marginBottom: 30, width: 100, height: 76.17 }}
+                    resizeMode={'contain'}
                 />
                 <MainText style={styles.normalText}>Drop us a message at</MainText>
-                <MainText style={styles.emailText}>tembufriends@gmail.com</MainText>
-                <MainText style={styles.normalText}>
-                    for any enquiries, technical difficulties, ideas on improving
+                <MainText style={styles.emailText} onPress={this.mailTo}>
+                    tembufriends@gmail.com
                 </MainText>
-                <MainText style={styles.normalText}>the app, and even compliments!</MainText>
+                <MainText style={styles.normalText}>
+                    for any enquiries, technical difficulties, ideas on improving the app, and even
+                    compliments!
+                </MainText>
             </View>
         );
     }
@@ -42,22 +35,22 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        color: Colors.appWhite,
+        backgroundColor: Colors.appWhite,
     },
     normalText: {
         marginHorizontal: 30,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
         color: Colors.appBlack,
         textAlign: 'center',
     },
     emailText: {
         marginHorizontal: 30,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
         color: Colors.appGreen,
         textAlign: 'center',
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactUsScreen);
+export default ContactUsScreen;

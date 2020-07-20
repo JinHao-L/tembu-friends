@@ -9,12 +9,12 @@ import {
     Platform,
     ActivityIndicator,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
 import * as firebase from 'firebase';
+import { Icon } from 'react-native-elements';
 
 const wordsOnly = /^[A-Za-z ]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;
@@ -447,16 +447,14 @@ class SignUpScreen extends Component {
                                 secureTextEntry={passwordHidden}
                                 value={password}
                                 rightIcon={
-                                    <TouchableOpacity
+                                    <Icon
+                                        type={'ionicon'}
+                                        name={passwordIcon}
+                                        size={28}
+                                        color={Colors.appGray2}
+                                        containerStyle={{ marginRight: 5 }}
                                         onPress={this.handlePasswordVisibility.bind(this)}
-                                    >
-                                        <Icon
-                                            name={passwordIcon}
-                                            size={28}
-                                            color={Colors.appGray2}
-                                            style={{ marginRight: 5 }}
-                                        />
-                                    </TouchableOpacity>
+                                    />
                                 }
                             />
                             <FormInput
@@ -472,16 +470,14 @@ class SignUpScreen extends Component {
                                 secureTextEntry={confirmPasswordHidden}
                                 value={confirmPassword}
                                 rightIcon={
-                                    <TouchableOpacity
+                                    <Icon
+                                        type={'ionicon'}
+                                        name={confirmPasswordIcon}
+                                        size={28}
+                                        color={Colors.appGray2}
+                                        style={{ marginRight: 5 }}
                                         onPress={this.handleConfirmPasswordVisibility.bind(this)}
-                                    >
-                                        <Icon
-                                            name={confirmPasswordIcon}
-                                            size={28}
-                                            color={Colors.appGray2}
-                                            style={{ marginRight: 5 }}
-                                        />
-                                    </TouchableOpacity>
+                                    />
                                 }
                             />
                             <View style={styles.box}>

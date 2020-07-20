@@ -8,7 +8,8 @@ import {
     Text,
     Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Icon } from 'react-native-elements';
+// import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
@@ -319,16 +320,14 @@ class SignInScreen extends Component {
                                 secureTextEntry={passwordHidden}
                                 value={password}
                                 rightIcon={
-                                    <TouchableOpacity
+                                    <Icon
+                                        type={'ionicon'}
+                                        name={passwordIcon}
+                                        size={28}
+                                        color={Colors.appGray2}
+                                        containerStyle={{ marginRight: 5 }}
                                         onPress={this.handlePasswordVisibility.bind(this)}
-                                    >
-                                        <Icon
-                                            name={passwordIcon}
-                                            size={28}
-                                            color="lightgray"
-                                            style={{ marginRight: 5 }}
-                                        />
-                                    </TouchableOpacity>
+                                    />
                                 }
                             />
 

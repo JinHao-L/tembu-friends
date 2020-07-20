@@ -2,7 +2,6 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { SearchNav } from '../topbarNav/index';
 import { Colors } from '../../constants';
 import { MAIN_FONT } from '../../components';
 import {
@@ -27,9 +26,7 @@ function ExploreNav() {
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
                     elevation: 0,
-                    // shadowOpacity: 0,
-                    // borderBottomWidth: 0,
-                    // shadowOffset: { height: 0, width: 0 },
+                    shadowOpacity: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -40,14 +37,14 @@ function ExploreNav() {
                 },
                 headerTitleContainerStyle: {
                     left: 0,
-                    marginLeft: 50,
+                    marginLeft: Platform.OS === 'ios' ? 50 : 40,
                     paddingBottom: 3,
                 },
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { paddingLeft: 20 },
+                headerLeftContainerStyle: { marginLeft: Platform.OS === 'ios' ? 20 : 10 },
             }}
         >
             <ExploreStack.Screen
@@ -84,11 +81,15 @@ function ExploreNav() {
                 component={PostCreate}
                 options={{ headerTitle: 'Write Post' }}
             />
-            <ExploreStack.Screen name="MyQR" component={MyQR} options={{ headerShown: false }} />
+            <ExploreStack.Screen
+                name="MyQR"
+                component={MyQR}
+                options={{ headerTitle: 'My QR Code' }}
+            />
             <ExploreStack.Screen
                 name="ScanQR"
                 component={ScanQR}
-                options={{ headerShown: false }}
+                options={{ headerTitle: 'Scan QR Code' }}
             />
         </ExploreStack.Navigator>
     );

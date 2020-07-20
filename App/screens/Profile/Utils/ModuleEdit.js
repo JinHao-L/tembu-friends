@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { SafeAreaView, FlatList, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Button, ButtonGroup, Input, ListItem } from 'react-native-elements';
+import { TabBar, TabView } from 'react-native-tab-view';
+
 import Colors from '../../../constants/Colors';
 import { MAIN_FONT, Popup } from '../../../components';
 import SearchBar from '../../../components/SearchBar';
 import Layout from '../../../constants/Layout';
-import { TabBar, TabView } from 'react-native-tab-view';
-import AllModules from './AllModules';
-import MyModules from './MyModule';
+import { AllModules, MyModules } from './ModulesUtil';
 
 class ModuleEdit extends Component {
     state = {
@@ -45,22 +45,20 @@ class ModuleEdit extends Component {
                     onPress={this.onConfirm}
                     title={'Save'}
                     type={'clear'}
-                    titleStyle={{
-                        color: Colors.appWhite,
-                        fontFamily: MAIN_FONT,
-                    }}
+                    titleStyle={{ color: Colors.appWhite, fontFamily: MAIN_FONT, fontSize: 18 }}
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
                 />
             ),
+            //TODO:
             headerLeft: () => (
                 <Button
-                    containerStyle={{ borderRadius: 28 }}
+                    containerStyle={{ borderRadius: 26 }}
                     titleStyle={{ color: Colors.appWhite }}
-                    buttonStyle={{ padding: 0, height: 28, width: 28 }}
+                    buttonStyle={{ padding: 0, height: 26, width: 26 }}
                     icon={{
                         type: 'ionicon',
                         name: 'ios-arrow-back',
-                        size: 28,
+                        size: 26,
                         color: Colors.appWhite,
                     }}
                     onPress={
@@ -296,7 +294,7 @@ class ModuleEdit extends Component {
                     value={searchTerm}
                     onChangeText={this.setSearchTerm}
                     onCancel={() => this.setSearchTerm('')}
-                    style={{ paddingVertical: 10 }}
+                    style={{ marginTop: 15, marginBottom: 5 }}
                     autoCapitalize={'words'}
                 />
                 <TabView
@@ -315,7 +313,7 @@ class ModuleEdit extends Component {
                             labelStyle={{
                                 color: Colors.appBlack,
                                 fontFamily: MAIN_FONT,
-                                fontSize: 12,
+                                fontSize: 15,
                             }}
                             indicatorStyle={{ backgroundColor: Colors.appGreen }}
                         />

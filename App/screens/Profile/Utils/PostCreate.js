@@ -37,13 +37,13 @@ class PostCreate extends Component {
         this.props.navigation.setOptions({
             headerLeft: () => (
                 <Button
-                    containerStyle={{ borderRadius: 28 }}
+                    containerStyle={{ borderRadius: 26 }}
                     titleStyle={{ color: Colors.appWhite }}
-                    buttonStyle={{ padding: 0, height: 28, width: 28 }}
+                    buttonStyle={{ padding: 0, height: 26, width: 26 }}
                     icon={{
                         type: 'ionicon',
                         name: 'ios-arrow-back',
-                        size: 28,
+                        size: 26,
                         color: Colors.appWhite,
                     }}
                     onPress={this.toggleDiscardPostPopup}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, SafeAreaView, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, SafeAreaView, ActivityIndicator, View, StatusBar } from 'react-native';
 import WebView from 'react-native-webview';
 import { Button } from 'react-native-elements';
 
@@ -57,6 +57,11 @@ class HomeScreen extends Component {
         const { canGoForward, canGoBack } = this.state;
         return (
             <View style={styles.container}>
+                {Platform.OS === 'ios' ? (
+                    <StatusBar barStyle="dark-content" />
+                ) : (
+                    <StatusBar backgroundColor={Colors.appGreen} barStyle="light-content" />
+                )}
                 <WebView
                     source={{ uri: this.state.currentUrl }}
                     style={{ width: Layout.window.width }}

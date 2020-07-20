@@ -17,6 +17,7 @@ function AdminNav() {
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
                     elevation: 0,
+                    shadowOpacity: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -27,14 +28,14 @@ function AdminNav() {
                 },
                 headerTitleContainerStyle: {
                     left: 0,
-                    marginLeft: 50,
+                    marginLeft: Platform.OS === 'ios' ? 50 : 40,
                     paddingBottom: 3,
                 },
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { paddingLeft: 20 },
+                headerLeftContainerStyle: { marginLeft: Platform.OS === 'ios' ? 20 : 10 },
             }}
         >
             <AdminStack.Screen

@@ -391,50 +391,47 @@ class MyProfile extends Component {
         } = this.props.userData;
         return (
             <View>
-                <View style={styles.header}>
-                    <Image
-                        style={styles.bannerImg}
-                        source={
-                            bannerImg
-                                ? { uri: bannerImg }
-                                : require('../../assets/images/default/banner.png')
-                        }
-                    />
-
-                    <View style={styles.avatarContainerStyle}>
-                        <Avatar
-                            size={80}
-                            containerStyle={styles.profileImg}
-                            rounded
-                            source={
-                                profileImg
-                                    ? { uri: profileImg }
-                                    : require('../../assets/images/default/profile.png')
-                            }
-                            showAccessory
-                            accessory={{
-                                color: this.getStatusColor(statusType),
-                                size: 22,
-                                name: 'lens',
-                                style: {
-                                    backgroundColor: Colors.appWhite,
-                                    borderRadius: 50,
-                                },
-                            }}
-                            onAccessoryPress={this.toggleRoomStatusPopup}
-                        />
-                        <Button
-                            containerStyle={styles.editButtonContainer}
-                            buttonStyle={styles.editButton}
-                            title="Edit Profile"
-                            titleStyle={styles.editButtonText}
-                            type={'outline'}
-                            onPress={this.goToProfileEdit}
-                        />
-                    </View>
-                </View>
+                <Image
+                    style={styles.bannerImg}
+                    source={
+                        bannerImg
+                            ? { uri: bannerImg }
+                            : require('../../assets/images/default/banner.png')
+                    }
+                />
                 <View style={styles.spacing} />
-                <View style={[styles.box, { paddingTop: 0 }]}>
+                <View style={styles.avatarContainerStyle}>
+                    <Avatar
+                        size={80}
+                        containerStyle={styles.profileImg}
+                        rounded
+                        source={
+                            profileImg
+                                ? { uri: profileImg }
+                                : require('../../assets/images/default/profile.png')
+                        }
+                        showAccessory
+                        accessory={{
+                            color: this.getStatusColor(statusType),
+                            size: 22,
+                            name: 'lens',
+                            style: {
+                                backgroundColor: Colors.appWhite,
+                                borderRadius: 50,
+                            },
+                        }}
+                        onAccessoryPress={this.toggleRoomStatusPopup}
+                    />
+                    <Button
+                        containerStyle={styles.editButtonContainer}
+                        buttonStyle={styles.editButton}
+                        title="Edit Profile"
+                        titleStyle={styles.editButtonText}
+                        type={'outline'}
+                        onPress={this.goToProfileEdit}
+                    />
+                </View>
+                <View style={styles.box}>
                     <View style={styles.userDetails}>
                         <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
                             {displayName}

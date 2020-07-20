@@ -168,7 +168,7 @@ class ForgetPassword extends Component {
             >
                 {this.renderResetSuccessPopup()}
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
+                    <View style={styles.contentContainer}>
                         <View style={styles.textContainer}>
                             <MainText style={styles.title}>Trouble with logging in?</MainText>
                             <MainText style={styles.intro}>
@@ -227,10 +227,11 @@ class ForgetPassword extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: Colors.appWhite,
+    },
+    contentContainer: {
+        flex: 1,
+        justifyContent: 'center',
     },
     title: {
         fontSize: 25,
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'flex-end',
-        marginHorizontal: 5,
+        marginHorizontal: 15,
     },
     intro: {
         fontSize: 15,

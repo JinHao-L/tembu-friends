@@ -28,26 +28,6 @@ class FriendRequests extends Component {
     };
 
     componentDidMount() {
-        // this.props.navigation.setOptions({
-        //     headerLeft: () => (
-        //         <Button
-        //             containerStyle={{ borderRadius: 26 }}
-        //             titleStyle={{ color: Colors.appWhite }}
-        //             buttonStyle={{ padding: 0, height: 26, width: 26 }}
-        //             icon={{
-        //                 type: 'ionicon',
-        //                 name: 'ios-arrow-back',
-        //                 size: 26,
-        //                 color: Colors.appWhite,
-        //             }}
-        //             onPress={() => {
-        //                 this.props.route.params.onGoBack();
-        //                 this.props.navigation.goBack();
-        //             }}
-        //             type={'clear'}
-        //         />
-        //     ),
-        // });
         this.getFriendRequest();
     }
 
@@ -289,7 +269,7 @@ const styles = StyleSheet.create({
     separator: { height: 5, backgroundColor: Colors.appGray2 },
     emptyText: {
         marginHorizontal: 30,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '600',
         color: Colors.appBlack,
         textAlign: 'center',

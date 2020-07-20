@@ -4,8 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Colors } from '../../constants';
 import { MAIN_FONT } from '../../components';
-import { NotificationScreen } from '../../screens';
-import { FriendRequests } from '../../screens/Menu';
+import { NotificationScreen, FriendRequests } from '../../screens/Notifications';
 import {
     ModuleEdit,
     MyProfile,
@@ -27,6 +26,7 @@ function NotificationNav() {
                 headerStyle: {
                     backgroundColor: Colors.appGreen,
                     elevation: 0,
+                    shadowOpacity: 0,
                 },
                 headerTintColor: Colors.appWhite,
                 headerPressColorAndroid: Colors.appWhite,
@@ -37,14 +37,14 @@ function NotificationNav() {
                 },
                 headerTitleContainerStyle: {
                     left: 0,
-                    marginLeft: 50,
+                    marginLeft: Platform.OS === 'ios' ? 50 : 40,
                     paddingBottom: 3,
                 },
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { paddingLeft: 20 },
+                headerLeftContainerStyle: { marginLeft: Platform.OS === 'ios' ? 20 : 10 },
             }}
         >
             <NotificationStack.Screen
@@ -89,12 +89,12 @@ function NotificationNav() {
             <NotificationStack.Screen
                 name="MyQR"
                 component={MyQR}
-                options={{ headerShown: false }}
+                options={{ headerTitle: 'My QR Code' }}
             />
             <NotificationStack.Screen
                 name="ScanQR"
                 component={ScanQR}
-                options={{ headerShown: false }}
+                options={{ headerTitle: 'Scan QR Code' }}
             />
         </NotificationStack.Navigator>
     );

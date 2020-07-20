@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ListItem } from 'react-native-elements';
 
@@ -33,9 +33,12 @@ class Friends extends Component {
     }
 
     refresh = () => {
-        this.setState({
-            refreshing: true,
-        });
+        if (!this.state.loading) {
+            this.setState({
+                refreshing: true,
+            });
+        }
+
         const friendList = [];
         Object.entries(this.props.friends).forEach((entry) => {
             const status = entry[1].status;
@@ -43,6 +46,16 @@ class Friends extends Component {
                 friendList.push({ uid: entry[0] });
             }
         });
+
+        if (friendList.length === 0) {
+            this.friendList = [];
+            this.setState({
+                filteredList: [],
+                refreshing: false,
+                loading: false,
+            });
+            return;
+        }
 
         return this.props.firebase
             .getUsers(friendList)
@@ -77,14 +90,6 @@ class Friends extends Component {
             this.props.navigation.navigate('UserProfile', { user_uid: uid });
         }
     };
-    goToExplore = () => {
-        if (this.navigating) {
-            return;
-        }
-        this.navigating = true;
-        setTimeout(() => (this.navigating = false), 500);
-        return this.props.navigation.navigate('Explore');
-    };
 
     renderProfile = (userData) => {
         const { displayName, profileImg, uid } = userData;
@@ -97,10 +102,21 @@ class Friends extends Component {
         );
     };
     renderEmpty = () => {
+        if (this.state.loading) {
+            return (
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                    <ActivityIndicator color={Colors.appGreen} />
+                </View>
+            );
+        }
         return (
             <View style={styles.emptyContainerStyle}>
-                <MainText onPress={this.goToExplore} style={{ color: Colors.appGreen }}>
-                    Find some friends
+                <Image
+                    source={require('../../assets/images/misc/friend-request-icon.png')}
+                    style={{ marginBottom: 30, width: 100, height: 100 }}
+                />
+                <MainText style={styles.emptyText}>
+                    You’ll see all of the Tembusians who have added you as friends here.
                 </MainText>
             </View>
         );
@@ -119,6 +135,10 @@ class Friends extends Component {
     };
 
     renderHeader = () => {
+        if (this.friendList.length === 0 && !this.state.loading) {
+            return null;
+        }
+
         return (
             <SearchBar
                 value={this.state.searchValue}
@@ -138,26 +158,16 @@ class Friends extends Component {
         const { filteredList, refreshing, loading } = this.state;
         return (
             <View style={styles.container}>
-                {loading ? (
-                    <View
-                        style={[
-                            styles.container,
-                            { justifyContent: 'center', alignItems: 'center' },
-                        ]}
-                    >
-                        <ActivityIndicator color={Colors.appGreen} />
-                    </View>
-                ) : (
-                    <FlatList
-                        data={filteredList}
-                        renderItem={({ item }) => this.renderProfile(item)}
-                        keyExtractor={(friend) => friend.uid}
-                        ListHeaderComponent={this.renderHeader}
-                        ListEmptyComponent={this.renderEmpty}
-                        refreshing={refreshing}
-                        onRefresh={this.refresh}
-                    />
-                )}
+                <FlatList
+                    contentContainerStyle={{ minHeight: '100%' }}
+                    data={filteredList}
+                    renderItem={({ item }) => this.renderProfile(item)}
+                    keyExtractor={(friend) => friend.uid}
+                    ListHeaderComponent={this.renderHeader}
+                    ListEmptyComponent={this.renderEmpty}
+                    refreshing={refreshing}
+                    onRefresh={this.refresh}
+                />
             </View>
         );
     }
@@ -169,10 +179,16 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     emptyContainerStyle: {
-        backgroundColor: Colors.appGray2,
-        paddingVertical: 7,
-        alignItems: 'center',
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        marginHorizontal: 30,
+        fontSize: 16,
+        fontWeight: '600',
+        color: Colors.appBlack,
+        textAlign: 'center',
     },
     titleStyle: {
         fontFamily: MAIN_FONT,

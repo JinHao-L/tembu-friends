@@ -9,6 +9,7 @@ import ViewShot, { captureRef } from 'react-native-view-shot';
 
 import { Colors } from '../../constants';
 import { LogoText, MainText } from '../../components';
+import { withHeight } from '../../helper/HeaderHeightHook';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -30,7 +31,7 @@ class MyQR extends Component {
                 <Button
                     icon={{
                         name: 'share',
-                        size: 25,
+                        size: 23,
                         color: Colors.appWhite,
                     }}
                     onPress={this.snapAndShare}
@@ -108,7 +109,11 @@ class MyQR extends Component {
                 return;
             }
 
-            await Sharing.shareAsync(snapshot, { dialogTitle: 'Add me on TembuFriends!' });
+            await Sharing.shareAsync(snapshot, {
+                mimeType: 'image/jpeg',
+                dialogTitle: 'Add me on TembuFriends!',
+                UTI: 'image/jpeg',
+            });
         }
     };
 
@@ -127,7 +132,7 @@ class MyQR extends Component {
                     colors={[Colors.appGreen, Colors.appLightGreen]}
                     style={styles.container}
                 >
-                    <ViewShot ref={this.qrCardRef}>
+                    <ViewShot style={{ marginBottom: 56 / 2 }} ref={this.qrCardRef}>
                         <View style={styles.QRContainer}>
                             {this.generateQRCode()}
                             <LogoText
@@ -143,7 +148,7 @@ class MyQR extends Component {
                             <MainText style={styles.name}>{userData.displayName}</MainText>
                         </View>
                     </ViewShot>
-                    <MainText style={styles.scanText} onPress={this.goToScan}>
+                    <MainText style={styles.hyperlinkText} onPress={this.goToScan}>
                         Scan a QR Code
                     </MainText>
                 </LinearGradient>
@@ -158,30 +163,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    contentContainer: {
-        flex: 1,
-    },
-    header: {
-        position: 'absolute',
-        top: 0,
-        alignSelf: 'flex-start',
-        width: '100%',
-
-        paddingBottom: 10,
-        paddingTop: 20,
-        paddingLeft: 15,
-        paddingRight: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    title: {
-        textAlign: 'left',
-        textAlignVertical: 'center',
-        color: Colors.appWhite,
-        fontSize: 24,
-    },
     QRContainer: {
-        marginVertical: 'auto',
         backgroundColor: Colors.appWhite,
         justifyContent: 'center',
         alignItems: 'center',
@@ -203,7 +185,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '600',
     },
-    scanText: {
+    hyperlinkText: {
         position: 'absolute',
         bottom: 0,
         fontSize: 15,
@@ -214,4 +196,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default connect(mapStateToProps)(MyQR);
+export default withHeight(connect(mapStateToProps)(MyQR));

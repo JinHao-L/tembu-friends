@@ -27,7 +27,7 @@ function FormInput({
                     isError
                         ? { borderColor: Colors.appRed }
                         : focus
-                        ? { borderColor: Colors.appGray4 }
+                        ? { borderColor: Colors.appGray5 }
                         : { borderColor: Colors.appGray2 },
                 ]}
             >
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 6,
         backgroundColor: Colors.appWhite,
-        height: 30,
         flexDirection: 'row',
     },
     iconStyle: {
@@ -72,6 +71,8 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '600',
         flex: 1,
+        paddingVertical: Platform.OS === 'ios' ? 5 : 0,
+        textAlignVertical: 'center',
     },
 });
 
