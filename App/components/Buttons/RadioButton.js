@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { MainText } from './MyAppText';
+import { MainText } from '../Commons/MyAppText';
 
 function RadioButton(props) {
     return (

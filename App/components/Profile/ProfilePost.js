@@ -4,7 +4,7 @@ import { Avatar, Icon } from 'react-native-elements';
 import ReadMore from 'react-native-read-more-text';
 
 import { Colors } from '../../constants';
-import { MainText } from '../MyAppText';
+import { MainText } from '../Commons/MyAppText';
 import PostImage from './PostImage';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

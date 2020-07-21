@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Button, ButtonGroup, Input, ListItem } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { TabBar, TabView } from 'react-native-tab-view';
 
-import Colors from '../../../constants/Colors';
-import { MAIN_FONT, Popup } from '../../../components';
-import SearchBar from '../../../components/SearchBar';
-import Layout from '../../../constants/Layout';
+import { Colors, Layout } from '../../../constants';
+import { MAIN_FONT, Popup, SearchBar } from '../../../components';
 import { AllModules, MyModules } from './ModulesUtil';
 
 class ModuleEdit extends Component {
@@ -295,7 +293,6 @@ class ModuleEdit extends Component {
                     onChangeText={this.setSearchTerm}
                     onCancel={() => this.setSearchTerm('')}
                     style={{ marginTop: 15, marginBottom: 5 }}
-                    autoCapitalize={'words'}
                 />
                 <TabView
                     renderScene={this.renderScene}

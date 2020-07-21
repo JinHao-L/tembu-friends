@@ -19,7 +19,7 @@ import {
     ProfilePost,
     ProfileHeader,
     Popup,
-    FriendsButton,
+    GreenButton,
 } from '../../components';
 import { withFirebase } from '../../helper/Firebase';
 
@@ -274,7 +274,8 @@ class UserProfile extends Component {
                 userData={this.state.profileData}
                 button={
                     friendStatus === 'friends' ? (
-                        <FriendsButton
+                        <GreenButton
+                            containerStyle={styles.friendsButtonContainer}
                             title="Friends"
                             type="solid"
                             loading={this.state.buttonLoading}
@@ -285,7 +286,8 @@ class UserProfile extends Component {
                             }
                         />
                     ) : friendStatus === 'respond' ? (
-                        <FriendsButton
+                        <GreenButton
+                            containerStyle={styles.friendsButtonContainer}
                             title="Respond"
                             type="outline"
                             loading={this.state.buttonLoading}
@@ -296,14 +298,16 @@ class UserProfile extends Component {
                             }
                         />
                     ) : friendStatus === 'requested' ? (
-                        <FriendsButton
+                        <GreenButton
+                            containerStyle={styles.friendsButtonContainer}
                             title="Requested"
                             type="solid"
                             loading={this.state.buttonLoading}
                             onPress={this.removeFriend}
                         />
                     ) : (
-                        <FriendsButton
+                        <GreenButton
+                            containerStyle={styles.friendsButtonContainer}
                             title="Add Friend"
                             type="outline"
                             loading={this.state.buttonLoading}
@@ -683,53 +687,10 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         textAlign: 'left',
     },
-    // bannerImg: {
-    //     width: Layout.window.width,
-    //     height: Layout.window.width / 3,
-    //     justifyContent: 'flex-end',
-    // },
-    // profileImg: {
-    //     backgroundColor: Colors.appWhite,
-    //     borderColor: Colors.appWhite,
-    //     borderWidth: 4,
-    //     marginLeft: 20,
-    // },
-    // avatarContainerStyle: {
-    //     position: 'absolute',
-    //     top: Layout.window.width / 3 - 40,
-    //     flexDirection: 'row',
-    //     justifyContent: 'space-between',
-    //     alignItems: 'flex-end',
-    //     width: '100%',
-    // },
-    // spacing: {
-    //     height: 40,
-    // },
-    // userDetails: {
-    //     marginBottom: 2,
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    // },
-    // title: {
-    //     fontFamily: MAIN_FONT,
-    //     fontSize: 15,
-    //     color: Colors.appGreen,
-    //     marginBottom: 2,
-    // },
-    // icon: {
-    //     marginLeft: 3,
-    //     marginRight: 8,
-    //     width: 15,
-    //     height: 15,
-    // },
-    // box: {
-    //     borderBottomWidth: 5,
-    //     borderColor: Colors.appGray2,
-    //     backgroundColor: Colors.appWhite,
-    //     paddingHorizontal: 20,
-    //     paddingTop: 5,
-    //     paddingBottom: 10,
-    // },
+    friendsButtonContainer: {
+        marginRight: 20,
+        marginBottom: 5,
+    },
 });
 
 export default connect(mapStateToProps)(withFirebase(UserProfile));

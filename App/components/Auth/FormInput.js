@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
-import { MAIN_FONT } from '../MyAppText';
+import { MAIN_FONT } from '../Commons/MyAppText';
 import { Colors } from '../../constants';
 import ErrorMessage from './ErrorMessage';
 

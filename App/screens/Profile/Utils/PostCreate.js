@@ -13,6 +13,7 @@ import { Avatar, Button, Icon } from 'react-native-elements';
 import { Colors } from '../../../constants';
 import * as ImagePicker from 'expo-image-picker';
 import { withFirebase } from '../../../helper/Firebase';
+import GreenButton from '../../../components/Buttons/GreenButton';
 
 class PostCreate extends Component {
     state = {
@@ -348,34 +349,13 @@ class PostCreate extends Component {
                         containerStyle={styles.avatarStyle}
                     />
                     <MainText style={{ fontSize: 15, paddingTop: 5 }}>{myName}</MainText>
-                    {isPrivate ? (
-                        <Button
-                            containerStyle={styles.privatePostButtonContainer}
-                            buttonStyle={[
-                                styles.privatePostButton,
-                                { backgroundColor: Colors.appGreen },
-                            ]}
-                            title="Private"
-                            titleStyle={styles.privatePostButtonText}
-                            type={'solid'}
-                            onPress={this.togglePrivatePost}
-                        />
-                    ) : (
-                        <Button
-                            containerStyle={styles.privatePostButtonContainer}
-                            buttonStyle={[
-                                styles.privatePostButton,
-                                {
-                                    borderColor: Colors.appGreen,
-                                    borderWidth: 1,
-                                },
-                            ]}
-                            title="Make Private"
-                            titleStyle={[styles.privatePostButtonText, { color: Colors.appGreen }]}
-                            type={'outline'}
-                            onPress={this.togglePrivatePost}
-                        />
-                    )}
+                    <GreenButton
+                        containerStyle={styles.privatePostButtonContainer}
+                        title={isPrivate ? 'Private' : 'Make Private'}
+                        type={isPrivate ? 'solid' : 'outline'}
+                        onPress={this.togglePrivatePost}
+                        minWidth={90}
+                    />
                 </View>
 
                 <ScrollView style={styles.content}>
@@ -468,21 +448,9 @@ const styles = StyleSheet.create({
     },
     privatePostButtonContainer: {
         marginRight: 20,
-        borderRadius: 20,
         marginBottom: 5,
         alignSelf: 'flex-end',
         marginLeft: 'auto',
-    },
-    privatePostButton: {
-        paddingVertical: 2,
-        minWidth: 90,
-        borderRadius: 20,
-        paddingHorizontal: 0,
-        alignItems: 'center',
-    },
-    privatePostButtonText: {
-        fontFamily: MAIN_FONT,
-        fontSize: 12,
     },
 });
 

@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TabBar, TabView } from 'react-native-tab-view';
 
-import { MAIN_FONT } from '../../components';
-import { Colors } from '../../constants';
+import { MAIN_FONT, SearchBar } from '../../components';
+import { Colors, Layout } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
-import Layout from '../../constants/Layout';
 import SearchResults from './SearchResults';
-import SearchBar from '../../components/SearchBar';
 
 class ExploreScreen extends Component {
     constructor(props) {
@@ -81,6 +79,7 @@ class ExploreScreen extends Component {
                         navigation={this.props.navigation}
                         searchValue={this.searchValue}
                         userList={this.state.nameUserList}
+                        loading={this.state.loading}
                     />
                 );
             case 'role':
@@ -89,6 +88,7 @@ class ExploreScreen extends Component {
                         navigation={this.props.navigation}
                         searchValue={this.searchValue}
                         userList={this.state.roleUserList}
+                        loading={this.state.loading}
                     />
                 );
             case 'room':
@@ -97,6 +97,7 @@ class ExploreScreen extends Component {
                         navigation={this.props.navigation}
                         searchValue={this.searchValue}
                         userList={this.state.roomUserList}
+                        loading={this.state.loading}
                     />
                 );
             case 'module':
@@ -105,6 +106,7 @@ class ExploreScreen extends Component {
                         navigation={this.props.navigation}
                         searchValue={this.searchValue}
                         userList={this.state.moduleUserList}
+                        loading={this.state.loading}
                     />
                 );
         }

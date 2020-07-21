@@ -15,6 +15,7 @@ import { MAIN_FONT, MainText, Popup, ProfilePost, ProfileHeader } from '../../co
 import { Colors, Layout } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
 import { fetchUserData, updateProfile } from '../../redux';
+import GreenButton from '../../components/Buttons/GreenButton';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -70,6 +71,7 @@ class MyProfile extends Component {
 
     onRefresh = () => {
         this.setState({ refreshing: true });
+        this.props.fetchUserData();
         this.retrievePosts();
     };
 
@@ -344,132 +346,14 @@ class MyProfile extends Component {
                 userData={this.props.userData}
                 onAccessoryPress={this.toggleRoomStatusPopup}
                 button={
-                    <Button
+                    <GreenButton
                         containerStyle={styles.editButtonContainer}
-                        buttonStyle={styles.editButton}
-                        title="Edit Profile"
-                        titleStyle={styles.editButtonText}
                         type={'outline'}
                         onPress={this.goToProfileEdit}
+                        title={'Edit Profile'}
                     />
                 }
             />
-            // <View>
-            //     <Image
-            //         style={styles.bannerImg}
-            //         source={
-            //             bannerImg
-            //                 ? { uri: bannerImg }
-            //                 : require('../../assets/images/default/banner.png')
-            //         }
-            //     />
-            //     <View style={styles.spacing} />
-            //     <View style={styles.avatarContainerStyle}>
-            //         <Avatar
-            //             size={80}
-            //             containerStyle={styles.profileImg}
-            //             rounded
-            //             source={
-            //                 profileImg
-            //                     ? { uri: profileImg }
-            //                     : require('../../assets/images/default/profile.png')
-            //             }
-            //             showAccessory
-            //             accessory={{
-            //                 color: this.getStatusColor(statusType),
-            //                 size: 22,
-            //                 name: 'lens',
-            //                 style: {
-            //                     backgroundColor: Colors.appWhite,
-            //                     borderRadius: 50,
-            //                 },
-            //             }}
-            //             onAccessoryPress={this.toggleRoomStatusPopup}
-            //         />
-            //         <Button
-            //             containerStyle={styles.editButtonContainer}
-            //             buttonStyle={styles.editButton}
-            //             title="Edit Profile"
-            //             titleStyle={styles.editButtonText}
-            //             type={'outline'}
-            //             onPress={this.goToProfileEdit}
-            //         />
-            //     </View>
-            //     <View style={styles.box}>
-            //         <View style={styles.userDetails}>
-            //             <MainText style={{ fontSize: 18, color: Colors.appGreen }}>
-            //                 {displayName}
-            //             </MainText>
-            //             {verified && (
-            //                 <Image
-            //                     style={{ height: 18, width: 18, marginHorizontal: 5 }}
-            //                     source={require('../../assets/images/profile/verified-icon.png')}
-            //                 />
-            //             )}
-            //         </View>
-            //         <View style={styles.userDetails}>
-            //             <Image
-            //                 source={require('../../assets/images/profile/job-icon.png')}
-            //                 style={styles.icon}
-            //                 resizeMode={'contain'}
-            //             />
-            //             <MainText style={{ fontSize: 15 }}>{role}</MainText>
-            //         </View>
-            //         <View style={styles.userDetails}>
-            //             <Image
-            //                 source={require('../../assets/images/profile/study-icon.png')}
-            //                 style={styles.icon}
-            //                 resizeMode={'contain'}
-            //             />
-            //             <MainText style={{ fontSize: 15 }}>
-            //                 {major}, {year}
-            //             </MainText>
-            //         </View>
-            //         <View style={styles.userDetails}>
-            //             <Image
-            //                 source={require('../../assets/images/profile/house-icon.png')}
-            //                 style={styles.icon}
-            //                 resizeMode={'contain'}
-            //             />
-            //             <MainText style={{ fontSize: 15 }}>
-            //                 {this.renderHouseText(house)} {roomNumber}
-            //                 {roomNumber ? ' ' : ''}• {friendsCount}{' '}
-            //                 {friendsCount <= 1 ? 'Friend' : 'Friends'}
-            //             </MainText>
-            //         </View>
-            //     </View>
-            //     <View style={styles.box}>
-            //         <MainText style={styles.title}>About</MainText>
-            //         <MainText>{aboutText}</MainText>
-            //     </View>
-            //     <View style={styles.box}>
-            //         <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
-            //         <ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled={true}>
-            //             {moduleCodes.length === 0 ? (
-            //                 <MainText style={styles.emptyText}>None</MainText>
-            //             ) : (
-            //                 moduleCodes.map((item, index) => (
-            //                     <ListItem
-            //                         key={item}
-            //                         leftElement={<MainText>•</MainText>}
-            //                         title={`${item} ${moduleNames[index]}`}
-            //                         titleStyle={{
-            //                             fontFamily: MAIN_FONT,
-            //                             fontSize: 13,
-            //                         }}
-            //                         containerStyle={{
-            //                             padding: 0,
-            //                             paddingBottom: 1,
-            //                         }}
-            //                     />
-            //                 ))
-            //             )}
-            //         </ScrollView>
-            //     </View>
-            //     <View style={[styles.box, { borderBottomWidth: 0, paddingBottom: 0 }]}>
-            //         <MainText style={styles.title}>Posts</MainText>
-            //     </View>
-            // </View>
         );
     };
     renderFooter = () => {
@@ -538,70 +422,9 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
         flex: 1,
     },
-    // bannerImg: {
-    //     width: Layout.window.width,
-    //     height: Layout.window.width / 3,
-    //     justifyContent: 'flex-end',
-    // },
-    // profileImg: {
-    //     backgroundColor: Colors.appWhite,
-    //     borderColor: Colors.appWhite,
-    //     borderWidth: 4,
-    //     marginLeft: 20,
-    // },
-    // avatarContainerStyle: {
-    //     position: 'absolute',
-    //     top: Layout.window.width / 3 - 40,
-    //     flexDirection: 'row',
-    //     justifyContent: 'space-between',
-    //     alignItems: 'flex-end',
-    //     width: '100%',
-    // },
-    // spacing: {
-    //     height: 40,
-    // },
-    // userDetails: {
-    //     marginBottom: 2,
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    // },
-    // title: {
-    //     fontFamily: MAIN_FONT,
-    //     fontSize: 15,
-    //     color: Colors.appGreen,
-    //     marginBottom: 2,
-    // },
-    // icon: {
-    //     marginLeft: 3,
-    //     marginRight: 8,
-    //     width: 15,
-    //     height: 15,
-    // },
-    // box: {
-    //     borderBottomWidth: 5,
-    //     borderColor: Colors.appGray2,
-    //     backgroundColor: Colors.appWhite,
-    //     paddingHorizontal: 20,
-    //     paddingTop: 5,
-    //     paddingBottom: 10,
-    // },
     editButtonContainer: {
         marginRight: 20,
-        borderRadius: 20,
         marginBottom: 5,
-    },
-    editButton: {
-        paddingVertical: 2,
-        minWidth: 86,
-        borderRadius: 20,
-        paddingHorizontal: 0,
-        borderColor: Colors.appGreen,
-        borderWidth: 1,
-    },
-    editButtonText: {
-        fontFamily: MAIN_FONT,
-        fontSize: 12,
-        color: Colors.appGreen,
     },
     emptyText: {
         fontFamily: MAIN_FONT,

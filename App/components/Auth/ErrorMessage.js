@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { MainText } from '../MyAppText';
+import { MainText } from '../Commons/MyAppText';
 import { Colors } from '../../constants';
 
 function ErrorMessage({ error, style }) {

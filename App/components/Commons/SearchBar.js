@@ -2,12 +2,12 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Input } from 'react-native-elements';
 
-import { Colors } from '../constants';
+import { Colors } from '../../constants';
 import { MAIN_FONT } from './MyAppText';
 
 function SearchBar({
     placeholder = 'Search',
-    autoCapitalize = 'none',
+    autoCapitalize = 'words',
     value,
     onChangeText,
     onEndEditing = undefined,

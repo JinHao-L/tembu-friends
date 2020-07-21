@@ -3,21 +3,31 @@ import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import { Colors } from '../../constants';
-import { MAIN_FONT } from '../MyAppText';
+import { MAIN_FONT } from '../Commons/MyAppText';
 
-function FriendsButton({ type = 'solid', title, onPress, loading }) {
+function GreenButton({
+    type = 'solid',
+    title,
+    onPress,
+    loading = false,
+    containerStyle,
+    minWidth,
+}) {
     return (
         <Button
-            containerStyle={styles.friendButtonContainer}
+            containerStyle={[styles.friendButtonContainer, containerStyle]}
             buttonStyle={[
                 styles.friendButton,
+                minWidth ? { minWidth: minWidth } : {},
                 type === 'solid'
                     ? { backgroundColor: Colors.appGreen }
-                    : { borderColor: Colors.appGreen, borderWidth: 1 },
+                    : type === 'outline'
+                    ? { borderColor: Colors.appGreen, borderWidth: 1 }
+                    : {},
             ]}
             title={title}
             loading={loading}
-            loadingProps={{ size: 12 }}
+            loadingProps={{ size: 12, marginTop: 2, marginBottom: 1 }}
             titleStyle={[
                 styles.friendButtonText,
                 type === 'outline' ? { color: Colors.appGreen } : {},
@@ -30,9 +40,7 @@ function FriendsButton({ type = 'solid', title, onPress, loading }) {
 
 const styles = StyleSheet.create({
     friendButtonContainer: {
-        marginRight: 20,
         borderRadius: 20,
-        marginBottom: 5,
     },
     friendButton: {
         paddingVertical: 2,
@@ -47,4 +55,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FriendsButton;
+export default GreenButton;

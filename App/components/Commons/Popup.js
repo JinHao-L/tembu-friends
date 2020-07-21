@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { Overlay, Button } from 'react-native-elements';
 
 import { MAIN_FONT, MainText } from './MyAppText';
-import { Colors } from '../constants';
+import { Colors } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -77,11 +77,11 @@ function Popup({
 function getImage(type) {
     switch (type) {
         case 'Success':
-            return require('../assets/images/popup/success-icon.png');
+            return require('../../assets/images/popup/success-icon.png');
         case 'Failure':
-            return require('../assets/images/popup/invalid-icon.png');
+            return require('../../assets/images/popup/invalid-icon.png');
         case 'Warning':
-            return require('../assets/images/popup/warning-icon.png');
+            return require('../../assets/images/popup/warning-icon.png');
         default:
             return null;
     }

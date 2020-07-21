@@ -1,6 +1,6 @@
-import { MAIN_FONT, MainText } from './MyAppText';
+import { MAIN_FONT, MainText } from '../Commons/MyAppText';
 import { StyleSheet, View } from 'react-native';
-import { Colors } from '../constants';
+import { Colors } from '../../constants';
 import { ListItem } from 'react-native-elements';
 import React from 'react';
 
@@ -76,7 +76,7 @@ function NotificationItem({
                 rounded: true,
                 source: avatarImg
                     ? { uri: avatarImg }
-                    : require('../assets/images/default/profile.png'),
+                    : require('../../assets/images/default/profile.png'),
                 showAccessory: !!accessoryIcon,
                 accessory: {
                     name: accessoryIcon,

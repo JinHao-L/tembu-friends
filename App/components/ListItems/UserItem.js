@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { Colors } from '../constants';
-import { MAIN_FONT } from './MyAppText';
+import { Colors } from '../../constants';
+import { MAIN_FONT } from '../Commons/MyAppText';
 
 const UserItem = ({ name, profileImg, onPress, style, textStyle, rightElement = undefined }) => {
     return (
@@ -14,7 +14,7 @@ const UserItem = ({ name, profileImg, onPress, style, textStyle, rightElement = 
                 size: 50,
                 source: profileImg
                     ? { uri: profileImg }
-                    : require('../assets/images/default/profile.png'),
+                    : require('../../assets/images/default/profile.png'),
             }}
             title={name}
             titleStyle={[styles.text, textStyle]}
