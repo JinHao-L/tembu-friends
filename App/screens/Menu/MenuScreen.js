@@ -78,7 +78,7 @@ class MenuScreen extends Component {
             <Popup
                 imageType={'Warning'}
                 isVisible={this.state.signOutVisible}
-                title={'Signing you out'}
+                title={'Logging you out'}
                 body={'Are you sure?'}
                 additionalButtonText={'Log out'}
                 additionalButtonCall={() => {
@@ -93,7 +93,7 @@ class MenuScreen extends Component {
 
     render() {
         const userData = this.props.userData;
-        const { profileImg, firstName, admin } = userData;
+        const { profileImg, displayName, admin } = userData;
         if (!userData) {
             return (
                 <View
@@ -121,10 +121,10 @@ class MenuScreen extends Component {
                             <MenuButton
                                 type={'Profile'}
                                 avatar={profileImg || null}
-                                avatarPlaceholder={firstName && firstName[0]}
+                                avatarPlaceholder={displayName && displayName[0]}
                                 onPress={this.goToProfile}
                             >
-                                <Text style={{ color: 'green' }}>{firstName}</Text>
+                                <Text style={{ color: 'green' }}>{displayName}</Text>
                                 {'\n'}
                                 <Text style={{ fontSize: 13 }}>See your profile</Text>
                             </MenuButton>

@@ -34,15 +34,14 @@ class ReportsControl extends Component {
             .finally(() => this.setState({ isLoading: false }));
     };
 
-    renderSeparator = () => {
-        return <View style={{ height: 1, backgroundColor: Colors.appGray4 }} />;
-    };
-
     renderItem = (item, index) => {
         return (
             <ListItem
-                title={item.postId}
+                containerStyle={styles.outerContainer}
+                title={'Report ' + item.postId}
+                titleStyle={styles.title}
                 subtitle={'Reported by: ' + item.displayName}
+                subtitleStyle={styles.subtitle}
                 onPress={this.state.fetchingPost ? undefined : () => this.showPost(item, index)}
             />
         );
@@ -162,7 +161,6 @@ class ReportsControl extends Component {
                 </Overlay>
                 <FlatList
                     data={this.state.data}
-                    ItemSeparatorComponent={this.renderSeparator}
                     renderItem={({ item, index }) => this.renderItem(item, index)}
                     ListEmptyComponent={this.renderEmpty}
                     keyExtractor={(item) => item.postId}
@@ -178,6 +176,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.appWhite,
+    },
+    outerContainer: {
+        borderBottomWidth: 3,
+        borderColor: Colors.appGray2,
+        paddingVertical: 15,
+    },
+    title: {
+        fontFamily: MAIN_FONT,
+        fontSize: 15,
+        color: Colors.appGreen,
+        paddingLeft: 5, //Align text to back-icon
+    },
+    subtitle: {
+        fontFamily: MAIN_FONT,
+        fontSize: 14,
+        color: Colors.appBlack,
+        paddingLeft: 5, //Align text to back-icon
     },
     overlayContainer: {
         maxWidth: 400,

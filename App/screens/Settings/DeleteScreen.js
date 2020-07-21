@@ -223,7 +223,7 @@ class SignUpScreen extends Component {
                         <MainText style={styles.title} adjustsFontSizeToFit={true}>
                             Delete Account
                         </MainText>
-                        <MainText style={{ fontSize: 15 }}>We are sorry to see you go</MainText>
+                        <MainText style={{ fontSize: 15 }}>We are sorry to see you go...</MainText>
                     </View>
                     <View style={styles.form}>
                         <FormInput

@@ -59,24 +59,25 @@ class UserListScreen extends Component {
         const { uid, photoURL, displayName, email, emailVerified, isAdmin, isVerified } = user;
         return (
             <ListItem
+                containerStyle={styles.outerContainer}
                 title={displayName || 'undefined'}
                 titleStyle={styles.titleStyle}
                 subtitle={
                     <MainText style={styles.subtitleStyle}>
                         {email}
-                        <Text style={styles.notActivatedText}>
-                            {!emailVerified ? ' (Not activated)' : ''}
+                        <Text style={styles.unverifiedText}>
+                            {!emailVerified ? ' (Unverified)' : ''}
                         </Text>
                     </MainText>
                 }
                 subtitleStyle={styles.subtitleStyle}
                 leftAvatar={{
                     rounded: true,
+                    size: 50,
                     source: photoURL
                         ? { uri: photoURL }
                         : require('../../assets/images/default/profile.png'),
                 }}
-                bottomDivider={true}
                 rightElement={this.renderBadges(isVerified, isAdmin)}
                 onPress={() => {
                     return this.setState({
@@ -248,9 +249,14 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
     },
+    outerContainer: {
+        borderBottomWidth: 3,
+        borderColor: Colors.appGray2,
+        paddingVertical: 8,
+    },
     titleStyle: {
         fontFamily: MAIN_FONT,
-        fontSize: 14,
+        fontSize: 15,
     },
     subtitleStyle: {
         fontFamily: MAIN_FONT,
@@ -267,8 +273,8 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         resizeMode: 'contain',
     },
-    notActivatedText: {
-        fontSize: 11,
+    unverifiedText: {
+        fontSize: 12,
         textAlign: 'center',
         color: Colors.appGray4,
     },

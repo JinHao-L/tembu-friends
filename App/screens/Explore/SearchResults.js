@@ -124,7 +124,7 @@ class SearchResults extends Component {
                 profileImg={profileImg}
                 onPress={() => this.goToProfile(userData)}
                 rightElement={
-                    friendStatus === 'friends' ? (
+                    uid === this.props.userData.uid ? undefined : friendStatus === 'friends' ? (
                         <GreenButton
                             title="Friends"
                             type="solid"

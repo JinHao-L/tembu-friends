@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderTopWidth: 1,
         borderColor: Colors.appGray5,
-        paddingVertical: 8,
+        paddingVertical: 10, //So that the box is of comparable size to the rest
     },
     settingsItem: {
         paddingLeft: 20,

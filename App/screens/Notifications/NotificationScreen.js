@@ -349,7 +349,7 @@ class NotificationScreen extends Component {
                 ) : (
                     <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
                         <MainText style={styles.emptyText}>
-                            You have no friend requests at the moment
+                            You have no friend requests at the moment.
                         </MainText>
                     </View>
                 )}
@@ -363,9 +363,7 @@ class NotificationScreen extends Component {
     renderEmptyNotifications = () => {
         return (
             <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
-                <MainText style={styles.emptyText}>
-                    You have no new activity notifications at the moment
-                </MainText>
+                <MainText style={styles.emptyText}>You have no activity at the moment.</MainText>
             </View>
         );
     };

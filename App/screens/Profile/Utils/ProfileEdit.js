@@ -52,6 +52,7 @@ class ProfileEdit extends Component {
             headerLeft: () => (
                 <HeaderBackButton
                     onPress={this.toggleExitConfirmationPopup}
+                    labelVisible={false}
                     backImage={() => (
                         <Icon
                             type={'ionicon'}
@@ -556,14 +557,14 @@ class ProfileEdit extends Component {
             <Popup
                 imageType={'Warning'}
                 isVisible={this.state.exitConfirmationPopupVisible}
-                title={'Unsaved Changes'}
-                body={'You have made changes.\nAre you sure you want to leave?'}
-                additionalButtonText={'Yes'}
+                title={'Discard Edits'}
+                body={'If you leave now, the edits you made will be discarded'}
+                additionalButtonText={'Discard'}
                 additionalButtonCall={() => {
                     this.toggleExitConfirmationPopup();
                     this.goBackToProfile();
                 }}
-                buttonText={'No'}
+                buttonText={'Continue Editing'}
                 callback={this.toggleExitConfirmationPopup}
             />
         );

@@ -42,6 +42,7 @@ class ModuleEdit extends Component {
             headerLeft: () => (
                 <HeaderBackButton
                     onPress={this.backButtonPressed}
+                    labelVisible={false}
                     backImage={() => (
                         <Icon
                             type={'ionicon'}

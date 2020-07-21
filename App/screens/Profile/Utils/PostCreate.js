@@ -40,6 +40,7 @@ class PostCreate extends Component {
             headerLeft: () => (
                 <HeaderBackButton
                     onPress={this.toggleDiscardPostPopup}
+                    labelVisible={false}
                     backImage={() => (
                         <Icon
                             type={'ionicon'}
@@ -394,7 +395,15 @@ class PostCreate extends Component {
                             accessible
                         >
                             <Icon name={'attachment'} color={Colors.appGray2} />
-                            <MainText style={{ color: Colors.appGray2 }}>Add an image</MainText>
+                            <MainText
+                                style={{
+                                    color: Colors.appGray2,
+                                    fontFamily: MAIN_FONT,
+                                    fontSize: 15,
+                                }}
+                            >
+                                Add an image
+                            </MainText>
                         </TouchableOpacity>
                     )}
                 </ScrollView>
@@ -432,6 +441,8 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         paddingTop: 5,
         paddingBottom: 10,
+        fontFamily: MAIN_FONT,
+        fontSize: 15,
     },
     imgOptions: {
         borderStyle: 'dashed',
@@ -439,6 +450,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.appGray2,
         borderRadius: 5,
         marginBottom: 5,
+        marginTop: 15,
 
         height: 50,
         width: '100%',
