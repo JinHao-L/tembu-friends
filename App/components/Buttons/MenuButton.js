@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Image, Platform } from 'react-native';
 import { BaseButton } from 'react-native-gesture-handler';
-import { Avatar, Icon } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
 
 import { Colors } from '../../constants';
-import { MainText } from '../Commons/MyAppText';
+import { MainText } from '../Commons';
 
 function MenuButton(property) {
     const {

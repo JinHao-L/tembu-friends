@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { MAIN_FONT, MainText, Popup } from '../../../components';
 import {
     ActivityIndicator,
     Image,
@@ -10,10 +9,12 @@ import {
     View,
 } from 'react-native';
 import { Avatar, Button, Icon } from 'react-native-elements';
-import { Colors } from '../../../constants';
 import * as ImagePicker from 'expo-image-picker';
+import { HeaderBackButton } from '@react-navigation/stack';
+
+import { MAIN_FONT, MainText, Popup, GreenButton } from '../../../components';
+import { Colors } from '../../../constants';
 import { withFirebase } from '../../../helper/Firebase';
-import GreenButton from '../../../components/Buttons/GreenButton';
 
 class PostCreate extends Component {
     state = {
@@ -37,18 +38,16 @@ class PostCreate extends Component {
     componentDidMount() {
         this.props.navigation.setOptions({
             headerLeft: () => (
-                <Button
-                    containerStyle={{ borderRadius: 26 }}
-                    titleStyle={{ color: Colors.appWhite }}
-                    buttonStyle={{ padding: 0, height: 26, width: 26 }}
-                    icon={{
-                        type: 'ionicon',
-                        name: 'ios-arrow-back',
-                        size: 26,
-                        color: Colors.appWhite,
-                    }}
+                <HeaderBackButton
                     onPress={this.toggleDiscardPostPopup}
-                    type={'clear'}
+                    backImage={() => (
+                        <Icon
+                            type={'ionicon'}
+                            name={'ios-arrow-back'}
+                            size={26}
+                            color={Colors.appWhite}
+                        />
+                    )}
                 />
             ),
             headerRight: () => (
@@ -56,13 +55,31 @@ class PostCreate extends Component {
                     onPress={this.uploadPost}
                     title={'Post'}
                     type={'clear'}
-                    titleStyle={{ color: Colors.appWhite }}
+                    titleStyle={{ color: Colors.appWhite, fontFamily: MAIN_FONT, fontSize: 18 }}
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
                     disabled={this.state.body === ''}
                     disabledTitleStyle={{ color: Colors.appGray4 }}
                 />
             ),
         });
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.body !== this.state.body) {
+            this.props.navigation.setOptions({
+                headerRight: () => (
+                    <Button
+                        onPress={this.uploadPost}
+                        title={'Post'}
+                        type={'clear'}
+                        titleStyle={{ color: Colors.appWhite, fontFamily: MAIN_FONT, fontSize: 18 }}
+                        containerStyle={{ marginRight: 5, borderRadius: 20 }}
+                        disabled={this.state.body === ''}
+                        disabledTitleStyle={{ color: Colors.appGray4 }}
+                    />
+                ),
+            });
+        }
     }
 
     uploadImage = async (uri) => {
@@ -190,14 +207,14 @@ class PostCreate extends Component {
             <Popup
                 imageType={'Warning'}
                 isVisible={this.state.discardPostPopupVisible}
-                title={'Unsaved Post'}
-                body={'Edits will not be saved. Are you sure yo'}
-                additionalButtonText={'Discard Post'}
+                title={'Discard Post?'}
+                body={'If you leave now, this post will be discarded'}
+                additionalButtonText={'Discard'}
                 additionalButtonCall={() => {
                     this.toggleDiscardPostPopup();
                     this.goBackToProfile();
                 }}
-                buttonText={'Continue Editing'}
+                buttonText={'Return to Post'}
                 callback={this.toggleDiscardPostPopup}
             />
         );
@@ -309,24 +326,6 @@ class PostCreate extends Component {
         );
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.body !== this.state.body) {
-            this.props.navigation.setOptions({
-                headerRight: () => (
-                    <Button
-                        onPress={this.uploadPost}
-                        title={'Post'}
-                        type={'clear'}
-                        titleStyle={{ color: Colors.appWhite }}
-                        containerStyle={{ marginRight: 5, borderRadius: 20 }}
-                        disabled={this.state.body === ''}
-                        disabledTitleStyle={{ color: Colors.appGray4 }}
-                    />
-                ),
-            });
-        }
-    }
-
     render() {
         const { myName, profileImg, profileData, isPrivate, body, postImg } = this.state;
         return (
@@ -431,7 +430,8 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 0,
-        paddingVertical: 5,
+        paddingTop: 5,
+        paddingBottom: 10,
     },
     imgOptions: {
         borderStyle: 'dashed',

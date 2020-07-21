@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { SafeAreaView, StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { BaseButton } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
@@ -205,27 +205,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    contentContainer: {
-        flex: 1,
-    },
-    header: {
-        position: 'absolute',
-        top: 0,
-        alignSelf: 'flex-start',
-
-        paddingBottom: 10,
-        paddingTop: 20,
-        paddingLeft: 15,
-        paddingRight: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    title: {
-        textAlign: 'left',
-        textAlignVertical: 'center',
-        color: Colors.appWhite,
-        fontSize: 24,
     },
     QRContainer: {
         width: 300,

@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
     Text,
     Platform,
+    ScrollView,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-// import Icon from 'react-native-vector-icons/Ionicons';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
@@ -269,8 +268,8 @@ class SignInScreen extends Component {
             keyboardShown,
         } = this.state;
         return (
-            <View
-                style={[
+            <ScrollView
+                contentContainerStyle={[
                     styles.container,
                     {
                         paddingBottom:
@@ -282,90 +281,79 @@ class SignInScreen extends Component {
             >
                 {this.renderNotVerifiedPopup()}
                 {this.renderEmailSentPopup()}
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        {keyboardShown ? null : <View style={styles.header} />}
-                        <View style={styles.titleContainer}>
-                            <LogoText style={styles.title} adjustsFontSizeToFit={true}>
-                                TEMBU<Text style={styles.title2}>FRIENDS</Text>
-                            </LogoText>
-                        </View>
-
-                        <View style={styles.form}>
-                            <FormInput
-                                containerStyle={styles.box}
-                                isError={errorHighlight || emailError}
-                                errorMessage={emailError}
-                                placeholder="NUS email address"
-                                keyboardType="email-address"
-                                returnKeyType="next"
-                                textContentType="emailAddress"
-                                autoCapitalize="none"
-                                value={nusEmail}
-                                onChangeText={this.handleEmail.bind(this)}
-                                onFocus={this.clearError.bind(this)}
-                                blurOnSubmit={false}
-                            />
-                            <FormInput
-                                containerStyle={styles.box}
-                                isError={errorHighlight}
-                                errorMessage={generalError}
-                                errorStyle={{ textAlign: 'center' }}
-                                placeholder="Password"
-                                autoCapitalize="none"
-                                returnKeyType="done"
-                                textContentType="newPassword"
-                                onChangeText={this.handlePassword.bind(this)}
-                                onFocus={this.clearError.bind(this)}
-                                secureTextEntry={passwordHidden}
-                                value={password}
-                                rightIcon={
-                                    <Icon
-                                        type={'ionicon'}
-                                        name={passwordIcon}
-                                        size={28}
-                                        color={Colors.appGray2}
-                                        containerStyle={{ marginRight: 5 }}
-                                        onPress={this.handlePasswordVisibility.bind(this)}
-                                    />
-                                }
-                            />
-
-                            <View style={styles.box}>
-                                <MainText
-                                    style={[styles.hyperlink, styles.forgetPasswordText]}
-                                    onPress={this.goToForgetPassword.bind(this)}
-                                >
-                                    Forgotten password?
-                                </MainText>
-                                <AuthButton
-                                    onPress={this.validateInputAndSignIn.bind(this)}
-                                    style={styles.button}
-                                    loading={isLoading}
-                                >
-                                    Log In
-                                </AuthButton>
-                            </View>
-                        </View>
-
-                        {keyboardShown ? (
-                            <View style={{ flex: 0.5 }} />
-                        ) : (
-                            <View style={styles.bottom}>
-                                <MainText style={styles.registerText}>
-                                    Don't have an account?{' '}
-                                    <Text
-                                        style={styles.hyperlink}
-                                        onPress={this.goToRegister.bind(this)}
-                                    >
-                                        Sign Up
-                                    </Text>
-                                </MainText>
-                            </View>
-                        )}
+                <View style={{ marginTop: keyboardShown ? 40 : 0 }}>
+                    <View style={styles.titleContainer}>
+                        <LogoText style={styles.title} adjustsFontSizeToFit={true}>
+                            TEMBU<Text style={styles.title2}>FRIENDS</Text>
+                        </LogoText>
                     </View>
-                </TouchableWithoutFeedback>
-            </View>
+
+                    <View style={styles.form}>
+                        <FormInput
+                            containerStyle={styles.box}
+                            isError={errorHighlight || emailError}
+                            errorMessage={emailError}
+                            placeholder="NUS email address"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            textContentType="emailAddress"
+                            autoCapitalize="none"
+                            value={nusEmail}
+                            onChangeText={this.handleEmail.bind(this)}
+                            onFocus={this.clearError.bind(this)}
+                            blurOnSubmit={false}
+                        />
+                        <FormInput
+                            containerStyle={styles.box}
+                            isError={errorHighlight}
+                            errorMessage={generalError}
+                            errorStyle={{ textAlign: 'center' }}
+                            placeholder="Password"
+                            autoCapitalize="none"
+                            returnKeyType="done"
+                            textContentType="newPassword"
+                            onChangeText={this.handlePassword.bind(this)}
+                            onFocus={this.clearError.bind(this)}
+                            secureTextEntry={passwordHidden}
+                            value={password}
+                            rightIcon={
+                                <Icon
+                                    type={'ionicon'}
+                                    name={passwordIcon}
+                                    size={28}
+                                    color={Colors.appGray2}
+                                    containerStyle={{ marginRight: 5 }}
+                                    onPress={this.handlePasswordVisibility.bind(this)}
+                                />
+                            }
+                        />
+
+                        <MainText
+                            style={[styles.hyperlink, styles.forgetPasswordText]}
+                            onPress={this.goToForgetPassword.bind(this)}
+                        >
+                            Forgotten password?
+                        </MainText>
+                        <AuthButton
+                            onPress={this.validateInputAndSignIn.bind(this)}
+                            style={styles.button}
+                            loading={isLoading}
+                        >
+                            Log In
+                        </AuthButton>
+                    </View>
+                </View>
+                {!keyboardShown && (
+                    <View style={styles.bottom}>
+                        <MainText style={styles.registerText}>
+                            Don't have an account?{' '}
+                            <Text style={styles.hyperlink} onPress={this.goToRegister.bind(this)}>
+                                Sign Up
+                            </Text>
+                        </MainText>
+                    </View>
+                )}
+            </ScrollView>
         );
     }
 }
@@ -381,30 +369,23 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         color: Colors.appGreen,
-        marginBottom: 10,
         textAlign: 'center',
         width: Layout.window.width,
     },
     title2: {
         color: Colors.appBlack,
     },
-    header: {
-        flex: 0.5,
-    },
     titleContainer: {
-        flex: 1.5,
-        justifyContent: 'flex-end',
+        marginBottom: 20,
     },
     form: {
-        flex: 1,
         justifyContent: 'flex-start',
-        marginTop: 10,
         marginHorizontal: 40,
     },
     bottom: {
-        flex: 1.5,
-        justifyContent: 'flex-end',
-        marginBottom: 36,
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 56,
         alignItems: 'center',
     },
     box: {
@@ -420,13 +401,9 @@ const styles = StyleSheet.create({
         textAlign: 'right',
     },
     registerText: {
-        position: 'absolute',
-        bottom: 0,
         fontSize: 15,
         fontWeight: '600',
-        textAlign: 'center',
         color: Colors.appBlack,
-        marginBottom: 20,
     },
     hyperlink: {
         color: Colors.appGreen,

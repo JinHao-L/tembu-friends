@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { ActivityIndicator, StyleSheet, Text, SafeAreaView, View, StatusBar } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, View } from 'react-native';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import ProgressBar from 'react-native-progress/Bar';
@@ -8,12 +8,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
 import { fetchUserData, updateProfile, listenFriendList, clearCache } from '../redux';
+import { withFirebase } from '../helper/Firebase';
+import PushNotifications from '../helper/PushNotification';
 import HomeTabNav from './HomeTabNav';
 import AuthNav from './AuthNav';
-import { withFirebase } from '../helper/Firebase';
 import { AppLogo } from '../components';
 import { Colors } from '../constants';
-import PushNotifications from '../helper/PushNotification';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -47,7 +47,7 @@ class RootNav extends Component {
         uid: null,
     };
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log('Starting app');
         try {
             this.props.firebase.checkUserAuth((user) => {
@@ -84,7 +84,7 @@ class RootNav extends Component {
             });
 
             if (this.state.isAssetsLoading) {
-                await this.loadLocalAsync().then(() => {
+                this.loadLocalAsync().then(() => {
                     this.setState({ isAssetsLoading: false });
                 });
             }
@@ -155,9 +155,9 @@ class RootNav extends Component {
                         ) : isUserLoading ? (
                             <Text style={{ marginTop: 5 }}>Fetching user data...</Text>
                         ) : isUserSignedIn ? (
-                            <Text style={{ marginTop: 5 }}>Signing you in</Text>
+                            <Text style={{ marginTop: 5 }}>Signing you in...</Text>
                         ) : (
-                            <Text style={{ marginTop: 5 }}>Proceed to login</Text>
+                            <Text style={{ marginTop: 5 }}>Proceeding to login...</Text>
                         )}
                     </View>
                 </View>

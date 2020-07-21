@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import { Colors } from '../../constants';
-import { MAIN_FONT } from '../Commons/MyAppText';
+import { MAIN_FONT } from '../Commons';
 
 function GreenButton({
     type = 'solid',
@@ -27,7 +27,7 @@ function GreenButton({
             ]}
             title={title}
             loading={loading}
-            loadingProps={{ size: 12, marginTop: 2, marginBottom: 1 }}
+            loadingProps={{ size: 12, marginTop: 2, marginBottom: 1, color: Colors.appGreen }}
             titleStyle={[
                 styles.friendButtonText,
                 type === 'outline' ? { color: Colors.appGreen } : {},

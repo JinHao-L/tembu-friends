@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, FlatList, StyleSheet, SafeAreaView, Image } from 'react-native';
+import React, { Component } from 'react';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, Button, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
     return { userData: state.userData };
 };
 
-class UserListScreen extends React.Component {
+class UserListScreen extends Component {
     state = {
         isLoading: false,
         users: [],
@@ -34,7 +34,9 @@ class UserListScreen extends React.Component {
             .getAllUsers()
             .then((users) => {
                 this.setState({
-                    users: users,
+                    users: users.sort((x, y) =>
+                        x.displayName ? x.displayName.localeCompare(y.displayName) : -1
+                    ),
                     isLoading: false,
                 });
             })
@@ -59,11 +61,15 @@ class UserListScreen extends React.Component {
             <ListItem
                 title={displayName || 'undefined'}
                 titleStyle={styles.titleStyle}
-                subtitle={email}
-                subtitleStyle={[
-                    styles.subtitleStyle,
-                    !emailVerified && { textDecorationLine: 'line-through' },
-                ]}
+                subtitle={
+                    <MainText style={styles.subtitleStyle}>
+                        {email}
+                        <Text style={styles.notActivatedText}>
+                            {!emailVerified ? ' (Not activated)' : ''}
+                        </Text>
+                    </MainText>
+                }
+                subtitleStyle={styles.subtitleStyle}
                 leftAvatar={{
                     rounded: true,
                     source: photoURL
@@ -78,12 +84,16 @@ class UserListScreen extends React.Component {
                         targetUser: uid,
                         isAdmin: isAdmin,
                         isVerified: isVerified,
+                        activated: emailVerified,
                     });
                 }}
             />
         );
     };
     renderBadges = (isVerified, isAdmin) => {
+        if (!isVerified && !isAdmin) {
+            return undefined;
+        }
         return (
             <View style={{ flexDirection: 'row' }}>
                 {isAdmin && (
@@ -107,7 +117,7 @@ class UserListScreen extends React.Component {
         );
     };
     renderAdminSettings = () => {
-        const { targetUser, isAdmin, isVerified } = this.state;
+        const { targetUser, isAdmin, isVerified, activated } = this.state;
         return (
             <Popup
                 imageType={'Custom'}
@@ -116,12 +126,12 @@ class UserListScreen extends React.Component {
                 body={
                     <View>
                         <Button
-                            title={'Go to profile'}
+                            title={'User Profile'}
                             type={'clear'}
                             titleStyle={styles.iconTitleStyle}
                             icon={{
                                 name: 'person',
-                                color: Colors.appBlack,
+                                color: Colors.appGreen,
                                 size: 25,
                                 containerStyle: { paddingHorizontal: 10 },
                             }}
@@ -133,7 +143,7 @@ class UserListScreen extends React.Component {
                             }}
                         />
                         <Popup.Separator />
-                        {!isAdmin && (
+                        {!isAdmin && activated && (
                             <View>
                                 <Button
                                     title={'Make Admin'}
@@ -175,7 +185,7 @@ class UserListScreen extends React.Component {
                                         .then(this.closeAdminSettingsPopup);
                                 }}
                             />
-                        ) : (
+                        ) : activated ? (
                             <Button
                                 title={'Verify User'}
                                 type={'clear'}
@@ -194,7 +204,7 @@ class UserListScreen extends React.Component {
                                         .then(this.closeAdminSettingsPopup);
                                 }}
                             />
-                        )}
+                        ) : null}
                     </View>
                 }
                 buttonText={'Cancel'}
@@ -219,7 +229,7 @@ class UserListScreen extends React.Component {
             <View style={styles.container}>
                 {this.renderAdminSettings()}
                 <FlatList
-                    data={users.sort((x, y) => x.displayName.localeCompare(y.displayName))}
+                    data={users}
                     renderItem={({ item }) => this.renderUser(item)}
                     keyExtractor={(item) => item.uid}
                     ListEmptyComponent={() => (
@@ -237,13 +247,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.appWhite,
-    },
-    itemContainer: {
-        paddingVertical: 10,
-    },
-    separator: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: Colors.appGray4,
     },
     titleStyle: {
         fontFamily: MAIN_FONT,
@@ -263,6 +266,11 @@ const styles = StyleSheet.create({
     badge: {
         marginLeft: 5,
         resizeMode: 'contain',
+    },
+    notActivatedText: {
+        fontSize: 11,
+        textAlign: 'center',
+        color: Colors.appGray4,
     },
 });
 

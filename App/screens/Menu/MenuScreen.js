@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, StyleSheet, SafeAreaView, View, ActivityIndicator } from 'react-native';
+import { Text, ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
-import { MainText, MenuButton, Popup } from '../../components';
+import { MenuButton, Popup } from '../../components';
 import { withFirebase } from '../../helper/Firebase';
 
 const mapStateToProps = (state) => {

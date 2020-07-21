@@ -2,19 +2,18 @@ import React, { Component } from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
     Text,
     Platform,
     ActivityIndicator,
+    ScrollView,
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
-import * as firebase from 'firebase';
-import { Icon } from 'react-native-elements';
 
 const wordsOnly = /^[A-Za-z ]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;
@@ -114,7 +113,7 @@ class SignUpScreen extends Component {
             this.setState({ passwordError: 'Weak password' });
         } else {
             // Others
-            this.setState({ generalError: 'Unknown error' + errorCode });
+            this.setState({ generalError: 'Unknown error: ' + errorCode });
             console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
     }
@@ -211,7 +210,10 @@ class SignUpScreen extends Component {
                 console.log('User created. Creating profile');
                 return this.props.firebase
                     .createProfile(userData)
-                    .then(response.user.sendEmailVerification);
+                    .then(() =>
+                        response.user.updateProfile({ displayName: firstName + ' ' + lastName })
+                    )
+                    .then(() => response.user.sendEmailVerification());
             })
             .then(() => {
                 this.props.firebase.signOut();
@@ -335,7 +337,7 @@ class SignUpScreen extends Component {
                         }}
                     >
                         <ActivityIndicator size={'large'} />
-                        <MainText>Saving your changes</MainText>
+                        <MainText>Creating your account</MainText>
                     </View>
                 }
                 callback={null}
@@ -364,152 +366,134 @@ class SignUpScreen extends Component {
         } = this.state;
 
         return (
-            <View
-                style={[
-                    styles.container,
-                    {
-                        paddingBottom:
-                            Platform.OS === 'ios' && keyboardShown
-                                ? this.state.keyboardHeight
-                                : null,
-                    },
-                ]}
-            >
+            <ScrollView contentContainerStyle={styles.container}>
                 {this.renderLoading()}
                 {this.renderEmailSentPopup()}
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View>
-                        {keyboardShown ? null : <View style={styles.header} />}
-                        <View style={styles.titleContainer}>
-                            <MainText style={styles.title}> Sign Up</MainText>
-                        </View>
-
-                        <View style={styles.form}>
-                            <View style={[styles.box, { flexDirection: 'row' }]}>
-                                <FormInput
-                                    containerStyle={{
-                                        flex: 1,
-                                        flexDirection: 'column',
-                                        marginRight: 5,
-                                    }}
-                                    isError={firstNameError}
-                                    errorMessage={firstNameError}
-                                    placeholder="First Name"
-                                    returnKeyType="next"
-                                    textContentType="name"
-                                    autoCapitalize="words"
-                                    value={firstName}
-                                    onChangeText={this.handleFirstName.bind(this)}
-                                    onFocus={this.clearFirstNameError.bind(this)}
-                                />
-
-                                <FormInput
-                                    containerStyle={{
-                                        flex: 1,
-                                        flexDirection: 'column',
-                                        marginLeft: 5,
-                                    }}
-                                    isError={lastNameError}
-                                    errorMessage={lastNameError}
-                                    placeholder="Last Name"
-                                    returnKeyType="next"
-                                    textContentType="name"
-                                    autoCapitalize="words"
-                                    value={lastName}
-                                    onChangeText={this.handleLastName.bind(this)}
-                                    onFocus={this.clearLastNameError.bind(this)}
-                                />
-                            </View>
-
-                            <FormInput
-                                containerStyle={styles.box}
-                                isError={emailError}
-                                errorMessage={emailError}
-                                placeholder="NUS email address"
-                                keyboardType="email-address"
-                                returnKeyType="next"
-                                textContentType="emailAddress"
-                                autoCapitalize="none"
-                                value={nusEmail}
-                                onChangeText={this.handleEmail.bind(this)}
-                                onFocus={this.clearEmailError.bind(this)}
-                            />
-
-                            <FormInput
-                                containerStyle={styles.box}
-                                isError={passwordError}
-                                placeholder="Password"
-                                autoCapitalize="none"
-                                returnKeyType="next"
-                                textContentType="none"
-                                onChangeText={this.handlePassword.bind(this)}
-                                onFocus={this.clearPasswordError.bind(this)}
-                                secureTextEntry={passwordHidden}
-                                value={password}
-                                rightIcon={
-                                    <Icon
-                                        type={'ionicon'}
-                                        name={passwordIcon}
-                                        size={28}
-                                        color={Colors.appGray2}
-                                        containerStyle={{ marginRight: 5 }}
-                                        onPress={this.handlePasswordVisibility.bind(this)}
-                                    />
-                                }
-                            />
-                            <FormInput
-                                containerStyle={styles.box}
-                                isError={passwordError}
-                                errorMessage={passwordError}
-                                placeholder="Confirm password"
-                                autoCapitalize="none"
-                                returnKeyType="done"
-                                textContentType="none"
-                                onChangeText={this.handleConfirmPassword.bind(this)}
-                                onFocus={this.clearPasswordError.bind(this)}
-                                secureTextEntry={confirmPasswordHidden}
-                                value={confirmPassword}
-                                rightIcon={
-                                    <Icon
-                                        type={'ionicon'}
-                                        name={confirmPasswordIcon}
-                                        size={28}
-                                        color={Colors.appGray2}
-                                        style={{ marginRight: 5 }}
-                                        onPress={this.handleConfirmPasswordVisibility.bind(this)}
-                                    />
-                                }
-                            />
-                            <View style={styles.box}>
-                                <AuthButton
-                                    onPress={this.validateInputAndSignUp.bind(this)}
-                                    style={styles.button}
-                                    loading={isLoading}
-                                >
-                                    Sign Up
-                                </AuthButton>
-                                <ErrorMessage
-                                    error={generalError ? generalError : ' '}
-                                    style={{ textAlign: 'center' }}
-                                />
-                            </View>
-                        </View>
-                        {!keyboardShown && (
-                            <View style={styles.bottom}>
-                                <MainText style={styles.haveAccountText}>
-                                    Already have an account?{' '}
-                                    <Text
-                                        style={styles.hyperlink}
-                                        onPress={this.goToSignIn.bind(this)}
-                                    >
-                                        Login here
-                                    </Text>
-                                </MainText>
-                            </View>
-                        )}
+                <View style={{ marginTop: keyboardShown ? 40 : 0 }}>
+                    <View style={styles.titleContainer}>
+                        <MainText style={styles.title}>Sign Up</MainText>
                     </View>
-                </TouchableWithoutFeedback>
-            </View>
+
+                    <View style={styles.form}>
+                        <View style={[styles.box, { flexDirection: 'row' }]}>
+                            <FormInput
+                                containerStyle={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    marginRight: 5,
+                                }}
+                                isError={firstNameError}
+                                errorMessage={firstNameError}
+                                placeholder="First Name"
+                                returnKeyType="next"
+                                textContentType="name"
+                                autoCapitalize="words"
+                                value={firstName}
+                                onChangeText={this.handleFirstName.bind(this)}
+                                onFocus={this.clearFirstNameError.bind(this)}
+                            />
+
+                            <FormInput
+                                containerStyle={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                    marginLeft: 5,
+                                }}
+                                isError={lastNameError}
+                                errorMessage={lastNameError}
+                                placeholder="Last Name"
+                                returnKeyType="next"
+                                textContentType="name"
+                                autoCapitalize="words"
+                                value={lastName}
+                                onChangeText={this.handleLastName.bind(this)}
+                                onFocus={this.clearLastNameError.bind(this)}
+                            />
+                        </View>
+
+                        <FormInput
+                            containerStyle={styles.box}
+                            isError={emailError}
+                            errorMessage={emailError}
+                            placeholder="NUS email address"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            textContentType="emailAddress"
+                            autoCapitalize="none"
+                            value={nusEmail}
+                            onChangeText={this.handleEmail.bind(this)}
+                            onFocus={this.clearEmailError.bind(this)}
+                        />
+
+                        <FormInput
+                            containerStyle={styles.box}
+                            isError={passwordError}
+                            placeholder="Password"
+                            autoCapitalize="none"
+                            returnKeyType="next"
+                            textContentType="none"
+                            onChangeText={this.handlePassword.bind(this)}
+                            onFocus={this.clearPasswordError.bind(this)}
+                            secureTextEntry={passwordHidden}
+                            value={password}
+                            rightIcon={
+                                <Icon
+                                    type={'ionicon'}
+                                    name={passwordIcon}
+                                    size={28}
+                                    color={Colors.appGray2}
+                                    containerStyle={{ marginRight: 5 }}
+                                    onPress={this.handlePasswordVisibility.bind(this)}
+                                />
+                            }
+                        />
+                        <FormInput
+                            containerStyle={styles.box}
+                            isError={passwordError}
+                            errorMessage={passwordError}
+                            placeholder="Confirm password"
+                            autoCapitalize="none"
+                            returnKeyType="done"
+                            textContentType="none"
+                            onChangeText={this.handleConfirmPassword.bind(this)}
+                            onFocus={this.clearPasswordError.bind(this)}
+                            secureTextEntry={confirmPasswordHidden}
+                            value={confirmPassword}
+                            rightIcon={
+                                <Icon
+                                    type={'ionicon'}
+                                    name={confirmPasswordIcon}
+                                    size={28}
+                                    color={Colors.appGray2}
+                                    containerStyle={{ marginRight: 5 }}
+                                    onPress={this.handleConfirmPasswordVisibility.bind(this)}
+                                />
+                            }
+                        />
+                        <AuthButton
+                            onPress={this.validateInputAndSignUp.bind(this)}
+                            style={styles.button}
+                            loading={isLoading}
+                        >
+                            Sign Up
+                        </AuthButton>
+                        <ErrorMessage
+                            error={generalError ? generalError : ' '}
+                            style={{ textAlign: 'center' }}
+                        />
+                    </View>
+                </View>
+                {!keyboardShown && (
+                    <View style={styles.bottom}>
+                        <MainText style={styles.haveAccountText}>
+                            Already have an account?{' '}
+                            <Text style={styles.hyperlink} onPress={this.goToSignIn.bind(this)}>
+                                Login here
+                            </Text>
+                        </MainText>
+                    </View>
+                )}
+            </ScrollView>
         );
     }
 }
@@ -518,7 +502,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
         flexDirection: 'column',
         backgroundColor: Colors.appWhite,
     },
@@ -526,42 +509,34 @@ const styles = StyleSheet.create({
         fontSize: 40,
         color: Colors.appGreen,
         textAlign: 'left',
-        width: Layout.window.width,
-        left: 35,
-    },
-    header: {
-        flex: 1,
+        paddingLeft: 40,
     },
     titleContainer: {
-        flex: 1.5,
         justifyContent: 'flex-end',
-        paddingBottom: 8,
+        paddingBottom: 20,
+        width: '100%',
     },
     form: {
-        flex: 3.5,
         justifyContent: 'center',
         marginHorizontal: 40,
     },
     bottom: {
-        flex: 1.5,
-        justifyContent: 'flex-end',
-        marginBottom: 36,
-        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 56,
+        alignSelf: 'center',
     },
     box: {
-        marginBottom: 5,
+        marginBottom: 3,
     },
     button: {
         marginTop: 10,
     },
     haveAccountText: {
-        position: 'absolute',
-        bottom: 0,
-        fontWeight: '200',
+        fontWeight: '600',
         fontSize: 15,
         textAlign: 'center',
         color: Colors.appBlack,
-        marginBottom: 20,
     },
     hyperlink: {
         color: Colors.appGreen,

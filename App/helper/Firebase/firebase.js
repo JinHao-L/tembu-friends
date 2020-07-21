@@ -84,20 +84,7 @@ const Firebase = {
     // Users
     createProfile: (userData) => {
         const createProfileCall = firebase.functions().httpsCallable('createProfile');
-        return createProfileCall(userData)
-            .then(() => {
-                const displayName = userData.firstName + ' ' + userData.lastName;
-                return this.getCurrentUser().updateProfile({
-                    displayName: displayName,
-                });
-            })
-            .catch((error) => {
-                const code = error.code;
-                const message = error.message;
-                const details = error.details;
-                console.log('Profile Creation error', code, message, details);
-                this.onSignUpFailure.bind(this)(error);
-            });
+        return createProfileCall(userData);
     },
     getMyData: () => {
         const uid = firebase.auth().currentUser.uid;
@@ -117,7 +104,7 @@ const Firebase = {
             })
             .catch((err) => {
                 console.log('Error getting User', err);
-                return undefined;
+                return null;
             });
     },
     updateUserData: async (uid, data) => {
@@ -134,9 +121,8 @@ const Firebase = {
         }
         return userData.update(data).then(() => {
             if (hasUpdates) {
-                return firebase
-                    .auth()
-                    .currentUser.updateProfile(updates)
+                return Firebase.getCurrentUser()
+                    .updateProfile(updates)
                     .then(() => console.log('Update Auth Profile'));
             } else {
                 return Promise.resolve();
@@ -194,12 +180,12 @@ const Firebase = {
     deletePost: (uid, postId) => {
         return firebase.firestore().collection(`posts/${uid}/userPosts`).doc(`${postId}`).delete();
     },
-    reportPost: (uid, postId) => {
+    reportPost: (uid, postId, displayName) => {
         const reportRef = firebase.firestore().collection(`reports`).doc('posts');
 
         const postRef = firebase.firestore().collection(`posts/${uid}/userPosts`).doc(postId);
 
-        const toAdd = { uid, postId };
+        const toAdd = { uid, postId, displayName };
 
         return reportRef
             .update({

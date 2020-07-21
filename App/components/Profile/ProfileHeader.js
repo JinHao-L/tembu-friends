@@ -3,7 +3,7 @@ import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 
 import { Colors, Layout } from '../../constants';
-import { MAIN_FONT, MainText } from '../Commons/MyAppText';
+import { MAIN_FONT, MainText } from '../Commons';
 
 const renderHouseText = (house) => {
     let color = Colors.appBlack;

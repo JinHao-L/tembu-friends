@@ -1,8 +1,9 @@
-import { MAIN_FONT, MainText } from '../Commons/MyAppText';
-import { StyleSheet, View } from 'react-native';
-import { Colors } from '../../constants';
-import { ListItem } from 'react-native-elements';
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ListItem } from 'react-native-elements';
+
+import { MainText } from '../Commons';
+import { Colors } from '../../constants';
 
 const timeDifference = (timestamp) => {
     if (timestamp) {

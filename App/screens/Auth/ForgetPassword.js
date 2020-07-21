@@ -167,58 +167,49 @@ class ForgetPassword extends Component {
                 ]}
             >
                 {this.renderResetSuccessPopup()}
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.contentContainer}>
-                        <View style={styles.textContainer}>
-                            <MainText style={styles.title}>Trouble with logging in?</MainText>
-                            <MainText style={styles.intro}>
-                                Enter your email address and we'll send you a link to reset your
-                                password
-                            </MainText>
-                        </View>
-
-                        <View style={styles.form}>
-                            <FormInput
-                                containerStyle={styles.box}
-                                isError={emailError}
-                                errorMessage={emailError}
-                                leftIconName="ios-mail"
-                                placeholder="NUS email address"
-                                returnKeyType="done"
-                                keyboardType="email-address"
-                                textContentType="emailAddress"
-                                autoCapitalize="none"
-                                value={nusEmail}
-                                onChangeText={this.handleEmail.bind(this)}
-                                onFocus={this.clearError.bind(this)}
-                            />
-                            <View>
-                                <AuthButton
-                                    onPress={this.validateInput.bind(this)}
-                                    style={styles.button}
-                                    loading={isLoading}
-                                >
-                                    Next
-                                </AuthButton>
-                                <ErrorMessage
-                                    error={generalError}
-                                    style={{ textAlign: 'center' }}
-                                />
-                            </View>
-                        </View>
-
-                        {keyboardShown ? null : (
-                            <View style={styles.bottom}>
-                                <MainText
-                                    style={styles.backLoginText}
-                                    onPress={this.goToSignIn.bind(this)}
-                                >
-                                    Back to Login
-                                </MainText>
-                            </View>
-                        )}
+                <View style={[styles.contentContainer, { marginTop: keyboardShown ? 40 : 0 }]}>
+                    <View style={styles.textContainer}>
+                        <MainText style={styles.title}>Trouble with logging in?</MainText>
+                        <MainText style={styles.intro}>
+                            Enter your email address and we'll send you a link to reset your
+                            password
+                        </MainText>
                     </View>
-                </TouchableWithoutFeedback>
+
+                    <View style={styles.form}>
+                        <FormInput
+                            containerStyle={styles.box}
+                            isError={emailError}
+                            errorMessage={emailError}
+                            leftIconName="ios-mail"
+                            placeholder="NUS email address"
+                            returnKeyType="done"
+                            keyboardType="email-address"
+                            textContentType="emailAddress"
+                            autoCapitalize="none"
+                            value={nusEmail}
+                            onChangeText={this.handleEmail.bind(this)}
+                            onFocus={this.clearError.bind(this)}
+                        />
+                        <View>
+                            <AuthButton
+                                onPress={this.validateInput.bind(this)}
+                                style={styles.button}
+                                loading={isLoading}
+                            >
+                                Next
+                            </AuthButton>
+                            <ErrorMessage error={generalError} style={{ textAlign: 'center' }} />
+                        </View>
+                    </View>
+                </View>
+                {keyboardShown ? null : (
+                    <View style={styles.bottom}>
+                        <MainText style={styles.backLoginText} onPress={this.goToSignIn.bind(this)}>
+                            Back to Login
+                        </MainText>
+                    </View>
+                )}
             </View>
         );
     }
@@ -228,6 +219,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.appWhite,
+        alignItems: 'center',
     },
     contentContainer: {
         flex: 1,
@@ -240,9 +232,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     textContainer: {
-        flex: 3,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
         marginHorizontal: 15,
     },
     intro: {
@@ -251,15 +240,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     form: {
-        flex: 2,
-        justifyContent: 'flex-start',
         marginTop: 30,
         marginHorizontal: 40,
     },
     bottom: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        marginBottom: 36,
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 56,
         alignItems: 'center',
     },
     box: {
@@ -269,13 +256,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     backLoginText: {
-        position: 'absolute',
-        bottom: 0,
-        fontWeight: '200',
+        fontWeight: '600',
         fontSize: 15,
-        textAlign: 'center',
         color: Colors.appGreen,
-        marginBottom: 20,
     },
 });
 

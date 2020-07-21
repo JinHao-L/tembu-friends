@@ -41,12 +41,12 @@ function AdminNav() {
             <AdminStack.Screen
                 name="Admin"
                 component={AdminMenu}
-                options={{ headerTitle: 'Admin Privileges' }}
+                options={{ headerTitle: 'Admin' }}
             />
             <AdminStack.Screen
                 name="Reports"
                 component={ReportsControl}
-                options={{ headerTitle: 'Reports' }}
+                options={{ headerTitle: 'Reported Posts' }}
             />
             <AdminStack.Screen
                 name="Users"

@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import Firebase from '../helper/Firebase/firebase';
 
 //
 // Initial State

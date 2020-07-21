@@ -1,21 +1,14 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { MainText } from '../Commons/MyAppText';
+import { MainText } from '../Commons';
 import { Colors } from '../../constants';
 
 function ErrorMessage({ error, style }) {
-    return (
-        <View style={styles.container}>
-            <MainText style={[styles.errorText, style]}>{error}</MainText>
-        </View>
-    );
+    return <MainText style={[styles.errorText, style]}>{error}</MainText>;
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // marginHorizontal: 15,
-    },
     errorText: {
         fontSize: 12,
         textAlign: 'left',

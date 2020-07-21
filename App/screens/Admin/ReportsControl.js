@@ -26,7 +26,10 @@ class ReportsControl extends Component {
         this.setState({ isLoading: true });
         return this.props.firebase
             .getPostReport()
-            .then((data) => this.setState({ data }))
+            .then((data) => {
+                console.log(data);
+                this.setState({ data });
+            })
             .catch((error) => console.log('Get Post report', error))
             .finally(() => this.setState({ isLoading: false }));
     };
@@ -39,6 +42,7 @@ class ReportsControl extends Component {
         return (
             <ListItem
                 title={item.postId}
+                subtitle={'Reported by: ' + item.displayName}
                 onPress={this.state.fetchingPost ? undefined : () => this.showPost(item, index)}
             />
         );
@@ -88,8 +92,8 @@ class ReportsControl extends Component {
     };
 
     renderEmpty = () => (
-        <View style={{ alignSelf: 'center' }}>
-            <MainText>No reports</MainText>
+        <View style={{ alignSelf: 'center', paddingTop: 10 }}>
+            <MainText>No reported posts</MainText>
         </View>
     );
 
@@ -116,7 +120,15 @@ class ReportsControl extends Component {
                                 this.deletePost(this.state.currPost, this.state.dataIndex);
                                 this.closePost();
                             }}
-                            containerStyle={styles.buttonContainer}
+                            containerStyle={[
+                                styles.buttonContainer,
+                                Platform.OS === 'ios'
+                                    ? {
+                                          borderBottomColor: Colors.appGray2,
+                                          borderBottomWidth: StyleSheet.hairlineWidth,
+                                      }
+                                    : {},
+                            ]}
                         />
                         <Button
                             title={'Cancel Report'}
@@ -126,7 +138,15 @@ class ReportsControl extends Component {
                                 this.cancelReport(this.state.currPost, this.state.dataIndex);
                                 this.closePost();
                             }}
-                            containerStyle={styles.buttonContainer}
+                            containerStyle={[
+                                styles.buttonContainer,
+                                Platform.OS === 'ios'
+                                    ? {
+                                          borderBottomColor: Colors.appGray2,
+                                          borderBottomWidth: StyleSheet.hairlineWidth,
+                                      }
+                                    : {},
+                            ]}
                         />
                         <Button
                             title={'Close'}
@@ -157,7 +177,7 @@ class ReportsControl extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: Colors.appWhite,
+        backgroundColor: Colors.appWhite,
     },
     overlayContainer: {
         maxWidth: 400,

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
-import { MAIN_FONT } from '../Commons/MyAppText';
+
+import { MAIN_FONT } from '../Commons';
 import { Colors } from '../../constants';
 import ErrorMessage from './ErrorMessage';
 
@@ -60,10 +61,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         backgroundColor: Colors.appWhite,
         flexDirection: 'row',
-    },
-    iconStyle: {
-        marginRight: 5,
-        marginLeft: 5,
     },
     input: {
         marginLeft: 5,

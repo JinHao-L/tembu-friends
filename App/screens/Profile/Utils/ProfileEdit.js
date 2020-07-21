@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
     ActivityIndicator,
     ImageBackground,
-    Picker,
     ScrollView,
     StyleSheet,
     Text,
@@ -13,6 +12,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { HeaderBackButton } from '@react-navigation/stack';
 
 import { Colors, Layout } from '../../../constants';
 import { withFirebase } from '../../../helper/Firebase';
@@ -49,6 +49,19 @@ class ProfileEdit extends Component {
 
     componentDidMount() {
         this.props.navigation.setOptions({
+            headerLeft: () => (
+                <HeaderBackButton
+                    onPress={this.toggleExitConfirmationPopup}
+                    backImage={() => (
+                        <Icon
+                            type={'ionicon'}
+                            name={'ios-arrow-back'}
+                            size={26}
+                            color={Colors.appWhite}
+                        />
+                    )}
+                />
+            ),
             headerRight: () => (
                 <Button
                     onPress={this.validateInput}
@@ -56,22 +69,6 @@ class ProfileEdit extends Component {
                     type={'clear'}
                     titleStyle={{ color: Colors.appWhite, fontFamily: MAIN_FONT, fontSize: 18 }}
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
-                />
-            ),
-            // TODO:
-            headerLeft: () => (
-                <Button
-                    containerStyle={{ borderRadius: 26 }}
-                    titleStyle={{ color: Colors.appWhite }}
-                    buttonStyle={{ padding: 0, height: 26, width: 26 }}
-                    icon={{
-                        type: 'ionicon',
-                        name: 'ios-arrow-back',
-                        size: 26,
-                        color: Colors.appWhite,
-                    }}
-                    onPress={this.toggleExitConfirmationPopup}
-                    type={'clear'}
                 />
             ),
         });
@@ -182,10 +179,6 @@ class ProfileEdit extends Component {
             let promise1 = this.uploadImage(bannerImg, 'banner')
                 .then((ref) => {
                     return ref.getDownloadURL();
-                    // return this.props.firebase
-                    //     .getStorageRef()
-                    //     .child('banner/' + this.props.userData.uid)
-                    //     .getDownloadURL();
                 })
                 .then((downloadURL) => {
                     console.log('URL: ', downloadURL);
@@ -203,10 +196,6 @@ class ProfileEdit extends Component {
             let promise2 = this.uploadImage(profileImg, 'profile')
                 .then((ref) => {
                     return ref.getDownloadURL();
-                    // return this.props.firebase
-                    //     .getStorageRef()
-                    //     .child('profile/' + this.props.userData.uid)
-                    //     .getDownloadURL();
                 })
                 .then((downloadURL) => {
                     console.log('URL: ' + downloadURL);
@@ -540,38 +529,6 @@ class ProfileEdit extends Component {
                                         )}
                                         style={pickerSelectStyles}
                                     />
-                                    {/*<Picker*/}
-                                    {/*    style={{ width: '100%' }}*/}
-                                    {/*    mode="dropdown"*/}
-                                    {/*    selectedValue={this.state.majorOptions2}*/}
-                                    {/*    onValueChange={(val) =>*/}
-                                    {/*        this.setState({ majorOptions2: val })*/}
-                                    {/*    }*/}
-                                    {/*>*/}
-                                    {/*    <Picker.Item label={'Select your faculty'} value={[]} />*/}
-                                    {/*    {Object.keys(this.state.facultyOptions).map((key) => {*/}
-                                    {/*        return (*/}
-                                    {/*            <Picker.Item*/}
-                                    {/*                label={key}*/}
-                                    {/*                value={this.state.facultyOptions[key]}*/}
-                                    {/*                key={key}*/}
-                                    {/*            />*/}
-                                    {/*        );*/}
-                                    {/*    })}*/}
-                                    {/*</Picker>*/}
-                                    {/*<Picker*/}
-                                    {/*    style={{ width: '100%' }}*/}
-                                    {/*    mode="dropdown"*/}
-                                    {/*    selectedValue={this.state.major2 || ''}*/}
-                                    {/*    onValueChange={(val) => this.setState({ major2: val })}*/}
-                                    {/*>*/}
-                                    {/*    <Picker.Item label={'Select your major'} value={''} />*/}
-                                    {/*    {this.state.majorOptions2.map((item) => {*/}
-                                    {/*        return (*/}
-                                    {/*            <Picker.Item label={item} value={item} key={item} />*/}
-                                    {/*        );*/}
-                                    {/*    })}*/}
-                                    {/*</Picker>*/}
                                 </View>
                             )}
                         </View>
@@ -824,25 +781,6 @@ class ProfileEdit extends Component {
                                 },
                             }}
                         />
-
-                        {/*<Picker*/}
-                        {/*    itemStyle={styles.text}*/}
-                        {/*    selectedValue={year}*/}
-                        {/*    style={styles.picker}*/}
-                        {/*    onValueChange={this.handleYear}*/}
-                        {/*    mode={'dropdown'}*/}
-                        {/*>*/}
-                        {/*    <Picker.Item*/}
-                        {/*        label={'Select year of study'}*/}
-                        {/*        value={''}*/}
-                        {/*        color={Colors.appGray2}*/}
-                        {/*    />*/}
-                        {/*    <Picker.Item label={'Year 1'} value={'Y1'} />*/}
-                        {/*    <Picker.Item label={'Year 2'} value={'Y2'} />*/}
-                        {/*    <Picker.Item label={'Year 3'} value={'Y3'} />*/}
-                        {/*    <Picker.Item label={'Year 4'} value={'Y4'} />*/}
-                        {/*    <Picker.Item label={'Year 5'} value={'Y5'} />*/}
-                        {/*</Picker>*/}
                     </View>
                     <View style={[styles.box, { paddingRight: 0, height: 40 }]}>
                         <MainText style={styles.label}>House</MainText>
@@ -883,32 +821,6 @@ class ProfileEdit extends Component {
                                 },
                             }}
                         />
-                        {/*<Picker*/}
-                        {/*    itemStyle={styles.text}*/}
-                        {/*    selectedValue={house}*/}
-                        {/*    style={styles.picker}*/}
-                        {/*    onValueChange={this.handleHouse}*/}
-                        {/*    mode={'dropdown'}*/}
-                        {/*>*/}
-                        {/*    <Picker.Item*/}
-                        {/*        label="Select your house"*/}
-                        {/*        value=""*/}
-                        {/*        color={Colors.appGray2}*/}
-                        {/*    />*/}
-                        {/*    <Picker.Item label={'Shan'} value={'Shan'} color={Colors.shanHouse} />*/}
-                        {/*    <Picker.Item label={'Ora'} value={'Ora'} color={Colors.oraHouse} />*/}
-                        {/*    <Picker.Item label={'Gaja'} value={'Gaja'} color={Colors.gajaHouse} />*/}
-                        {/*    <Picker.Item*/}
-                        {/*        label={'Tancho'}*/}
-                        {/*        value={'Tancho'}*/}
-                        {/*        color={Colors.tanchoHouse}*/}
-                        {/*    />*/}
-                        {/*    <Picker.Item*/}
-                        {/*        label={'Ponya'}*/}
-                        {/*        value={'Ponya'}*/}
-                        {/*        color={Colors.ponyaHouse}*/}
-                        {/*    />*/}
-                        {/*</Picker>*/}
                     </View>
                     <View style={styles.box}>
                         <MainText style={styles.label}>Room No.</MainText>
@@ -924,8 +836,8 @@ class ProfileEdit extends Component {
                             onChangeText={this.handleRoomNumber}
                         />
                     </View>
-                    <View style={styles.box2}>
-                        <MainText style={[styles.label, { marginBottom: 5, width: undefined }]}>
+                    <View style={styles.largeBox}>
+                        <MainText style={[styles.largeBoxLabel, { marginBottom: 5 }]}>
                             About
                         </MainText>
                         <View style={styles.aboutTextContainer}>
@@ -950,7 +862,7 @@ class ProfileEdit extends Component {
                             />
                         </View>
                     </View>
-                    <View style={styles.box2}>
+                    <View style={styles.largeBox}>
                         <View
                             style={{
                                 flexDirection: 'row',
@@ -959,7 +871,7 @@ class ProfileEdit extends Component {
                                 marginBottom: 5,
                             }}
                         >
-                            <MainText style={[styles.label, { width: undefined }]}>
+                            <MainText style={styles.largeBoxLabel}>
                                 Modules that I’ve taken in Tembusu
                             </MainText>
                             <Icon
@@ -1007,9 +919,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
     },
-    images: {
-        position: 'relative',
-    },
     bannerImg: {
         width: Layout.window.width,
         height: Layout.window.width / 3,
@@ -1037,7 +946,7 @@ const styles = StyleSheet.create({
         minHeight: 40,
         paddingHorizontal: 20,
     },
-    box2: {
+    largeBox: {
         borderTopWidth: 1,
         borderTopColor: Colors.appGray2,
         paddingVertical: 10,
@@ -1059,6 +968,9 @@ const styles = StyleSheet.create({
         width: '30%',
         fontSize: 15,
     },
+    largeBoxLabel: {
+        fontSize: 15,
+    },
     input: {
         width: '70%',
         fontFamily: MAIN_FONT,
@@ -1068,14 +980,6 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         flexWrap: 'wrap',
     },
-    // picker: {
-    //     // flex: 1,
-    //     width: '70%',
-    //     fontFamily: MAIN_FONT,
-    //     fontSize: 13,
-    //     fontWeight: 'normal',
-    //     flexWrap: 'wrap',
-    // },
     text: {
         fontFamily: MAIN_FONT,
         fontSize: 13,

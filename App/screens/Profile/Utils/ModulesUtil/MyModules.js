@@ -1,7 +1,8 @@
-import { FlatList, StyleSheet, View } from 'react-native';
 import React, { Component } from 'react';
-import Colors from '../../../../constants/Colors';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
+
+import { Colors } from '../../../../constants';
 import { MAIN_FONT, MainText } from '../../../../components';
 
 class MyModules extends Component {

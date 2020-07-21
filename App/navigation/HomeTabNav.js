@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { StatusBar, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TabBarIcon } from '../components';
 import { HomeScreen } from '../screens';

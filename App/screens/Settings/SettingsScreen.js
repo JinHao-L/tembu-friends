@@ -188,9 +188,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
     },
-    contentContainer: {
-        flexGrow: 1,
-    },
     title: {
         fontFamily: MAIN_FONT,
         color: Colors.appBlack,

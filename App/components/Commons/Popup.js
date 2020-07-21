@@ -5,7 +5,7 @@ import { Overlay, Button } from 'react-native-elements';
 import { MAIN_FONT, MainText } from './MyAppText';
 import { Colors } from '../../constants';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 function Popup({
     isVisible,
@@ -57,6 +57,7 @@ function Popup({
                         containerStyle={styles.buttonContainer}
                     />
                 )}
+                {additionalButtonText && Platform.OS === 'ios' && <View style={styles.line} />}
                 {buttonText && (
                     <Button
                         title={buttonText}
@@ -89,7 +90,6 @@ function getImage(type) {
 
 const styles = StyleSheet.create({
     container: {
-        maxWidth: 400,
         width: 280 > width / 2 ? 280 : width / 2,
         backgroundColor: Colors.appWhite,
         borderRadius: 20,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     line: {
         width: 280 > width / 2 ? 280 : width / 2,
-        borderBottomColor: Colors.appGray2,
+        borderBottomColor: Colors.appGray1,
         borderWidth: StyleSheet.hairlineWidth,
     },
     buttonText: {

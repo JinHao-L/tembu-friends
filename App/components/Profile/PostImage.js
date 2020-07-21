@@ -39,6 +39,7 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
                 visible={imgVisibility}
                 transparent={true}
                 onRequestClose={() => setImgVisibility(false)}
+                presentationStyle={'overFullScreen'}
             >
                 <ImageViewer
                     imageUrls={[{ url: imgUrl }]}
@@ -70,7 +71,7 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
                     footerContainerStyle={{ width: '100%' }}
                     renderIndicator={() => null}
                     enableSwipeDown={true}
-                    backgroundColor={'rgba(0,0,0, 0.8)'}
+                    backgroundColor={'rgba(0, 0, 0, 0.8)'}
                     loadingRender={() => <ActivityIndicator color={Colors.appWhite} />}
                 />
             </Modal>
@@ -79,9 +80,6 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
 };
 
 const styles = StyleSheet.create({
-    // container: {
-    //     flex: 1,
-    // },
     image: {
         width: '100%',
         resizeMode: 'cover',

@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    FlatList,
-    ActivityIndicator,
-    Image,
-    ScrollView,
-    Text,
-} from 'react-native';
+import { View, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import { connect } from 'react-redux';
-import { Avatar, Button, ListItem } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
-import { MAIN_FONT, MainText, Popup, ProfilePost, ProfileHeader } from '../../components';
-import { Colors, Layout } from '../../constants';
+import {
+    MAIN_FONT,
+    MainText,
+    Popup,
+    ProfilePost,
+    ProfileHeader,
+    GreenButton,
+} from '../../components';
+import { Colors } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
 import { fetchUserData, updateProfile } from '../../redux';
-import GreenButton from '../../components/Buttons/GreenButton';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -207,7 +205,7 @@ class MyProfile extends Component {
             ],
         });
         return this.props.firebase
-            .reportPost(this.props.userData.uid, postId)
+            .reportPost(this.props.userData.uid, postId, this.props.userData.displayName)
             .catch((error) => console.log('report error', error));
     };
 

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { Colors } from '../../constants';
-import { MAIN_FONT } from '../Commons/MyAppText';
+import { MAIN_FONT } from '../Commons';
 
 const UserItem = ({ name, profileImg, onPress, style, textStyle, rightElement = undefined }) => {
     return (

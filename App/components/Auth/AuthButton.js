@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+
 import { Colors } from '../../constants';
-import { MainText } from '../Commons/MyAppText';
+import { MainText } from '../Commons';
 
 const AuthButton = (property) => {
     const { style, onPress, loading, children, ...others } = property;

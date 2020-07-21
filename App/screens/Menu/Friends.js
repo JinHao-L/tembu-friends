@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
+import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { MAIN_FONT, MainText, UserItem, SearchBar, Popup, GreenButton } from '../../components';
 import { withFirebase } from '../../helper/Firebase';
 import { Colors } from '../../constants';
-import { Button } from 'react-native-elements';
 
 const mapStateToProps = (state) => {
     return {
         userData: state.userData,
         friends: state.friends,
-        respondList: state.respondList,
     };
 };
 
@@ -401,15 +400,6 @@ const styles = StyleSheet.create({
     emptySearchText: {
         fontSize: 14,
         fontWeight: '600',
-    },
-    titleStyle: {
-        fontFamily: MAIN_FONT,
-        fontSize: 14,
-        textAlignVertical: 'center',
-    },
-    subtitleStyle: {
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
     },
     popupTitleStyle: {
         fontFamily: MAIN_FONT,

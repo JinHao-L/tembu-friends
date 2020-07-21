@@ -1,10 +1,10 @@
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
 import ReadMore from 'react-native-read-more-text';
 
 import { Colors } from '../../constants';
-import { MainText } from '../Commons/MyAppText';
+import { MainText } from '../Commons';
 import PostImage from './PostImage';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -58,8 +58,6 @@ const ProfilePost = ({
     const {
         body,
         is_private,
-        //TODO: implement likes
-        likes,
         sender_img,
         sender_name,
         sender_uid,

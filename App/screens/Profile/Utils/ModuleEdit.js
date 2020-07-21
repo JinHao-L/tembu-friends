@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import { View } from 'react-native';
+import { Button, Icon } from 'react-native-elements';
 import { TabBar, TabView } from 'react-native-tab-view';
+import { HeaderBackButton } from '@react-navigation/stack';
 
 import { Colors, Layout } from '../../../constants';
 import { MAIN_FONT, Popup, SearchBar } from '../../../components';
@@ -38,6 +39,19 @@ class ModuleEdit extends Component {
 
     componentDidMount() {
         this.props.navigation.setOptions({
+            headerLeft: () => (
+                <HeaderBackButton
+                    onPress={this.backButtonPressed}
+                    backImage={() => (
+                        <Icon
+                            type={'ionicon'}
+                            name={'ios-arrow-back'}
+                            size={26}
+                            color={Colors.appWhite}
+                        />
+                    )}
+                />
+            ),
             headerRight: () => (
                 <Button
                     onPress={this.onConfirm}
@@ -47,29 +61,15 @@ class ModuleEdit extends Component {
                     containerStyle={{ marginRight: 5, borderRadius: 20 }}
                 />
             ),
-            //TODO:
-            headerLeft: () => (
-                <Button
-                    containerStyle={{ borderRadius: 26 }}
-                    titleStyle={{ color: Colors.appWhite }}
-                    buttonStyle={{ padding: 0, height: 26, width: 26 }}
-                    icon={{
-                        type: 'ionicon',
-                        name: 'ios-arrow-back',
-                        size: 26,
-                        color: Colors.appWhite,
-                    }}
-                    onPress={
-                        this.state.changes
-                            ? this.toggleExitConfirmationPopup
-                            : this.props.navigation.goBack
-                    }
-                    type={'clear'}
-                />
-            ),
         });
         this.fetchData();
     }
+
+    backButtonPressed = () => {
+        return this.state.changes
+            ? this.toggleExitConfirmationPopup()
+            : this.props.navigation.goBack();
+    };
 
     onConfirm = () => {
         this.props.route.params.setModules(this.state.selectedCodes, this.state.selectedNames);
@@ -87,13 +87,13 @@ class ModuleEdit extends Component {
                 });
                 this.setState({
                     filteredData: newData,
-                    isLoading: false,
                 });
                 this.allData = responseJson;
             })
             .catch((error) => {
                 console.log('Fetching from nusmods failed', error);
-            });
+            })
+            .finally(() => this.setState({ isLoading: false }));
     };
 
     setSearchTerm = (text) => {
@@ -285,7 +285,7 @@ class ModuleEdit extends Component {
     render() {
         const { searchTerm, index, routes } = this.state;
         return (
-            <View style={styles.container}>
+            <View style={{ flex: 1, backgroundColor: Colors.appWhite }}>
                 {this.renderModuleLimitPopup()}
                 {this.renderExitConfirmationPopup()}
                 <SearchBar
@@ -320,48 +320,5 @@ class ModuleEdit extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.appWhite,
-    },
-    loading: {
-        flex: 1,
-        alignItems: 'center',
-    },
-    separator: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: Colors.appGray4,
-    },
-    titleStyle: {
-        fontFamily: MAIN_FONT,
-        fontSize: 14,
-    },
-    subtitleStyle: {
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
-    },
-    searchBarContainer: {
-        flexDirection: 'column',
-    },
-    searchBarInput: {
-        marginLeft: 10,
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
-        fontWeight: '100',
-    },
-    inputContentContainer: {
-        borderRadius: 15,
-        borderBottomWidth: 0,
-        // borderRadius: 3,
-        overflow: 'hidden',
-        height: 40,
-        backgroundColor: Colors.appGray2,
-    },
-    leftIconContainerStyle: {
-        marginLeft: 8,
-    },
-});
 
 export default ModuleEdit;

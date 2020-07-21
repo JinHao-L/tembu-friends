@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { MenuButton } from '../../components';
 import { Colors } from '../../constants';
-import { LinearGradient } from 'expo-linear-gradient';
 
 class AdminMenu extends Component {
     navigating = false;
@@ -58,23 +58,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    header: {
-        flexDirection: 'row',
-        paddingBottom: 10,
-        paddingTop: 20,
-        paddingLeft: 15,
-        paddingRight: 15,
-        alignItems: 'center',
-    },
     contentContainer: {
         paddingTop: 15,
         marginHorizontal: 15,
-    },
-    title: {
-        textAlign: 'left',
-        textAlignVertical: 'center',
-        color: 'white',
-        fontSize: 24,
     },
     adminButton: {
         height: 40,

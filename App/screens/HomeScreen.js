@@ -1,31 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, SafeAreaView, ActivityIndicator, View, StatusBar } from 'react-native';
+import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import WebView from 'react-native-webview';
-import { Button } from 'react-native-elements';
 
-import { Colors } from '../constants/index';
-import Layout from '../constants/Layout';
-import { MAIN_FONT, MainText } from '../components';
-
-const WebNavButton = ({ title, disabled, onPress }) => {
-    return (
-        <Button
-            containerStyle={{ flex: 1, borderRadius: 0 }}
-            buttonStyle={{
-                backgroundColor: Colors.appGreen,
-                borderRadius: 0,
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: Colors.appWhite,
-            }}
-            title={title}
-            titleStyle={{ fontFamily: MAIN_FONT, fontSize: 15, color: Colors.appWhite }}
-            onPress={onPress}
-            disabledStyle={{ backgroundColor: Colors.appGray1 }}
-            disabledTitleStyle={{ color: Colors.appGray2 }}
-            disabled={disabled}
-        />
-    );
-};
+import { Colors, Layout } from '../constants';
+import { WebNavButton } from '../components';
 
 class HomeScreen extends Component {
     state = {
@@ -44,7 +22,6 @@ class HomeScreen extends Component {
 
     homeButtonHandler = () => {
         this.setState({ currentUrl: this.homepage });
-        // this.webviewRef.current.injectJavaScript('window.location="' + this.homepage + '"');
     };
 
     frontButtonHandler = () => {
@@ -57,11 +34,6 @@ class HomeScreen extends Component {
         const { canGoForward, canGoBack } = this.state;
         return (
             <View style={styles.container}>
-                {Platform.OS === 'ios' ? (
-                    <StatusBar barStyle="dark-content" />
-                ) : (
-                    <StatusBar backgroundColor={Colors.appGreen} barStyle="light-content" />
-                )}
                 <WebView
                     source={{ uri: this.state.currentUrl }}
                     style={{ width: Layout.window.width }}
@@ -106,19 +78,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
         alignItems: 'center',
     },
-    contentContainer: {
-        paddingTop: 30,
-    },
     tabBarContainer: {
         flexDirection: 'row',
-    },
-    button: {
-        color: Colors.appGreen,
-        fontSize: 18,
-    },
-    disabledButton: {
-        color: Colors.appGray2,
-        fontSize: 18,
     },
 });
 

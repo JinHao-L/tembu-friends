@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, FlatList, Image } from 'react-native';
+import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { GreenButton, MAIN_FONT, MainText, Popup, UserItem } from '../../components';
 import { Colors } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
-import { Button } from 'react-native-elements';
 
 const mapStateToProps = (state) => {
     return {
@@ -25,10 +25,6 @@ class SearchResults extends Component {
             respondPopupVisible: false,
         };
     }
-
-    // shouldComponentUpdate(nextProps, nextState, nextContext) {
-    //     return this.props.userList !== nextProps.userList;
-    // }
 
     goToProfile = (userData) => {
         if (this.navigating) {
@@ -308,31 +304,6 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 14,
         fontWeight: '600',
-    },
-    searchBarInput: {
-        marginLeft: 10,
-        fontFamily: MAIN_FONT,
-        fontSize: 13,
-        fontWeight: '100',
-    },
-    inputContainer: {
-        margin: 0,
-        padding: 0,
-    },
-    inputContentContainer: {
-        height: 40,
-        borderRadius: 30,
-        borderWidth: 1,
-        borderColor: Colors.appGray4,
-        backgroundColor: Colors.appWhite,
-        margin: 0,
-        padding: 0,
-    },
-    leftIconContainerStyle: {
-        paddingLeft: 8,
-    },
-    rightIconContainerStyle: {
-        marginRight: 8,
     },
     popupTitleStyle: {
         fontFamily: MAIN_FONT,
