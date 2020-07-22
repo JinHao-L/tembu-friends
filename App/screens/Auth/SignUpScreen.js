@@ -43,7 +43,10 @@ class SignUpScreen extends Component {
         keyboardHeight: 0,
         emailSentPopup: false,
     };
-    navigating = false;
+    lastNameRef = React.createRef();
+    emailRef = React.createRef();
+    passwordRef = React.createRef();
+    password2Ref = React.createRef();
 
     clearInputs() {
         this.setState({
@@ -76,6 +79,7 @@ class SignUpScreen extends Component {
     _keyboardDidHide() {
         this.setState({
             keyboardShown: false,
+            keyboardHeight: 0,
         });
     }
 
@@ -118,11 +122,6 @@ class SignUpScreen extends Component {
     }
 
     goToSignIn() {
-        if (this.navigating) {
-            return;
-        }
-        this.navigating = true;
-        setTimeout(() => (this.navigating = false), 500);
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignIn');
     }
@@ -365,10 +364,24 @@ class SignUpScreen extends Component {
         } = this.state;
 
         return (
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView
+                contentContainerStyle={[
+                    styles.container,
+                    {
+                        paddingBottom:
+                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                    },
+                ]}
+                keyboardShouldPersistTaps={'handled'}
+            >
                 {this.renderLoading()}
                 {this.renderEmailSentPopup()}
-                <View style={{ marginTop: keyboardShown ? 40 : 0 }}>
+                <View
+                    style={{
+                        marginTop:
+                            keyboardShown && Platform.OS === 'ios' ? 150 : keyboardShown ? 50 : 0,
+                    }}
+                >
                     <View style={styles.titleContainer}>
                         <MainText style={styles.title}>Sign Up</MainText>
                     </View>
@@ -390,9 +403,11 @@ class SignUpScreen extends Component {
                                 value={firstName}
                                 onChangeText={this.handleFirstName.bind(this)}
                                 onFocus={this.clearFirstNameError.bind(this)}
+                                onSubmitEditing={() => this.lastNameRef.focus()}
                             />
 
                             <FormInput
+                                inputRef={(input) => (this.lastNameRef = input)}
                                 containerStyle={{
                                     flex: 1,
                                     flexDirection: 'column',
@@ -407,10 +422,12 @@ class SignUpScreen extends Component {
                                 value={lastName}
                                 onChangeText={this.handleLastName.bind(this)}
                                 onFocus={this.clearLastNameError.bind(this)}
+                                onSubmitEditing={() => this.emailRef.focus()}
                             />
                         </View>
 
                         <FormInput
+                            inputRef={(input) => (this.emailRef = input)}
                             containerStyle={styles.box}
                             isError={emailError}
                             errorMessage={emailError}
@@ -422,9 +439,11 @@ class SignUpScreen extends Component {
                             value={nusEmail}
                             onChangeText={this.handleEmail.bind(this)}
                             onFocus={this.clearEmailError.bind(this)}
+                            onSubmitEditing={() => this.passwordRef.focus()}
                         />
 
                         <FormInput
+                            inputRef={(input) => (this.passwordRef = input)}
                             containerStyle={styles.box}
                             isError={passwordError}
                             placeholder="Password"
@@ -445,8 +464,10 @@ class SignUpScreen extends Component {
                                     onPress={this.handlePasswordVisibility.bind(this)}
                                 />
                             }
+                            onSubmitEditing={() => this.password2Ref.focus()}
                         />
                         <FormInput
+                            inputRef={(input) => (this.password2Ref = input)}
                             containerStyle={styles.box}
                             isError={passwordError}
                             errorMessage={passwordError}
@@ -468,6 +489,7 @@ class SignUpScreen extends Component {
                                     onPress={this.handleConfirmPasswordVisibility.bind(this)}
                                 />
                             }
+                            onSubmitEditing={this.validateInputAndSignUp.bind(this)}
                         />
                         <AuthButton
                             onPress={this.validateInputAndSignUp.bind(this)}
@@ -504,6 +526,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: Colors.appWhite,
     },
+    bottom: {
+        position: 'absolute',
+        bottom: 0,
+        marginBottom: 56,
+        alignSelf: 'center',
+    },
     title: {
         fontSize: 40,
         color: Colors.appGreen,
@@ -513,17 +541,11 @@ const styles = StyleSheet.create({
     titleContainer: {
         justifyContent: 'flex-end',
         paddingBottom: 20,
-        width: '100%',
+        width: Layout.window.width,
     },
     form: {
         justifyContent: 'center',
         marginHorizontal: 40,
-    },
-    bottom: {
-        position: 'absolute',
-        bottom: 0,
-        marginBottom: 56,
-        alignSelf: 'center',
     },
     box: {
         marginBottom: 3,

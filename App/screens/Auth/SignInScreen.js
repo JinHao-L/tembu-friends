@@ -28,7 +28,7 @@ class SignInScreen extends Component {
         emailSentPopup: false,
         notVerifiedPopup: false,
     };
-    navigating = false;
+    passwordRef = React.createRef();
 
     clearInputs() {
         this.setState({
@@ -64,6 +64,7 @@ class SignInScreen extends Component {
         if (this.state.keyboardShown) {
             this.setState({
                 keyboardShown: false,
+                keyboardHeight: 0,
             });
         }
     }
@@ -109,21 +110,11 @@ class SignInScreen extends Component {
     }
 
     goToRegister() {
-        if (this.navigating) {
-            return;
-        }
-        this.navigating = true;
-        setTimeout(() => (this.navigating = false), 500);
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('SignUp');
     }
 
     goToForgetPassword() {
-        if (this.navigating) {
-            return;
-        }
-        this.navigating = true;
-        setTimeout(() => (this.navigating = false), 500);
         this.clearInputs.bind(this)();
         this.props.navigation.navigate('ForgetPassword');
     }
@@ -265,11 +256,10 @@ class SignInScreen extends Component {
                     styles.container,
                     {
                         paddingBottom:
-                            Platform.OS === 'ios' && keyboardShown
-                                ? this.state.keyboardHeight
-                                : null,
+                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
                     },
                 ]}
+                keyboardShouldPersistTaps={'handled'}
             >
                 {this.renderNotVerifiedPopup()}
                 {this.renderEmailSentPopup()}
@@ -293,9 +283,10 @@ class SignInScreen extends Component {
                             value={nusEmail}
                             onChangeText={this.handleEmail.bind(this)}
                             onFocus={this.clearError.bind(this)}
-                            blurOnSubmit={false}
+                            onSubmitEditing={() => this.passwordRef.focus()}
                         />
                         <FormInput
+                            inputRef={(input) => (this.passwordRef = input)}
                             containerStyle={styles.box}
                             isError={errorHighlight}
                             errorMessage={generalError}
@@ -318,6 +309,7 @@ class SignInScreen extends Component {
                                     onPress={this.handlePasswordVisibility.bind(this)}
                                 />
                             }
+                            onSubmitEditing={this.validateInputAndSignIn.bind(this)}
                         />
 
                         <MainText
@@ -353,7 +345,6 @@ class SignInScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Colors.appWhite,
@@ -362,23 +353,24 @@ const styles = StyleSheet.create({
         fontSize: 40,
         color: Colors.appGreen,
         textAlign: 'center',
-        width: Layout.window.width,
     },
     title2: {
         color: Colors.appBlack,
-    },
-    titleContainer: {
-        marginBottom: 20,
-    },
-    form: {
-        justifyContent: 'flex-start',
-        marginHorizontal: 40,
     },
     bottom: {
         position: 'absolute',
         bottom: 0,
         marginBottom: 56,
         alignItems: 'center',
+    },
+    titleContainer: {
+        justifyContent: 'flex-end',
+        marginBottom: 20,
+        width: Layout.window.width,
+    },
+    form: {
+        justifyContent: 'flex-start',
+        marginHorizontal: 40,
     },
     box: {
         marginBottom: 3,

@@ -138,6 +138,17 @@ function ProfilePost({
                                     {' • '}
                                     {formatDate(time_posted)}
                                 </MainText>
+                                {is_private && (
+                                    <MainText
+                                        style={{
+                                            alignSelf: 'flex-end',
+                                            marginLeft: 5,
+                                            color: Colors.appGray4,
+                                        }}
+                                    >
+                                        (Private)
+                                    </MainText>
+                                )}
                             </View>
                             <View>
                                 <TruncateText

@@ -104,7 +104,6 @@ class ReportsControl extends Component {
                     isVisible={this.state.visible}
                     animationType={'fade'}
                     animated={true}
-                    // fullScreen={true}
                     overlayStyle={styles.overlayContainer}
                 >
                     <View>

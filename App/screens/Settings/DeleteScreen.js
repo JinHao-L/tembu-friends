@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Keyboard, Platform, ScrollView } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Keyboard,
+    Platform,
+    ScrollView,
+    KeyboardAvoidingView,
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { withFirebase } from '../../helper/Firebase';
-import { Colors } from '../../constants';
+import { Colors, Layout } from '../../constants';
 import { AuthButton, FormInput, MainText, ErrorMessage } from '../../components';
 
 const mapStateToProps = (state) => {
@@ -28,8 +35,11 @@ class SignUpScreen extends Component {
         isLoading: false,
         passwordIcon: 'ios-eye',
         passwordHidden: true,
+        keyboardHeight: 0,
         keyboardShown: false,
     };
+    passwordRef = React.createRef();
+    confirmationRef = React.createRef();
 
     clearEmailError() {
         this.setState({
@@ -73,9 +83,10 @@ class SignUpScreen extends Component {
         });
     }
 
-    _keyboardDidHide() {
+    _keyboardDidHide(event) {
         this.setState({
             keyboardShown: false,
+            keyboardHeight: 0,
         });
     }
 
@@ -210,13 +221,25 @@ class SignUpScreen extends Component {
         } = this.state;
 
         return (
-            <View style={styles.container}>
-                <ScrollView contentContainerStyle={styles.contentContainer}>
+            <ScrollView
+                contentContainerStyle={[
+                    styles.container,
+                    {
+                        paddingBottom:
+                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                    },
+                ]}
+                keyboardShouldPersistTaps={'handled'}
+            >
+                <View
+                    style={{
+                        marginTop:
+                            keyboardShown && Platform.OS === 'ios' ? 150 : keyboardShown ? 50 : 0,
+                    }}
+                >
                     <View style={styles.titleContainer}>
-                        <MainText style={styles.title} adjustsFontSizeToFit={true}>
-                            Delete Account
-                        </MainText>
-                        <MainText style={{ fontSize: 15 }}>We are sorry to see you go...</MainText>
+                        <MainText style={styles.title}>Delete Account</MainText>
+                        <MainText style={styles.subtitle}>We are sorry to see you go...</MainText>
                     </View>
                     <View style={styles.form}>
                         <FormInput
@@ -231,9 +254,11 @@ class SignUpScreen extends Component {
                             value={nusEmail}
                             onChangeText={this.handleEmail.bind(this)}
                             onFocus={this.clearEmailError.bind(this)}
+                            onSubmitEditing={() => this.passwordRef.focus()}
                         />
 
                         <FormInput
+                            inputRef={(input) => (this.passwordRef = input)}
                             containerStyle={styles.box}
                             isError={passwordError}
                             errorMessage={passwordError}
@@ -255,8 +280,10 @@ class SignUpScreen extends Component {
                                     onPress={this.handlePasswordVisibility.bind(this)}
                                 />
                             }
+                            onSubmitEditing={() => this.confirmationRef.focus()}
                         />
                         <FormInput
+                            inputRef={(input) => (this.confirmationRef = input)}
                             containerStyle={styles.box}
                             isError={confirmationError}
                             errorMessage={confirmationError}
@@ -267,23 +294,22 @@ class SignUpScreen extends Component {
                             onChangeText={this.handleConfirmation.bind(this)}
                             onFocus={this.clearConfirmationError.bind(this)}
                             value={confirmation}
+                            onSubmitEditing={this.validateInputAndDelete.bind(this)}
                         />
-                        <View style={styles.box}>
-                            <AuthButton
-                                onPress={this.validateInputAndDelete.bind(this)}
-                                style={styles.button}
-                                loading={isLoading}
-                            >
-                                Delete My Account
-                            </AuthButton>
-                            <ErrorMessage
-                                style={{ textAlign: 'center' }}
-                                error={generalError ? generalError : ' '}
-                            />
-                        </View>
+                        <AuthButton
+                            onPress={this.validateInputAndDelete.bind(this)}
+                            style={styles.button}
+                            loading={isLoading}
+                        >
+                            Delete My Account
+                        </AuthButton>
+                        <ErrorMessage
+                            style={{ textAlign: 'center' }}
+                            error={generalError ? generalError : ' '}
+                        />
                     </View>
-                </ScrollView>
-            </View>
+                </View>
+            </ScrollView>
         );
     }
 }
@@ -292,23 +318,29 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.appWhite,
-    },
-    contentContainer: {
-        flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
     },
     title: {
+        paddingLeft: 40,
         fontSize: 35,
         color: Colors.appGreen,
         marginBottom: 10,
         textAlign: 'left',
     },
+    subtitle: {
+        fontSize: 15,
+        paddingLeft: 40,
+        color: Colors.appBlack,
+        marginBottom: 10,
+        textAlign: 'left',
+    },
     titleContainer: {
-        paddingHorizontal: 40,
+        justifyContent: 'flex-end',
+        width: Layout.window.width,
     },
     form: {
         justifyContent: 'center',
-        marginTop: 10,
         marginHorizontal: 40,
     },
     box: {

@@ -6,6 +6,7 @@ import { Colors } from '../../constants';
 import ErrorMessage from './ErrorMessage';
 
 function FormInput({
+    inputRef,
     containerStyle,
     style,
     isError,
@@ -15,6 +16,7 @@ function FormInput({
     rightIcon,
     onFocus,
     onBlur,
+    onSubmitEditing,
     ...rest
 }) {
     const [focus, setFocus] = useState(false);
@@ -33,6 +35,7 @@ function FormInput({
                 ]}
             >
                 <TextInput
+                    ref={inputRef}
                     {...rest}
                     placeholderTextColor={Colors.appGray2}
                     placeholder={placeholder}
@@ -46,6 +49,8 @@ function FormInput({
                         setFocus(false);
                         onBlur && onBlur();
                     }}
+                    blurOnSubmit={false}
+                    onSubmitEditing={onSubmitEditing}
                 />
                 {rightIcon}
             </View>

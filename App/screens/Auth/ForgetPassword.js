@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Keyboard, Platform } from 'react-native';
+import { View, StyleSheet, Keyboard, ScrollView, Platform } from 'react-native';
 
 import { withFirebase } from '../../helper/Firebase';
-import { Colors, NUSEmailSignature } from '../../constants';
+import { Colors, NUSEmailSignature, Layout } from '../../constants';
 import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
 
 class ForgetPassword extends Component {
@@ -50,6 +50,7 @@ class ForgetPassword extends Component {
     _keyboardDidHide() {
         this.setState({
             keyboardShown: false,
+            keyboardHeight: 0,
         });
     }
 
@@ -155,19 +156,23 @@ class ForgetPassword extends Component {
         const { nusEmail, emailError, generalError, isLoading, keyboardShown } = this.state;
 
         return (
-            <View
-                style={[
+            <ScrollView
+                contentContainerStyle={[
                     styles.container,
                     {
                         paddingBottom:
-                            Platform.OS === 'ios' && keyboardShown
-                                ? this.state.keyboardHeight
-                                : null,
+                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
                     },
                 ]}
+                keyboardShouldPersistTaps={'handled'}
             >
                 {this.renderResetSuccessPopup()}
-                <View style={[styles.contentContainer, { marginTop: keyboardShown ? 40 : 0 }]}>
+                <View
+                    style={{
+                        marginTop:
+                            keyboardShown && Platform.OS === 'ios' ? 150 : keyboardShown ? 100 : 0,
+                    }}
+                >
                     <View style={styles.textContainer}>
                         <MainText style={styles.title}>Trouble with logging in?</MainText>
                         <MainText style={styles.intro}>
@@ -190,6 +195,7 @@ class ForgetPassword extends Component {
                             value={nusEmail}
                             onChangeText={this.handleEmail.bind(this)}
                             onFocus={this.clearError.bind(this)}
+                            onSubmitEditing={this.validateInput.bind(this)}
                         />
                         <View>
                             <AuthButton
@@ -203,14 +209,14 @@ class ForgetPassword extends Component {
                         </View>
                     </View>
                 </View>
-                {keyboardShown ? null : (
+                {!keyboardShown && (
                     <View style={styles.bottom}>
                         <MainText style={styles.backLoginText} onPress={this.goToSignIn.bind(this)}>
                             Back to Login
                         </MainText>
                     </View>
                 )}
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -220,9 +226,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
         alignItems: 'center',
-    },
-    contentContainer: {
-        flex: 1,
         justifyContent: 'center',
     },
     title: {
@@ -230,17 +233,19 @@ const styles = StyleSheet.create({
         color: Colors.appGreen,
         textAlign: 'center',
         marginBottom: 10,
+        marginHorizontal: 15,
     },
     textContainer: {
-        marginHorizontal: 15,
+        width: Layout.window.width,
     },
     intro: {
         fontSize: 15,
         flexWrap: 'wrap',
         textAlign: 'center',
+        marginHorizontal: 30,
     },
     form: {
-        marginTop: 30,
+        marginTop: 10,
         marginHorizontal: 40,
     },
     bottom: {
