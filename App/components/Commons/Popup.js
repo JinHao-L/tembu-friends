@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, Dimensions, Platform } from 'react-native';
 import { Overlay, Button } from 'react-native-elements';
 
 import { MAIN_FONT, MainText } from './MyAppText';

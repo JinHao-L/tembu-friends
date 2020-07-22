@@ -7,17 +7,19 @@ import {
     StyleSheet,
     Modal,
     ActivityIndicator,
+    Platform,
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { Layout, Colors } from '../../constants';
 import { Icon } from 'react-native-elements';
-import { MAIN_FONT } from '../Commons';
+
+import { Layout, Colors } from '../../constants';
 
 let ratio = 2 / 3;
 
-const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
+function PostImage({ imgUrl, imgRatio, style, caption }) {
     ratio = imgRatio;
     const [imgVisibility, setImgVisibility] = useState(false);
+    const [focus, setFocus] = useState(false);
     return (
         <View>
             <TouchableOpacity
@@ -46,53 +48,50 @@ const PostImage = ({ imgUrl, imgRatio, style, caption }) => {
                     imageUrls={[{ url: imgUrl }]}
                     index={0}
                     onCancel={() => setImgVisibility(false)}
-                    renderHeader={() => (
-                        <View style={styles.row}>
-                            <Icon
-                                name={'clear'}
-                                onPress={() => setImgVisibility(false)}
-                                color={Colors.appBlack}
-                                containerStyle={{
-                                    top: 50,
-                                    left: 10,
-                                    position: 'absolute',
-                                    zIndex: 9999,
-                                    backgroundColor: Colors.appWhite,
-                                    borderRadius: 20,
-                                }}
-                            />
-                            <Icon
-                                name={'more-horiz'}
-                                color={Colors.appWhite}
-                                containerStyle={{
-                                    top: 50,
-                                    right: 10,
-                                    position: 'absolute',
-                                    zIndex: 9999,
-                                    borderRadius: 20,
-                                }}
-                            />
-                        </View>
-                    )}
-                    renderFooter={() => (
-                        <ScrollView
-                            style={{ maxHeight: Layout.window.height / 2 }}
-                            contentContainerStyle={styles.caption}
-                        >
-                            {caption()}
-                        </ScrollView>
-                    )}
-                    saveToLocalByLongPress={false}
+                    renderHeader={
+                        focus
+                            ? undefined
+                            : () => (
+                                  <Icon
+                                      name={'clear'}
+                                      onPress={() => setImgVisibility(false)}
+                                      color={Colors.appWhite}
+                                      containerStyle={{
+                                          top: Platform.OS === 'ios' ? 50 : 10,
+                                          right: 10,
+                                          position: 'absolute',
+                                          zIndex: 9999,
+                                          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                                          borderRadius: 20,
+                                          padding: 2,
+                                      }}
+                                  />
+                              )
+                    }
+                    onClick={() => setFocus(!focus)}
+                    renderFooter={
+                        focus
+                            ? undefined
+                            : () => (
+                                  <ScrollView
+                                      style={{ maxHeight: Layout.window.height / 2 }}
+                                      contentContainerStyle={styles.caption}
+                                  >
+                                      {caption()}
+                                  </ScrollView>
+                              )
+                    }
                     footerContainerStyle={{ width: '100%' }}
                     renderIndicator={() => null}
                     enableSwipeDown={true}
                     backgroundColor={'rgba(0, 0, 0, 0.8)'}
                     loadingRender={() => <ActivityIndicator color={Colors.appWhite} />}
+                    saveToLocalByLongPress={false}
                 />
             </Modal>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     image: {
@@ -102,13 +101,9 @@ const styles = StyleSheet.create({
     caption: {
         width: Layout.window.width,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        alignItems: 'center',
-        paddingVertical: 80,
+        paddingTop: 10,
+        paddingBottom: 50,
         paddingHorizontal: 20,
-    },
-    row: {
-        flex: 1,
-        flexDirection: 'row',
     },
 });
 

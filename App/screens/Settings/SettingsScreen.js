@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     },
     nextIcon: {
         width: 20,
-        height: 20,
+        height: 27,
     },
 });
 

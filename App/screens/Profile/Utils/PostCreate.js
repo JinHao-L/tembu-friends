@@ -395,13 +395,7 @@ class PostCreate extends Component {
                             accessible
                         >
                             <Icon name={'attachment'} color={Colors.appGray2} />
-                            <MainText
-                                style={{
-                                    color: Colors.appGray2,
-                                    fontFamily: MAIN_FONT,
-                                    fontSize: 15,
-                                }}
-                            >
+                            <MainText style={{ color: Colors.appGray2, fontSize: 15 }}>
                                 Add an image
                             </MainText>
                         </TouchableOpacity>
@@ -440,9 +434,10 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 0,
         paddingTop: 5,
-        paddingBottom: 10,
         fontFamily: MAIN_FONT,
         fontSize: 15,
+        fontWeight: '100',
+        paddingBottom: 20,
     },
     imgOptions: {
         borderStyle: 'dashed',
@@ -450,7 +445,6 @@ const styles = StyleSheet.create({
         borderColor: Colors.appGray2,
         borderRadius: 5,
         marginBottom: 5,
-        marginTop: 15,
 
         height: 50,
         width: '100%',

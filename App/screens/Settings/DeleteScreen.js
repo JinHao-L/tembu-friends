@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    Keyboard,
-    Platform,
-    ScrollView,
-} from 'react-native';
+import { View, StyleSheet, Keyboard, Platform, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 

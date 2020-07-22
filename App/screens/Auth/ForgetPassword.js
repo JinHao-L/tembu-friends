@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
+import { View, StyleSheet, Keyboard, Platform } from 'react-native';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature } from '../../constants';

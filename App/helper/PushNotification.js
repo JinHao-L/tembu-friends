@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
 import { Colors } from '../constants';
@@ -59,8 +60,6 @@ const PushNotifications = {
             priority: 'high',
             channelId: 'default',
         };
-
-        console.log(message);
 
         return fetch('https://exp.host/--/api/v2/push/send', {
             method: 'POST',

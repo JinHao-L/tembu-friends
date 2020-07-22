@@ -22,15 +22,16 @@ function GreenButton({
                 type === 'solid'
                     ? { backgroundColor: Colors.appGreen }
                     : type === 'outline'
-                    ? { borderColor: Colors.appGreen, borderWidth: 1 }
+                    ? { backgroundColor: Colors.appWhite }
                     : {},
+                minWidth ? { minWidth: minWidth } : {},
             ]}
             title={title}
             loading={loading}
             loadingProps={{ size: 12, marginTop: 2, marginBottom: 1, color: Colors.appGreen }}
             titleStyle={[
                 styles.friendButtonText,
-                type === 'outline' ? { color: Colors.appGreen } : {},
+                type === 'outline' ? { color: Colors.appGreen } : { color: Colors.appWhite },
             ]}
             type={type}
             onPress={onPress}
@@ -48,6 +49,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 0,
         alignItems: 'center',
+        borderColor: Colors.appGreen,
+        borderWidth: 1,
     },
     friendButtonText: {
         fontFamily: MAIN_FONT,

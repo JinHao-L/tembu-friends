@@ -207,19 +207,15 @@ class ModuleEdit extends Component {
             <Popup
                 imageType={'Warning'}
                 isVisible={this.state.exitConfirmationPopupVisible}
-                title={'Unsaved Changes'}
-                body={'Do you want to save your changes?'}
-                additionalButtonText={'Yes'}
+                title={'Discard Edits'}
+                body={'If you leave now, the edits you made will be discarded'}
+                additionalButtonText={'Discard'}
                 additionalButtonCall={() => {
-                    this.toggleExitConfirmationPopup();
-                    this.onConfirm();
-                }}
-                buttonText={'No'}
-                callback={() => {
                     this.toggleExitConfirmationPopup();
                     this.props.navigation.goBack();
                 }}
-                defaultCallback={this.toggleExitConfirmationPopup}
+                buttonText={'Continue Editing'}
+                callback={this.toggleExitConfirmationPopup}
             />
         );
     };

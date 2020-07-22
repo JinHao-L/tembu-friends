@@ -1,13 +1,5 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    Keyboard,
-    Text,
-    Platform,
-    ScrollView,
-} from 'react-native';
+import { View, StyleSheet, Keyboard, Text, Platform, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { withFirebase } from '../../helper/Firebase';

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
+import { FlatList, View, StyleSheet, Platform } from 'react-native';
 import { ListItem, Button, Overlay } from 'react-native-elements';
 
 import { Colors } from '../../constants';
@@ -37,7 +37,8 @@ class ReportsControl extends Component {
     renderItem = (item, index) => {
         return (
             <ListItem
-                containerStyle={styles.outerContainer}
+                containerStyle={styles.reportContainer}
+                contentContainerStyle={styles.reportContentContainer}
                 title={'Report ' + item.postId}
                 titleStyle={styles.title}
                 subtitle={'Reported by: ' + item.displayName}
@@ -177,22 +178,23 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
     },
-    outerContainer: {
+    reportContainer: {
         borderBottomWidth: 3,
         borderColor: Colors.appGray2,
         paddingVertical: 15,
+    },
+    reportContentContainer: {
+        paddingLeft: 5, //Align text to back-icon
     },
     title: {
         fontFamily: MAIN_FONT,
         fontSize: 15,
         color: Colors.appGreen,
-        paddingLeft: 5, //Align text to back-icon
     },
     subtitle: {
         fontFamily: MAIN_FONT,
         fontSize: 14,
         color: Colors.appBlack,
-        paddingLeft: 5, //Align text to back-icon
     },
     overlayContainer: {
         maxWidth: 400,

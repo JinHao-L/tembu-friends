@@ -10,6 +10,8 @@ class HomeScreen extends Component {
         canGoBack: false,
         canGoForward: false,
         currentUrl: 'https://tembusu.nus.edu.sg/',
+
+        loading: false,
     };
     webviewRef = React.createRef();
     homepage = 'https://tembusu.nus.edu.sg/';
@@ -21,7 +23,8 @@ class HomeScreen extends Component {
     };
 
     homeButtonHandler = () => {
-        this.setState({ currentUrl: this.homepage });
+        const redirectTo = 'window.location = "' + this.homepage + '"';
+        this.webviewRef.current.injectJavaScript(redirectTo);
     };
 
     frontButtonHandler = () => {
@@ -31,7 +34,7 @@ class HomeScreen extends Component {
     };
 
     render() {
-        const { canGoForward, canGoBack } = this.state;
+        const { canGoForward, canGoBack, loading } = this.state;
         return (
             <View style={styles.container}>
                 <WebView
@@ -43,10 +46,17 @@ class HomeScreen extends Component {
                     javaScriptEnabled={true}
                     ref={this.webviewRef}
                     onNavigationStateChange={(navState) => {
+                        if (navState.title === 'Service Unavailable') {
+                            const redirectTo =
+                                'window.location = "https://tembusu.nus.edu.sg/about"';
+                            this.webviewRef.current.injectJavaScript(redirectTo);
+                            return;
+                        }
                         this.setState({
                             canGoBack: navState.canGoBack,
                             canGoForward: navState.canGoForward,
                             currentUrl: navState.url,
+                            loading: navState.loading,
                         });
                     }}
                 />
@@ -56,7 +66,11 @@ class HomeScreen extends Component {
                         disabled={!canGoBack}
                         title={'Back'}
                     />
-                    <WebNavButton onPress={this.homeButtonHandler} title={'Home'} />
+                    <WebNavButton
+                        onPress={this.homeButtonHandler}
+                        title={'Home'}
+                        loading={loading}
+                    />
                     <WebNavButton
                         onPress={this.frontButtonHandler}
                         disabled={!canGoForward}

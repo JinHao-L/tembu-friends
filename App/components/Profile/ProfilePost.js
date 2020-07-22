@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
-import ReadMore from 'react-native-read-more-text';
+import ViewMoreText from 'react-native-view-more-text';
 
 import { Colors } from '../../constants';
 import { MainText } from '../Commons';
@@ -29,32 +29,32 @@ const formatDate = (timestamp) => {
     }
 };
 
-const truncateText = (text, textStyle) => {
+function TruncateText({ text, textStyle }) {
     return (
-        <ReadMore
+        <ViewMoreText
             numberOfLines={3}
-            renderTruncatedFooter={(handlePress) => (
+            renderViewMore={(handlePress) => (
                 <MainText style={{ color: Colors.appGreen }} onPress={handlePress}>
                     See More
                 </MainText>
             )}
-            renderRevealedFooter={(handlePress) => (
+            renderViewLess={(handlePress) => (
                 <MainText style={{ color: Colors.appGreen }} onPress={handlePress}>
                     See Less
                 </MainText>
             )}
         >
             <MainText style={textStyle}>{text}</MainText>
-        </ReadMore>
+        </ViewMoreText>
     );
-};
+}
 
-const ProfilePost = ({
+function ProfilePost({
     postDetails,
     onUserPress = () => null,
     postOptionsVisible = false,
     onPostOptionsPress,
-}) => {
+}) {
     const {
         body,
         is_private,
@@ -114,23 +114,47 @@ const ProfilePost = ({
                     />
                 )}
             </View>
-            <View>{truncateText(body)}</View>
+            <View>
+                <TruncateText text={body} />
+            </View>
             {imgUrl ? (
                 <PostImage
                     imgRatio={imgRatio}
                     imgUrl={imgUrl}
                     style={{ marginTop: 10 }}
-                    caption={() =>
-                        truncateText(body, {
-                            textAlign: 'center',
-                            color: Colors.appWhite,
-                        })
-                    }
+                    caption={() => (
+                        <View style={{ flex: 1 }}>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    marginBottom: 5,
+                                    alignItems: 'flex-end',
+                                }}
+                            >
+                                <MainText style={{ fontSize: 15, color: Colors.appWhite }}>
+                                    {sender_name}
+                                </MainText>
+                                <MainText style={{ fontSize: 12, color: Colors.appWhite }}>
+                                    {' • '}
+                                    {formatDate(time_posted)}
+                                </MainText>
+                            </View>
+                            <View>
+                                <TruncateText
+                                    text={body}
+                                    textStyle={{
+                                        textAlign: 'center',
+                                        color: Colors.appWhite,
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    )}
                 />
             ) : null}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     box: {
