@@ -216,7 +216,7 @@ class SignInScreen extends Component {
                         <Text
                             onPress={() => {
                                 this.state.user.sendEmailVerification().then(() => {
-                                    this.props.firebase.signOut().then((r) => {
+                                    this.props.firebase.signOut().then(() => {
                                         this.toggleNotVerifiedPopup();
                                         this.toggleEmailSentPopup();
                                     });

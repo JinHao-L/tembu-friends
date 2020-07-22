@@ -249,7 +249,11 @@ class NotificationScreen extends Component {
     };
 
     acceptFriend = (friendshipId, expoPushToken, pushPermissions) => {
-        this.setState({ pressed: true });
+        this.setState((prevState) => {
+            const updated = prevState.friendRequest;
+            updated.seen = true;
+            return { friendRequest: updated, pressed: true };
+        });
         return this.props.firebase
             .acceptFriendRequest(friendshipId, {
                 expoPushToken: expoPushToken,
@@ -259,7 +263,11 @@ class NotificationScreen extends Component {
             .catch((error) => console.log('Accept friend error', error));
     };
     removeFriend = (friendshipId) => {
-        this.setState({ pressed: true });
+        this.setState((prevState) => {
+            const updated = prevState.friendRequest;
+            updated.seen = true;
+            return { friendRequest: updated, pressed: true };
+        });
         return this.props.firebase
             .deleteFriend(friendshipId)
             .then(() => this.setState({ friendRequestStatus: 'Friend request deleted' }))

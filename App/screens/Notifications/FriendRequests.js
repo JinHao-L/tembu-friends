@@ -86,8 +86,13 @@ class FriendRequests extends Component {
     };
 
     acceptFriend = (index, friendshipId, expoPushToken, pushPermissions) => {
-        this.setState({
-            pressed: [...this.state.pressed, friendshipId],
+        this.setState((prevState) => {
+            const updated = prevState.requests;
+            updated[index].seen = true;
+            return {
+                requests: updated,
+                pressed: [...this.state.pressed, friendshipId],
+            };
         });
         return this.props.firebase
             .acceptFriendRequest(friendshipId, {
@@ -109,8 +114,13 @@ class FriendRequests extends Component {
     };
 
     removeFriend = (index, friendshipId) => {
-        this.setState({
-            pressed: [...this.state.pressed, friendshipId],
+        this.setState((prevState) => {
+            const updated = prevState.requests;
+            updated[index].seen = true;
+            return {
+                requests: updated,
+                pressed: [...this.state.pressed, friendshipId],
+            };
         });
         return this.props.firebase
             .deleteFriend(friendshipId)

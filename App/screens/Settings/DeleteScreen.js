@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    Keyboard,
-    Platform,
-    ScrollView,
-    KeyboardAvoidingView,
-} from 'react-native';
+import { View, StyleSheet, Keyboard, Platform, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -83,7 +76,7 @@ class SignUpScreen extends Component {
         });
     }
 
-    _keyboardDidHide(event) {
+    _keyboardDidHide() {
         this.setState({
             keyboardShown: false,
             keyboardHeight: 0,
