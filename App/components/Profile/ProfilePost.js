@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
 import ViewMoreText from 'react-native-view-more-text';
 
-import { Colors } from '../../constants';
+import { Colors, Layout } from '../../constants';
 import { MainText } from '../Commons';
 import PostImage from './PostImage';
 
@@ -150,15 +150,15 @@ function ProfilePost({
                                     </MainText>
                                 )}
                             </View>
-                            <View>
+                            <ScrollView style={{ maxHeight: Layout.window.height / 2 }}>
                                 <TruncateText
                                     text={body}
                                     textStyle={{
-                                        textAlign: 'center',
+                                        textAlign: 'left',
                                         color: Colors.appWhite,
                                     }}
                                 />
-                            </View>
+                            </ScrollView>
                         </View>
                     )}
                 />

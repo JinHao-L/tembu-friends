@@ -73,15 +73,21 @@ function PostImage({ imgUrl, imgRatio, style, caption }) {
                         focus
                             ? undefined
                             : () => (
-                                  <ScrollView
-                                      style={{ maxHeight: Layout.window.height / 2 }}
-                                      contentContainerStyle={styles.caption}
+                                  <View
+                                      style={{
+                                          paddingBottom: 50,
+                                          paddingTop: 10,
+                                          paddingHorizontal: 20,
+                                      }}
                                   >
                                       {caption()}
-                                  </ScrollView>
+                                  </View>
                               )
                     }
-                    footerContainerStyle={{ width: '100%' }}
+                    footerContainerStyle={{
+                        width: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    }}
                     renderIndicator={() => null}
                     enableSwipeDown={true}
                     backgroundColor={'rgba(0, 0, 0, 0.8)'}
@@ -100,9 +106,7 @@ const styles = StyleSheet.create({
     },
     caption: {
         width: Layout.window.width,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         paddingTop: 10,
-        paddingBottom: 50,
         paddingHorizontal: 20,
     },
 });
