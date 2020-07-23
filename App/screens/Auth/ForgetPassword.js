@@ -11,7 +11,7 @@ import {
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
+import { AuthButton, FormInput, ErrorMessage, MainText, Popup, LogoText } from '../../components';
 
 class ForgetPassword extends Component {
     state = {
@@ -29,49 +29,49 @@ class ForgetPassword extends Component {
         resetSuccessPopup: false,
     };
 
-    clearInputs() {
+    clearInputs = () => {
         this.setState({
             nusEmail: '',
             emailError: '',
             generalError: '',
         });
-    }
+    };
 
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
-            this._keyboardDidShow.bind(this)
+            this._keyboardDidShow
         );
         this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
-            this._keyboardDidHide.bind(this)
+            this._keyboardDidHide
         );
     }
 
-    _keyboardDidShow(event) {
+    _keyboardDidShow = (event) => {
         this.setState({
             keyboardShown: true,
             keyboardHeight: event.endCoordinates.height,
         });
-    }
+    };
 
-    _keyboardDidHide() {
+    _keyboardDidHide = () => {
         this.setState({
             keyboardShown: false,
             keyboardHeight: 0,
         });
-    }
+    };
 
     componentWillUnmount() {
         this.keyboardDidHideListener.remove();
         this.keyboardDidShowListener.remove();
     }
 
-    onResetSuccess() {
+    onResetSuccess = () => {
         this.toggleResetSuccessPopup();
-    }
+    };
 
-    onResetFailure(error) {
+    onResetFailure = (error) => {
         let errorCode = error.code;
         let errorMessage = error.message;
 
@@ -93,44 +93,45 @@ class ForgetPassword extends Component {
             this.setState({ generalError: 'Unknown error' });
             console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
-    }
+    };
 
-    goToSignIn() {
-        this.clearInputs.bind(this)();
+    goToSignIn = () => {
+        this.clearInputs();
         this.props.navigation.navigate('SignIn');
-    }
+    };
 
-    handleEmail(text) {
+    handleEmail = (text) => {
         this.setState({ nusEmail: text });
-    }
+    };
 
-    clearError() {
+    clearError = () => {
         this.setState({
             emailError: '',
         });
-    }
+    };
 
-    async resetPassword() {
+    resetPassword = async () => {
         const { nusEmail } = this.state;
         this.setState({ isLoading: true });
         try {
             await this.props.firebase.sendPasswordReset(nusEmail);
             console.log('Password reset email sent successfully');
-            this.onResetSuccess.bind(this)();
+            this.onResetSuccess();
         } catch (error) {
-            this.onResetFailure.bind(this)(error);
+            this.onResetFailure(error);
         } finally {
             this.setState({ isLoading: false });
         }
-    }
+    };
 
-    validateInput() {
+    validateInput = () => {
+        Keyboard.dismiss();
         if (!String(this.state.nusEmail).includes(NUSEmailSignature)) {
             this.setState({ emailError: 'Invalid email domain' });
             return null;
         }
-        return this.resetPassword.bind(this)();
-    }
+        return this.resetPassword();
+    };
 
     renderResetSuccessPopup = () => {
         return (
@@ -179,17 +180,20 @@ class ForgetPassword extends Component {
                         {this.renderResetSuccessPopup()}
                         {!keyboardShown && (
                             <View style={styles.bottom}>
-                                <MainText
-                                    style={styles.backLoginText}
-                                    onPress={this.goToSignIn.bind(this)}
-                                >
+                                <MainText style={styles.backLoginText} onPress={this.goToSignIn}>
                                     Back to Login
                                 </MainText>
                             </View>
                         )}
                         <View style={{ marginBottom: 5 }}>
                             <View style={styles.textContainer}>
-                                <MainText style={styles.title}>Trouble with logging in?</MainText>
+                                <MainText
+                                    style={styles.title}
+                                    adjustsFontSizeToFit={true}
+                                    numberOfLines={1}
+                                >
+                                    Trouble with logging in?
+                                </MainText>
                                 <MainText style={styles.intro} adjustsFontSizeToFit={true}>
                                     Enter your email address and we'll send you a link to reset your
                                     password
@@ -208,12 +212,12 @@ class ForgetPassword extends Component {
                                     textContentType="emailAddress"
                                     autoCapitalize="none"
                                     value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onFocus={this.clearError.bind(this)}
-                                    onSubmitEditing={this.validateInput.bind(this)}
+                                    onChangeText={this.handleEmail}
+                                    onFocus={this.clearError}
+                                    onSubmitEditing={this.validateInput}
                                 />
                                 <AuthButton
-                                    onPress={this.validateInput.bind(this)}
+                                    onPress={this.validateInput}
                                     style={styles.button}
                                     loading={isLoading}
                                 >
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontSize: 25,
+        fontSize: 100,
         color: Colors.appGreen,
         textAlign: 'center',
         marginBottom: 10,

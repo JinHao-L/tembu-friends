@@ -101,10 +101,17 @@ class Friends extends Component {
             .getUserData(uid)
             .then((userData) => {
                 const { expoPushToken, pushPermissions } = userData;
-                return this.props.firebase.sendFriendRequest(uid, {
-                    expoPushToken: expoPushToken,
-                    pushPermissions: pushPermissions,
-                });
+                return this.props.firebase.sendFriendRequest(
+                    uid,
+                    {
+                        expoPushToken: expoPushToken,
+                        pushPermissions: pushPermissions,
+                    },
+                    {
+                        expoPushToken: this.props.userData.expoPushToken,
+                        pushPermissions: this.props.userData.pushPermissions,
+                    }
+                );
             })
             .catch((error) => console.log('Friend request error', error))
             .finally(() => {

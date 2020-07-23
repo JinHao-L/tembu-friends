@@ -218,10 +218,11 @@ const Firebase = {
     },
     sendFriendRequest: (
         uid,
-        notificationDetails = { expoPushToken: null, pushPermissions: null }
+        targetNotificationDetails = { expoPushToken: null, pushPermissions: null },
+        yourNotificationDetails = { expoPushToken: null, pushPermissions: null }
     ) => {
         const friendRequestFn = firebase.functions().httpsCallable('friendRequest');
-        const { expoPushToken, pushPermissions } = notificationDetails;
+        const { expoPushToken, pushPermissions } = yourNotificationDetails;
         let request;
         if (expoPushToken && !pushPermissions?.disableFriendNotification) {
             request = { uid: uid, expoPushToken: expoPushToken };
@@ -231,11 +232,14 @@ const Firebase = {
 
         return friendRequestFn(request)
             .then(() => {
-                if (request.expoPushToken) {
+                if (
+                    targetNotificationDetails.expoPushToken &&
+                    !targetNotificationDetails.pushPermissions?.disableFriendNotification
+                ) {
                     const displayName = Firebase.getCurrentUser().displayName;
                     return PushNotifications.sendFriendRequestNotification(
                         displayName,
-                        expoPushToken
+                        targetNotificationDetails.expoPushToken
                     );
                 }
             })

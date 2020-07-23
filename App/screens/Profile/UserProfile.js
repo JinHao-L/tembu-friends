@@ -178,10 +178,17 @@ class UserProfile extends Component {
         });
         const { uid, expoPushToken, pushPermissions } = this.state.profileData;
         return this.props.firebase
-            .sendFriendRequest(uid, {
-                expoPushToken: expoPushToken,
-                pushPermissions: pushPermissions,
-            })
+            .sendFriendRequest(
+                uid,
+                {
+                    expoPushToken: expoPushToken,
+                    pushPermissions: pushPermissions,
+                },
+                {
+                    expoPushToken: this.props.userData.expoPushToken,
+                    pushPermissions: this.props.userData.pushPermissions,
+                }
+            )
             .catch((error) => console.log('Friend request error', error))
             .finally(() => {
                 this.setState({
@@ -277,7 +284,7 @@ class UserProfile extends Component {
         );
     };
     renderWritePost = () => {
-        const { firstName } = this.props.userData;
+        const { firstName } = this.state.profileData;
         return (
             <View>
                 <View

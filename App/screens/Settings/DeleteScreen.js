@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    Keyboard,
-    Platform,
-    ScrollView,
-    TouchableWithoutFeedback,
-} from 'react-native';
+import { View, StyleSheet, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -15,7 +8,7 @@ import { Colors, Layout } from '../../constants';
 import { AuthButton, FormInput, MainText, ErrorMessage } from '../../components';
 
 const mapStateToProps = (state) => {
-    return { friendSubscriber: state.friendSubscriber };
+    return { userData: state.userData, friendSubscriber: state.friendSubscriber };
 };
 
 class SignUpScreen extends Component {
@@ -41,65 +34,58 @@ class SignUpScreen extends Component {
     passwordRef = React.createRef();
     confirmationRef = React.createRef();
 
-    clearEmailError() {
+    clearError = () => {
         this.setState({
             emailError: '',
-        });
-    }
-    clearPasswordError() {
-        this.setState({
             passwordError: '',
-        });
-    }
-    clearConfirmationError() {
-        this.setState({
             confirmationError: '',
+            generalError: '',
         });
-    }
+    };
 
-    clearInputs() {
+    clearInputs = () => {
         this.setState({
             nusEmail: '',
             password: '',
             confirmation: '',
         });
-    }
+    };
 
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
-            this._keyboardDidShow.bind(this)
+            this._keyboardDidShow
         );
         this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
-            this._keyboardDidHide.bind(this)
+            this._keyboardDidHide
         );
     }
 
-    _keyboardDidShow(event) {
+    _keyboardDidShow = (event) => {
         this.setState({
             keyboardShown: true,
             keyboardHeight: event.endCoordinates.height,
         });
-    }
+    };
 
-    _keyboardDidHide() {
+    _keyboardDidHide = () => {
         this.setState({
             keyboardShown: false,
             keyboardHeight: 0,
         });
-    }
+    };
 
     componentWillUnmount() {
         this.keyboardDidHideListener.remove();
         this.keyboardDidShowListener.remove();
     }
 
-    onDeleteSuccess() {
-        this.clearInputs.bind(this)();
-    }
+    onDeleteSuccess = () => {
+        this.clearInputs();
+    };
 
-    onDeleteFailure(error) {
+    onDeleteFailure = (error) => {
         let errorCode = error.code;
         let errorMessage = error.message;
 
@@ -122,59 +108,58 @@ class SignUpScreen extends Component {
                 console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
                 break;
         }
-    }
+    };
 
-    handlePasswordVisibility() {
+    handlePasswordVisibility = () => {
         this.setState((prevState) => ({
             passwordIcon: prevState.passwordIcon === 'ios-eye' ? 'ios-eye-off' : 'ios-eye',
             passwordHidden: !prevState.passwordHidden,
         }));
-    }
-    handleEmail(text) {
+    };
+    handleEmail = (text) => {
         this.setState({ nusEmail: text });
-    }
-    handlePassword(text) {
+    };
+    handlePassword = (text) => {
         this.setState({
             password: text,
         });
-    }
-    handleConfirmation(text) {
+    };
+    handleConfirmation = (text) => {
         this.setState({
             confirmation: text,
         });
-    }
+    };
 
-    async delete() {
+    delete = async () => {
         const { nusEmail, password } = this.state;
         this.setState({ isLoading: true });
 
-        try {
-            const user = await this.props.firebase.getCurrentUser();
+        const user = this.props.firebase.getCurrentUser();
 
-            console.log('Get credential');
-            const credential = await this.props.firebase.createCredential(nusEmail, password);
+        console.log('Get credential');
+        const credential = this.props.firebase.createCredential(nusEmail, password);
 
-            console.log('Re-authenticating');
-            await user.reauthenticateWithCredential(credential);
+        console.log('Re-authenticating');
+        return user
+            .reauthenticateWithCredential(credential)
+            .then((result) => {
+                if (result) {
+                    this.props.friendSubscriber();
+                    console.log('Deleting');
+                    return user.delete();
+                }
+            })
+            .then(() => {
+                console.log('Cleaning Up');
+                this.onDeleteSuccess();
+                console.log('Signing out');
+                return this.props.firebase.signOut();
+            })
+            .catch(this.onDeleteFailure)
+            .finally(() => this.setState({ isLoading: false }));
+    };
 
-            console.log('Deleting');
-            // await this.props.firebase.deleteUser(user.uid);
-            await user.delete();
-
-            console.log('Cleaning Up');
-            this.props.friendSubscriber();
-            this.onDeleteSuccess.bind(this)();
-
-            console.log('Signing out');
-            await this.props.firebase.signOut;
-        } catch (error) {
-            this.onDeleteFailure.bind(this)(error);
-        } finally {
-            this.setState({ isLoading: false });
-        }
-    }
-
-    validateInputAndDelete() {
+    validateInputAndDelete = () => {
         Keyboard.dismiss();
         const {
             password,
@@ -198,12 +183,14 @@ class SignUpScreen extends Component {
                 confirmation: '',
                 confirmationError: "Type 'DELETE' to confirm deletion",
             });
+            return null;
         }
         console.log('Valid Input');
-        if (!(emailError || passwordError || confirmationError)) {
-            return this.delete.bind(this)();
+        if (!emailError && !passwordError && !confirmationError) {
+            // console.log('delete');
+            return this.delete();
         }
-    }
+    };
 
     render() {
         const {
@@ -251,8 +238,8 @@ class SignUpScreen extends Component {
                                     textContentType="emailAddress"
                                     autoCapitalize="none"
                                     value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onFocus={this.clearEmailError.bind(this)}
+                                    onChangeText={this.handleEmail}
+                                    onFocus={this.clearError}
                                     onSubmitEditing={() => this.passwordRef.focus()}
                                 />
 
@@ -265,8 +252,8 @@ class SignUpScreen extends Component {
                                     autoCapitalize="none"
                                     returnKeyType="next"
                                     textContentType="password"
-                                    onChangeText={this.handlePassword.bind(this)}
-                                    onFocus={this.clearPasswordError.bind(this)}
+                                    onChangeText={this.handlePassword}
+                                    onFocus={this.clearError}
                                     secureTextEntry={passwordHidden}
                                     value={password}
                                     rightIcon={
@@ -276,7 +263,7 @@ class SignUpScreen extends Component {
                                             size={28}
                                             color={Colors.appGray2}
                                             containerStyle={{ marginRight: 5 }}
-                                            onPress={this.handlePasswordVisibility.bind(this)}
+                                            onPress={this.handlePasswordVisibility}
                                         />
                                     }
                                     onSubmitEditing={() => this.confirmationRef.focus()}
@@ -290,13 +277,13 @@ class SignUpScreen extends Component {
                                     autoCapitalize="none"
                                     returnKeyType="done"
                                     textContentType="none"
-                                    onChangeText={this.handleConfirmation.bind(this)}
-                                    onFocus={this.clearConfirmationError.bind(this)}
+                                    onChangeText={this.handleConfirmation}
+                                    onFocus={this.clearError}
                                     value={confirmation}
-                                    onSubmitEditing={this.validateInputAndDelete.bind(this)}
+                                    onSubmitEditing={this.validateInputAndDelete}
                                 />
                                 <AuthButton
-                                    onPress={this.validateInputAndDelete.bind(this)}
+                                    onPress={this.validateInputAndDelete}
                                     style={styles.button}
                                     loading={isLoading}
                                 >

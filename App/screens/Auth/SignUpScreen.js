@@ -49,7 +49,7 @@ class SignUpScreen extends Component {
     passwordRef = React.createRef();
     password2Ref = React.createRef();
 
-    clearInputs() {
+    clearInputs = () => {
         this.setState({
             firstName: '',
             lastName: '',
@@ -57,47 +57,47 @@ class SignUpScreen extends Component {
             password: '',
             confirmPassword: '',
         });
-    }
+    };
 
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
-            this._keyboardDidShow.bind(this)
+            this._keyboardDidShow
         );
         this.keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
-            this._keyboardDidHide.bind(this)
+            this._keyboardDidHide
         );
     }
 
-    _keyboardDidShow(event) {
+    _keyboardDidShow = (event) => {
         this.setState({
             keyboardShown: true,
             keyboardHeight: event.endCoordinates.height,
         });
-    }
+    };
 
-    _keyboardDidHide() {
+    _keyboardDidHide = () => {
         this.setState({
             keyboardShown: false,
             keyboardHeight: 0,
         });
-    }
+    };
 
     componentWillUnmount() {
         this.keyboardDidHideListener.remove();
         this.keyboardDidShowListener.remove();
     }
 
-    onSignUpSuccess() {
+    onSignUpSuccess = () => {
         this.toggleEmailSentPopup();
         this.setState({
             password: '',
             confirmPassword: '',
         });
-    }
+    };
 
-    onSignUpFailure(error) {
+    onSignUpFailure = (error) => {
         let errorCode = error.code;
         let errorMessage = error.message;
 
@@ -120,80 +120,80 @@ class SignUpScreen extends Component {
             this.setState({ generalError: 'Unknown error: ' + errorCode });
             console.warn('Unknown error: ' + errorCode + ' ' + errorMessage);
         }
-    }
+    };
 
-    goToSignIn() {
-        this.clearInputs.bind(this)();
+    goToSignIn = () => {
+        this.clearInputs();
         this.props.navigation.navigate('SignIn');
-    }
+    };
 
-    handlePasswordVisibility() {
+    handlePasswordVisibility = () => {
         this.setState((prevState) => ({
             passwordIcon: prevState.passwordIcon === 'ios-eye' ? 'ios-eye-off' : 'ios-eye',
             passwordHidden: !prevState.passwordHidden,
         }));
-    }
+    };
 
-    handleConfirmPasswordVisibility() {
+    handleConfirmPasswordVisibility = () => {
         this.setState((prevState) => ({
             confirmPasswordIcon:
                 prevState.confirmPasswordIcon === 'ios-eye' ? 'ios-eye-off' : 'ios-eye',
             confirmPasswordHidden: !prevState.confirmPasswordHidden,
         }));
-    }
+    };
 
-    handleFirstName(text) {
+    handleFirstName = (text) => {
         this.setState({ firstName: text });
-    }
+    };
 
-    handleLastName(text) {
+    handleLastName = (text) => {
         this.setState({ lastName: text });
-    }
+    };
 
-    handleEmail(text) {
+    handleEmail = (text) => {
         this.setState({ nusEmail: text });
-    }
+    };
 
-    handlePassword(text) {
+    handlePassword = (text) => {
         this.setState({
             password: text,
             passwordError: '',
         });
-    }
+    };
 
-    handleConfirmPassword(text) {
+    handleConfirmPassword = (text) => {
         this.setState({ confirmPassword: text });
-    }
+    };
 
-    clearFirstNameError() {
+    clearFirstNameError = () => {
         this.setState({
             firstNameError: '',
             generalError: '',
         });
-    }
+    };
 
-    clearLastNameError() {
+    clearLastNameError = () => {
         this.setState({
             lastNameError: '',
             generalError: '',
         });
-    }
+    };
 
-    clearEmailError() {
+    clearEmailError = () => {
         this.setState({
             emailError: '',
             generalError: '',
         });
-    }
+    };
 
-    clearPasswordError() {
+    clearPasswordError = () => {
         this.setState({
             passwordError: '',
             generalError: '',
         });
-    }
+    };
 
-    async signUp() {
+    signUp = async () => {
         const { nusEmail, password, firstName, lastName } = this.state;
         this.setState({ isLoading: true });
 
@@ -219,17 +219,17 @@ class SignUpScreen extends Component {
                 console.log('Auto sign out');
             })
             .then(() => {
-                this.onSignUpSuccess.bind(this)();
+                this.onSignUpSuccess();
             })
             .catch((error) => {
-                this.onSignUpFailure.bind(this)(error);
+                this.onSignUpFailure(error);
             })
             .finally(() => {
                 this.setState({ isLoading: false });
             });
-    }
+    };
 
-    validateInputAndSignUp() {
+    validateInputAndSignUp = () => {
         Keyboard.dismiss();
         const {
             password,
@@ -289,8 +289,8 @@ class SignUpScreen extends Component {
         }
 
         console.log('Inputs valid');
-        return this.signUp.bind(this)();
-    }
+        return this.signUp();
+    };
 
     toggleEmailSentPopup = () => {
         this.setState({
@@ -383,10 +383,7 @@ class SignUpScreen extends Component {
                             <View style={styles.bottom}>
                                 <MainText style={styles.haveAccountText}>
                                     Already have an account?{' '}
-                                    <Text
-                                        style={styles.hyperlink}
-                                        onPress={this.goToSignIn.bind(this)}
-                                    >
+                                    <Text style={styles.hyperlink} onPress={this.goToSignIn}>
                                         Login here
                                     </Text>
                                 </MainText>
@@ -412,8 +409,8 @@ class SignUpScreen extends Component {
                                         textContentType="name"
                                         autoCapitalize="words"
                                         value={firstName}
-                                        onChangeText={this.handleFirstName.bind(this)}
-                                        onFocus={this.clearFirstNameError.bind(this)}
+                                        onChangeText={this.handleFirstName}
+                                        onFocus={this.clearFirstNameError}
                                         onSubmitEditing={() => this.lastNameRef.focus()}
                                     />
 
@@ -431,8 +428,8 @@ class SignUpScreen extends Component {
                                         textContentType="name"
                                         autoCapitalize="words"
                                         value={lastName}
-                                        onChangeText={this.handleLastName.bind(this)}
-                                        onFocus={this.clearLastNameError.bind(this)}
+                                        onChangeText={this.handleLastName}
+                                        onFocus={this.clearLastNameError}
                                         onSubmitEditing={() => this.emailRef.focus()}
                                     />
                                 </View>
@@ -448,8 +445,8 @@ class SignUpScreen extends Component {
                                     textContentType="emailAddress"
                                     autoCapitalize="none"
                                     value={nusEmail}
-                                    onChangeText={this.handleEmail.bind(this)}
-                                    onFocus={this.clearEmailError.bind(this)}
+                                    onChangeText={this.handleEmail}
+                                    onFocus={this.clearEmailError}
                                     onSubmitEditing={() => this.passwordRef.focus()}
                                 />
 
@@ -461,8 +458,8 @@ class SignUpScreen extends Component {
                                     autoCapitalize="none"
                                     returnKeyType="next"
                                     textContentType="none"
-                                    onChangeText={this.handlePassword.bind(this)}
-                                    onFocus={this.clearPasswordError.bind(this)}
+                                    onChangeText={this.handlePassword}
+                                    onFocus={this.clearPasswordError}
                                     secureTextEntry={passwordHidden}
                                     value={password}
                                     rightIcon={
@@ -472,7 +469,7 @@ class SignUpScreen extends Component {
                                             size={28}
                                             color={Colors.appGray2}
                                             containerStyle={{ marginRight: 5 }}
-                                            onPress={this.handlePasswordVisibility.bind(this)}
+                                            onPress={this.handlePasswordVisibility}
                                         />
                                     }
                                     onSubmitEditing={() => this.password2Ref.focus()}
@@ -486,8 +483,8 @@ class SignUpScreen extends Component {
                                     autoCapitalize="none"
                                     returnKeyType="done"
                                     textContentType="none"
-                                    onChangeText={this.handleConfirmPassword.bind(this)}
-                                    onFocus={this.clearPasswordError.bind(this)}
+                                    onChangeText={this.handleConfirmPassword}
+                                    onFocus={this.clearPasswordError}
                                     secureTextEntry={confirmPasswordHidden}
                                     value={confirmPassword}
                                     rightIcon={
@@ -497,15 +494,13 @@ class SignUpScreen extends Component {
                                             size={28}
                                             color={Colors.appGray2}
                                             containerStyle={{ marginRight: 5 }}
-                                            onPress={this.handleConfirmPasswordVisibility.bind(
-                                                this
-                                            )}
+                                            onPress={this.handleConfirmPasswordVisibility}
                                         />
                                     }
-                                    onSubmitEditing={this.validateInputAndSignUp.bind(this)}
+                                    onSubmitEditing={this.validateInputAndSignUp}
                                 />
                                 <AuthButton
-                                    onPress={this.validateInputAndSignUp.bind(this)}
+                                    onPress={this.validateInputAndSignUp}
                                     style={styles.button}
                                     loading={isLoading}
                                 >

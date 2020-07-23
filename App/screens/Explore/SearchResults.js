@@ -49,10 +49,17 @@ class SearchResults extends Component {
             buttonLoading: [...this.state.buttonLoading, uid],
         });
         return this.props.firebase
-            .sendFriendRequest(uid, {
-                expoPushToken: expoPushToken,
-                pushPermissions: pushPermissions,
-            })
+            .sendFriendRequest(
+                uid,
+                {
+                    expoPushToken: expoPushToken,
+                    pushPermissions: pushPermissions,
+                },
+                {
+                    expoPushToken: this.props.userData.expoPushToken,
+                    pushPermissions: this.props.userData.pushPermissions,
+                }
+            )
             .catch((error) => console.log('Friend request error', error))
             .finally(() => {
                 this.setState({

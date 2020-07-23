@@ -140,13 +140,12 @@ class ExploreScreen extends Component {
     };
     searchByName = (name) => {
         this.setState({ loading: true });
-        const name_title = this.toTitleCase(name);
-        console.log('Searching by name:', name_title);
+        console.log('Searching by name:', name);
         return this.props.firebase
             .getUserCollection()
             .orderBy('displayName', 'asc')
-            .startAt(name_title)
-            .endAt(name_title + '\uf8ff')
+            .startAt(name)
+            .endAt(name + '\uf8ff')
             .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
@@ -198,13 +197,12 @@ class ExploreScreen extends Component {
     };
     searchByRole = (role) => {
         this.setState({ loading: true });
-        const role_title = this.toTitleCase(role);
-        console.log('Searching by role:', role_title);
+        console.log('Searching by role:', role);
         return this.props.firebase
             .getUserCollection()
             .orderBy('role', 'asc')
-            .startAt(role_title)
-            .endAt(role_title + '\uf8ff')
+            .startAt(role)
+            .endAt(role + '\uf8ff')
             .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
@@ -258,14 +256,6 @@ class ExploreScreen extends Component {
             .finally(() => {
                 this.loaded.room = true;
             });
-    };
-
-    toTitleCase = (text) => {
-        const arr = text.split(' ');
-        for (let i = 0; i < arr.length; i++) {
-            arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-        }
-        return arr.join(' ');
     };
 
     render() {

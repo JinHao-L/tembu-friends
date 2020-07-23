@@ -28,7 +28,12 @@ function GreenButton({
             ]}
             title={title}
             loading={loading}
-            loadingProps={{ size: 12, marginTop: 2, marginBottom: 1, color: Colors.appGreen }}
+            loadingProps={{
+                size: 12,
+                marginTop: 2,
+                marginBottom: 1,
+                color: type === 'solid' ? Colors.appWhite : Colors.appGreen,
+            }}
             titleStyle={[
                 styles.friendButtonText,
                 type === 'outline' ? { color: Colors.appGreen } : { color: Colors.appWhite },

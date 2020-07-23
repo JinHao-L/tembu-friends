@@ -100,7 +100,7 @@ class FriendRequests extends Component {
                 pushPermissions: pushPermissions,
             })
             .then(() => {
-                this.state.requests[index].respondStatus = 'Friend request accepted';
+                this.state.requests[index].respondStatus = 'Friend request accepted.';
                 this.state.requests[index].seen = true;
                 this.setState({
                     requests: [
@@ -125,7 +125,7 @@ class FriendRequests extends Component {
         return this.props.firebase
             .deleteFriend(friendshipId)
             .then(() => {
-                this.state.requests[index].respondStatus = 'Friend request deleted';
+                this.state.requests[index].respondStatus = 'Friend request deleted.';
                 this.state.requests[index].seen = true;
                 this.setState({
                     requests: [
