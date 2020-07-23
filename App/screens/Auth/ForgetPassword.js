@@ -212,19 +212,17 @@ class ForgetPassword extends Component {
                                     onFocus={this.clearError.bind(this)}
                                     onSubmitEditing={this.validateInput.bind(this)}
                                 />
-                                <View>
-                                    <AuthButton
-                                        onPress={this.validateInput.bind(this)}
-                                        style={styles.button}
-                                        loading={isLoading}
-                                    >
-                                        Next
-                                    </AuthButton>
-                                    <ErrorMessage
-                                        error={generalError}
-                                        style={{ textAlign: 'center' }}
-                                    />
-                                </View>
+                                <AuthButton
+                                    onPress={this.validateInput.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Next
+                                </AuthButton>
+                                <ErrorMessage
+                                    error={generalError}
+                                    style={{ textAlign: 'center' }}
+                                />
                             </View>
                         </View>
                     </View>

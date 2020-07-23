@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
         color: Colors.appGray4,
         fontSize: 12,
         textAlign: 'center',
-        marginBottom: 5,
+        marginVertical: 5,
     },
     optionsTitle: {
         fontFamily: MAIN_FONT,

@@ -22,6 +22,9 @@ class UserListScreen extends Component {
         targetUser: null,
         isAdmin: null,
         isVerified: null,
+        isDisabled: null,
+        activated: null,
+        index: null,
     };
     users = [];
 
@@ -78,13 +81,26 @@ class UserListScreen extends Component {
         }
     };
 
-    renderUser = (user) => {
-        const { uid, photoURL, displayName, email, emailVerified, isAdmin, isVerified } = user;
+    renderUser = (user, index) => {
+        const {
+            uid,
+            photoURL,
+            displayName,
+            email,
+            emailVerified,
+            isAdmin,
+            isVerified,
+            isDisabled,
+        } = user;
         return (
             <ListItem
-                containerStyle={styles.outerContainer}
+                containerStyle={[
+                    styles.outerContainer,
+                    isDisabled && { backgroundColor: 'rgba(255, 0, 0, 0.25)' },
+                ]}
                 title={displayName || 'undefined'}
                 titleStyle={styles.titleStyle}
+                underlayColor={isDisabled ? Colors.appGray4 : undefined}
                 subtitle={
                     <MainText style={styles.subtitleStyle}>
                         {email}
@@ -108,7 +124,9 @@ class UserListScreen extends Component {
                         targetUser: uid,
                         isAdmin: isAdmin,
                         isVerified: isVerified,
+                        isDisabled: isDisabled,
                         activated: emailVerified,
+                        index: index,
                     });
                 }}
             />
@@ -141,7 +159,8 @@ class UserListScreen extends Component {
         );
     };
     renderAdminSettings = () => {
-        const { targetUser, isAdmin, isVerified, activated } = this.state;
+        const { targetUser, isAdmin, isVerified, activated, isDisabled, index } = this.state;
+        const allowed = activated && !isDisabled;
         return (
             <Popup
                 imageType={'Custom'}
@@ -167,7 +186,7 @@ class UserListScreen extends Component {
                             }}
                         />
                         <Popup.Separator />
-                        {!isAdmin && activated && (
+                        {!isAdmin && allowed && (
                             <View>
                                 <Button
                                     title={'Make Admin'}
@@ -182,6 +201,8 @@ class UserListScreen extends Component {
                                     buttonStyle={{ justifyContent: 'flex-start' }}
                                     containerStyle={{ borderRadius: 0 }}
                                     onPress={() => {
+                                        this.users[index].isAdmin = true;
+                                        this.setSearchValue(this.state.searchValue);
                                         return this.props.firebase
                                             .updateUserData(targetUser, { admin: true })
                                             .then(this.closeAdminSettingsPopup);
@@ -191,31 +212,61 @@ class UserListScreen extends Component {
                             </View>
                         )}
                         {isVerified ? (
+                            <View>
+                                <Button
+                                    title={'Remove Verification'}
+                                    type={'clear'}
+                                    titleStyle={styles.iconTitleStyle}
+                                    icon={{
+                                        name: 'remove-circle',
+                                        color: Colors.appRed,
+                                        size: 25,
+                                        containerStyle: { paddingHorizontal: 10 },
+                                    }}
+                                    buttonStyle={{ justifyContent: 'flex-start' }}
+                                    containerStyle={{ borderRadius: 0 }}
+                                    onPress={() => {
+                                        this.users[index].isVerified = false;
+                                        this.setSearchValue(this.state.searchValue);
+                                        return this.props.firebase
+                                            .updateUserData(targetUser, { verified: false })
+                                            .then(this.closeAdminSettingsPopup);
+                                    }}
+                                />
+                                {!isAdmin && <Popup.Separator />}
+                            </View>
+                        ) : allowed ? (
+                            <View>
+                                <Button
+                                    title={'Verify User'}
+                                    type={'clear'}
+                                    titleStyle={styles.iconTitleStyle}
+                                    icon={{
+                                        name: 'check-circle',
+                                        color: Colors.appGreen,
+                                        size: 25,
+                                        containerStyle: { paddingHorizontal: 10 },
+                                    }}
+                                    buttonStyle={{ justifyContent: 'flex-start' }}
+                                    containerStyle={{ borderRadius: 0 }}
+                                    onPress={() => {
+                                        this.users[index].isVerified = true;
+                                        this.setSearchValue(this.state.searchValue);
+                                        return this.props.firebase
+                                            .updateUserData(targetUser, { verified: true })
+                                            .then(this.closeAdminSettingsPopup);
+                                    }}
+                                />
+                                {!isAdmin && <Popup.Separator />}
+                            </View>
+                        ) : null}
+                        {isDisabled && !isAdmin ? (
                             <Button
-                                title={'Remove Verification'}
+                                title={'Remove Ban'}
                                 type={'clear'}
                                 titleStyle={styles.iconTitleStyle}
                                 icon={{
-                                    name: 'remove-circle',
-                                    color: Colors.appRed,
-                                    size: 25,
-                                    containerStyle: { paddingHorizontal: 10 },
-                                }}
-                                buttonStyle={{ justifyContent: 'flex-start' }}
-                                containerStyle={{ borderRadius: 0 }}
-                                onPress={() => {
-                                    return this.props.firebase
-                                        .updateUserData(targetUser, { verified: false })
-                                        .then(this.closeAdminSettingsPopup);
-                                }}
-                            />
-                        ) : activated ? (
-                            <Button
-                                title={'Verify User'}
-                                type={'clear'}
-                                titleStyle={styles.iconTitleStyle}
-                                icon={{
-                                    name: 'check-circle',
+                                    name: 'block',
                                     color: Colors.appGreen,
                                     size: 25,
                                     containerStyle: { paddingHorizontal: 10 },
@@ -223,8 +274,31 @@ class UserListScreen extends Component {
                                 buttonStyle={{ justifyContent: 'flex-start' }}
                                 containerStyle={{ borderRadius: 0 }}
                                 onPress={() => {
+                                    this.users[index].isDisabled = false;
+                                    this.setSearchValue(this.state.searchValue);
                                     return this.props.firebase
-                                        .updateUserData(targetUser, { verified: true })
+                                        .updateUserData(targetUser, { disabled: false })
+                                        .then(this.closeAdminSettingsPopup);
+                                }}
+                            />
+                        ) : !isAdmin ? (
+                            <Button
+                                title={'Ban User'}
+                                type={'clear'}
+                                titleStyle={styles.iconTitleStyle}
+                                icon={{
+                                    name: 'block',
+                                    color: Colors.appRed,
+                                    size: 25,
+                                    containerStyle: { paddingHorizontal: 10 },
+                                }}
+                                buttonStyle={{ justifyContent: 'flex-start' }}
+                                containerStyle={{ borderRadius: 0 }}
+                                onPress={() => {
+                                    this.users[index].isDisabled = true;
+                                    this.setSearchValue(this.state.searchValue);
+                                    return this.props.firebase
+                                        .updateUserData(targetUser, { disabled: true })
                                         .then(this.closeAdminSettingsPopup);
                                 }}
                             />
@@ -243,6 +317,9 @@ class UserListScreen extends Component {
             targetUser: null,
             isAdmin: null,
             isVerified: null,
+            isDisabled: null,
+            activated: null,
+            index: null,
         });
     };
 
@@ -265,7 +342,7 @@ class UserListScreen extends Component {
                 />
                 <FlatList
                     data={filteredUsers}
-                    renderItem={({ item }) => this.renderUser(item)}
+                    renderItem={({ item, index }) => this.renderUser(item, index)}
                     keyExtractor={(item) => item.uid}
                     ListEmptyComponent={() => (
                         <MainText style={{ alignSelf: 'center', paddingTop: 5 }}>No User</MainText>
@@ -284,6 +361,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     outerContainer: {
+        backgroundColor: Colors.appWhite,
         borderBottomWidth: 3,
         borderColor: Colors.appGray2,
         paddingVertical: 8,

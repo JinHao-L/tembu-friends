@@ -33,8 +33,10 @@ class SignInScreen extends Component {
         disabled: false,
         keyboardHeight: 0,
         user: null,
+
         emailSentPopup: false,
         notVerifiedPopup: false,
+        userDisabledPopup: false,
     };
     passwordRef = React.createRef();
 
@@ -94,7 +96,7 @@ class SignInScreen extends Component {
         let errorMessage = error.message;
 
         if (errorCode === 'auth/user-disabled') {
-            this.setState({ generalError: 'Account disabled. Please contact administration' });
+            this.toggleUserDisabledPopup();
         } else if (
             errorCode === 'auth/invalid-email' ||
             errorCode === 'auth/wrong-password' ||
@@ -195,6 +197,28 @@ class SignInScreen extends Component {
         });
     };
 
+    toggleUserDisabledPopup = () => {
+        this.setState({
+            userDisabledPopup: !this.state.userDisabledPopup,
+        });
+    };
+
+    renderUserDisabledPopup = () => {
+        return (
+            <Popup
+                imageType={'Failure'}
+                isVisible={this.state.userDisabledPopup}
+                title={'Account Banned'}
+                body={
+                    'Your account has been banned for violating our terms. ' +
+                    'Approach your RA to appeal the ban.'
+                }
+                buttonText={'Close'}
+                callback={this.toggleUserDisabledPopup}
+            />
+        );
+    };
+
     renderEmailSentPopup = () => {
         return (
             <Popup
@@ -206,7 +230,7 @@ class SignInScreen extends Component {
                     this.state.nusEmail +
                     '\nwith a verification link to activate your account.'
                 }
-                buttonText={'OK'}
+                buttonText={'Close'}
                 callback={this.toggleEmailSentPopup}
             />
         );
@@ -237,7 +261,7 @@ class SignInScreen extends Component {
                         to resend it.
                     </Text>
                 }
-                buttonText={'OK'}
+                buttonText={'Close'}
                 callback={() => {
                     this.toggleNotVerifiedPopup();
                     this.props.firebase.signOut();
@@ -273,6 +297,7 @@ class SignInScreen extends Component {
                     >
                         {this.renderNotVerifiedPopup()}
                         {this.renderEmailSentPopup()}
+                        {this.renderUserDisabledPopup()}
                         {!keyboardShown && (
                             <View style={styles.bottom}>
                                 <MainText style={styles.registerText}>
@@ -317,7 +342,6 @@ class SignInScreen extends Component {
                                     containerStyle={styles.box}
                                     isError={errorHighlight}
                                     errorMessage={generalError}
-                                    errorStyle={{ textAlign: 'center' }}
                                     placeholder="Password"
                                     autoCapitalize="none"
                                     returnKeyType="done"

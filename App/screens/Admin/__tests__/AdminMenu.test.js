@@ -4,12 +4,13 @@ import renderer from 'react-test-renderer';
 import AdminMenu from '../AdminMenu';
 
 describe('<AdminMenu/>', () => {
-    const tree = renderer.create(<AdminMenu />).toJSON();
     it('has 1 child', () => {
+        const tree = renderer.create(<AdminMenu />).toJSON();
         expect(tree.children.length).toBe(1);
     });
 
     it('renders correctly', () => {
+        const tree = renderer.create(<AdminMenu />).toJSON();
         expect(tree).toMatchSnapshot();
     });
     //

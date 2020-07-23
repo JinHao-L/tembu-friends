@@ -23,7 +23,6 @@ exports[`<HomeScreen/> renders correctly 1`] = `
   >
     <RNCWebView
       cacheEnabled={true}
-      domStorageEnabled={true}
       injectedJavaScriptBeforeContentLoadedForMainFrameOnly={true}
       injectedJavaScriptForMainFrameOnly={true}
       javaScriptEnabled={true}

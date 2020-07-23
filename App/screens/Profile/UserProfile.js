@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { Avatar, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
         color: Colors.appGray4,
         fontSize: 12,
         textAlign: 'center',
-        marginBottom: 5,
+        marginVertical: 5,
     },
     popupTitleStyle: {
         fontFamily: MAIN_FONT,

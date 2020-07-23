@@ -3,9 +3,8 @@ import { FlatList, View, StyleSheet, Platform } from 'react-native';
 import { ListItem, Button, Overlay } from 'react-native-elements';
 
 import { Colors } from '../../constants';
-import { MAIN_FONT, MainText } from '../../components';
+import { MAIN_FONT, MainText, ProfilePost } from '../../components';
 import { withFirebase } from '../../helper/Firebase';
-import ProfilePost from '../../components/Profile/ProfilePost';
 
 class ReportsControl extends Component {
     state = {
@@ -107,10 +106,7 @@ class ReportsControl extends Component {
                     overlayStyle={styles.overlayContainer}
                 >
                     <View>
-                        <ProfilePost
-                            postDetails={this.state.overlayData}
-                            tapToExpandImage={false}
-                        />
+                        <ProfilePost postDetails={this.state.overlayData} />
                         <Button
                             title={'Delete Post'}
                             type={'clear'}
