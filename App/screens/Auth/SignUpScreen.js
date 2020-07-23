@@ -7,6 +7,7 @@ import {
     Platform,
     ActivityIndicator,
     ScrollView,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 
@@ -364,157 +365,161 @@ class SignUpScreen extends Component {
         } = this.state;
 
         return (
-            <ScrollView
-                contentContainerStyle={[
-                    styles.container,
-                    {
-                        paddingBottom:
-                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
-                    },
-                ]}
-                keyboardShouldPersistTaps={'handled'}
-            >
-                {this.renderLoading()}
-                {this.renderEmailSentPopup()}
-                <View
-                    style={{
-                        marginTop:
-                            keyboardShown && Platform.OS === 'ios' ? 150 : keyboardShown ? 50 : 0,
-                    }}
-                >
-                    <View style={styles.titleContainer}>
-                        <MainText style={styles.title}>Sign Up</MainText>
-                    </View>
+            <View style={{ flex: 1 }}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View
+                        style={[
+                            styles.container,
+                            {
+                                paddingBottom:
+                                    Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                                justifyContent: keyboardShown ? 'flex-end' : 'center',
+                            },
+                        ]}
+                    >
+                        {this.renderLoading()}
+                        {this.renderEmailSentPopup()}
+                        {!keyboardShown && (
+                            <View style={styles.bottom}>
+                                <MainText style={styles.haveAccountText}>
+                                    Already have an account?{' '}
+                                    <Text
+                                        style={styles.hyperlink}
+                                        onPress={this.goToSignIn.bind(this)}
+                                    >
+                                        Login here
+                                    </Text>
+                                </MainText>
+                            </View>
+                        )}
+                        <View style={{ marginBottom: 5 }}>
+                            <View style={styles.titleContainer}>
+                                <MainText style={styles.title}>Sign Up</MainText>
+                            </View>
 
-                    <View style={styles.form}>
-                        <View style={[styles.box, { flexDirection: 'row' }]}>
-                            <FormInput
-                                containerStyle={{
-                                    flex: 1,
-                                    flexDirection: 'column',
-                                    marginRight: 5,
-                                }}
-                                isError={firstNameError}
-                                errorMessage={firstNameError}
-                                placeholder="First Name"
-                                returnKeyType="next"
-                                textContentType="name"
-                                autoCapitalize="words"
-                                value={firstName}
-                                onChangeText={this.handleFirstName.bind(this)}
-                                onFocus={this.clearFirstNameError.bind(this)}
-                                onSubmitEditing={() => this.lastNameRef.focus()}
-                            />
+                            <View style={styles.form}>
+                                <View style={[styles.box, { flexDirection: 'row' }]}>
+                                    <FormInput
+                                        containerStyle={{
+                                            flex: 1,
+                                            flexDirection: 'column',
+                                            marginRight: 5,
+                                        }}
+                                        isError={firstNameError}
+                                        errorMessage={firstNameError}
+                                        placeholder="First Name"
+                                        returnKeyType="next"
+                                        textContentType="name"
+                                        autoCapitalize="words"
+                                        value={firstName}
+                                        onChangeText={this.handleFirstName.bind(this)}
+                                        onFocus={this.clearFirstNameError.bind(this)}
+                                        onSubmitEditing={() => this.lastNameRef.focus()}
+                                    />
 
-                            <FormInput
-                                inputRef={(input) => (this.lastNameRef = input)}
-                                containerStyle={{
-                                    flex: 1,
-                                    flexDirection: 'column',
-                                    marginLeft: 5,
-                                }}
-                                isError={lastNameError}
-                                errorMessage={lastNameError}
-                                placeholder="Last Name"
-                                returnKeyType="next"
-                                textContentType="name"
-                                autoCapitalize="words"
-                                value={lastName}
-                                onChangeText={this.handleLastName.bind(this)}
-                                onFocus={this.clearLastNameError.bind(this)}
-                                onSubmitEditing={() => this.emailRef.focus()}
-                            />
+                                    <FormInput
+                                        inputRef={(input) => (this.lastNameRef = input)}
+                                        containerStyle={{
+                                            flex: 1,
+                                            flexDirection: 'column',
+                                            marginLeft: 5,
+                                        }}
+                                        isError={lastNameError}
+                                        errorMessage={lastNameError}
+                                        placeholder="Last Name"
+                                        returnKeyType="next"
+                                        textContentType="name"
+                                        autoCapitalize="words"
+                                        value={lastName}
+                                        onChangeText={this.handleLastName.bind(this)}
+                                        onFocus={this.clearLastNameError.bind(this)}
+                                        onSubmitEditing={() => this.emailRef.focus()}
+                                    />
+                                </View>
+
+                                <FormInput
+                                    inputRef={(input) => (this.emailRef = input)}
+                                    containerStyle={styles.box}
+                                    isError={emailError}
+                                    errorMessage={emailError}
+                                    placeholder="NUS email address"
+                                    keyboardType="email-address"
+                                    returnKeyType="next"
+                                    textContentType="emailAddress"
+                                    autoCapitalize="none"
+                                    value={nusEmail}
+                                    onChangeText={this.handleEmail.bind(this)}
+                                    onFocus={this.clearEmailError.bind(this)}
+                                    onSubmitEditing={() => this.passwordRef.focus()}
+                                />
+
+                                <FormInput
+                                    inputRef={(input) => (this.passwordRef = input)}
+                                    containerStyle={styles.box}
+                                    isError={passwordError}
+                                    placeholder="Password"
+                                    autoCapitalize="none"
+                                    returnKeyType="next"
+                                    textContentType="none"
+                                    onChangeText={this.handlePassword.bind(this)}
+                                    onFocus={this.clearPasswordError.bind(this)}
+                                    secureTextEntry={passwordHidden}
+                                    value={password}
+                                    rightIcon={
+                                        <Icon
+                                            type={'ionicon'}
+                                            name={passwordIcon}
+                                            size={28}
+                                            color={Colors.appGray2}
+                                            containerStyle={{ marginRight: 5 }}
+                                            onPress={this.handlePasswordVisibility.bind(this)}
+                                        />
+                                    }
+                                    onSubmitEditing={() => this.password2Ref.focus()}
+                                />
+                                <FormInput
+                                    inputRef={(input) => (this.password2Ref = input)}
+                                    containerStyle={styles.box}
+                                    isError={passwordError}
+                                    errorMessage={passwordError}
+                                    placeholder="Confirm password"
+                                    autoCapitalize="none"
+                                    returnKeyType="done"
+                                    textContentType="none"
+                                    onChangeText={this.handleConfirmPassword.bind(this)}
+                                    onFocus={this.clearPasswordError.bind(this)}
+                                    secureTextEntry={confirmPasswordHidden}
+                                    value={confirmPassword}
+                                    rightIcon={
+                                        <Icon
+                                            type={'ionicon'}
+                                            name={confirmPasswordIcon}
+                                            size={28}
+                                            color={Colors.appGray2}
+                                            containerStyle={{ marginRight: 5 }}
+                                            onPress={this.handleConfirmPasswordVisibility.bind(
+                                                this
+                                            )}
+                                        />
+                                    }
+                                    onSubmitEditing={this.validateInputAndSignUp.bind(this)}
+                                />
+                                <AuthButton
+                                    onPress={this.validateInputAndSignUp.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Sign Up
+                                </AuthButton>
+                                <ErrorMessage
+                                    error={generalError ? generalError : ' '}
+                                    style={{ textAlign: 'center' }}
+                                />
+                            </View>
                         </View>
-
-                        <FormInput
-                            inputRef={(input) => (this.emailRef = input)}
-                            containerStyle={styles.box}
-                            isError={emailError}
-                            errorMessage={emailError}
-                            placeholder="NUS email address"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            textContentType="emailAddress"
-                            autoCapitalize="none"
-                            value={nusEmail}
-                            onChangeText={this.handleEmail.bind(this)}
-                            onFocus={this.clearEmailError.bind(this)}
-                            onSubmitEditing={() => this.passwordRef.focus()}
-                        />
-
-                        <FormInput
-                            inputRef={(input) => (this.passwordRef = input)}
-                            containerStyle={styles.box}
-                            isError={passwordError}
-                            placeholder="Password"
-                            autoCapitalize="none"
-                            returnKeyType="next"
-                            textContentType="none"
-                            onChangeText={this.handlePassword.bind(this)}
-                            onFocus={this.clearPasswordError.bind(this)}
-                            secureTextEntry={passwordHidden}
-                            value={password}
-                            rightIcon={
-                                <Icon
-                                    type={'ionicon'}
-                                    name={passwordIcon}
-                                    size={28}
-                                    color={Colors.appGray2}
-                                    containerStyle={{ marginRight: 5 }}
-                                    onPress={this.handlePasswordVisibility.bind(this)}
-                                />
-                            }
-                            onSubmitEditing={() => this.password2Ref.focus()}
-                        />
-                        <FormInput
-                            inputRef={(input) => (this.password2Ref = input)}
-                            containerStyle={styles.box}
-                            isError={passwordError}
-                            errorMessage={passwordError}
-                            placeholder="Confirm password"
-                            autoCapitalize="none"
-                            returnKeyType="done"
-                            textContentType="none"
-                            onChangeText={this.handleConfirmPassword.bind(this)}
-                            onFocus={this.clearPasswordError.bind(this)}
-                            secureTextEntry={confirmPasswordHidden}
-                            value={confirmPassword}
-                            rightIcon={
-                                <Icon
-                                    type={'ionicon'}
-                                    name={confirmPasswordIcon}
-                                    size={28}
-                                    color={Colors.appGray2}
-                                    containerStyle={{ marginRight: 5 }}
-                                    onPress={this.handleConfirmPasswordVisibility.bind(this)}
-                                />
-                            }
-                            onSubmitEditing={this.validateInputAndSignUp.bind(this)}
-                        />
-                        <AuthButton
-                            onPress={this.validateInputAndSignUp.bind(this)}
-                            style={styles.button}
-                            loading={isLoading}
-                        >
-                            Sign Up
-                        </AuthButton>
-                        <ErrorMessage
-                            error={generalError ? generalError : ' '}
-                            style={{ textAlign: 'center' }}
-                        />
                     </View>
-                </View>
-                {!keyboardShown && (
-                    <View style={styles.bottom}>
-                        <MainText style={styles.haveAccountText}>
-                            Already have an account?{' '}
-                            <Text style={styles.hyperlink} onPress={this.goToSignIn.bind(this)}>
-                                Login here
-                            </Text>
-                        </MainText>
-                    </View>
-                )}
-            </ScrollView>
+                </TouchableWithoutFeedback>
+            </View>
         );
     }
 }
@@ -522,15 +527,14 @@ class SignUpScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        flexDirection: 'column',
+        alignItems: 'center',
         backgroundColor: Colors.appWhite,
     },
     bottom: {
         position: 'absolute',
         bottom: 0,
         marginBottom: 56,
-        alignSelf: 'center',
+        alignItems: 'center',
     },
     title: {
         fontSize: 40,

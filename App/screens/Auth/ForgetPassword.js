@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Keyboard, ScrollView, Platform } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Keyboard,
+    ScrollView,
+    Platform,
+    Text,
+    TouchableWithoutFeedback,
+} from 'react-native';
 
 import { withFirebase } from '../../helper/Firebase';
 import { Colors, NUSEmailSignature, Layout } from '../../constants';
@@ -156,67 +164,72 @@ class ForgetPassword extends Component {
         const { nusEmail, emailError, generalError, isLoading, keyboardShown } = this.state;
 
         return (
-            <ScrollView
-                contentContainerStyle={[
-                    styles.container,
-                    {
-                        paddingBottom:
-                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
-                    },
-                ]}
-                keyboardShouldPersistTaps={'handled'}
-            >
-                {this.renderResetSuccessPopup()}
-                <View
-                    style={{
-                        marginTop:
-                            keyboardShown && Platform.OS === 'ios' ? 150 : keyboardShown ? 100 : 0,
-                    }}
-                >
-                    <View style={styles.textContainer}>
-                        <MainText style={styles.title}>Trouble with logging in?</MainText>
-                        <MainText style={styles.intro}>
-                            Enter your email address and we'll send you a link to reset your
-                            password
-                        </MainText>
-                    </View>
+            <View style={{ flex: 1 }}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View
+                        style={[
+                            styles.container,
+                            {
+                                paddingBottom:
+                                    Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                                justifyContent: keyboardShown ? 'flex-end' : 'center',
+                            },
+                        ]}
+                    >
+                        {this.renderResetSuccessPopup()}
+                        {!keyboardShown && (
+                            <View style={styles.bottom}>
+                                <MainText
+                                    style={styles.backLoginText}
+                                    onPress={this.goToSignIn.bind(this)}
+                                >
+                                    Back to Login
+                                </MainText>
+                            </View>
+                        )}
+                        <View style={{ marginBottom: 5 }}>
+                            <View style={styles.textContainer}>
+                                <MainText style={styles.title}>Trouble with logging in?</MainText>
+                                <MainText style={styles.intro} adjustsFontSizeToFit={true}>
+                                    Enter your email address and we'll send you a link to reset your
+                                    password
+                                </MainText>
+                            </View>
 
-                    <View style={styles.form}>
-                        <FormInput
-                            containerStyle={styles.box}
-                            isError={emailError}
-                            errorMessage={emailError}
-                            leftIconName="ios-mail"
-                            placeholder="NUS email address"
-                            returnKeyType="done"
-                            keyboardType="email-address"
-                            textContentType="emailAddress"
-                            autoCapitalize="none"
-                            value={nusEmail}
-                            onChangeText={this.handleEmail.bind(this)}
-                            onFocus={this.clearError.bind(this)}
-                            onSubmitEditing={this.validateInput.bind(this)}
-                        />
-                        <View>
-                            <AuthButton
-                                onPress={this.validateInput.bind(this)}
-                                style={styles.button}
-                                loading={isLoading}
-                            >
-                                Next
-                            </AuthButton>
-                            <ErrorMessage error={generalError} style={{ textAlign: 'center' }} />
+                            <View style={styles.form}>
+                                <FormInput
+                                    containerStyle={styles.box}
+                                    isError={emailError}
+                                    errorMessage={emailError}
+                                    leftIconName="ios-mail"
+                                    placeholder="NUS email address"
+                                    returnKeyType="done"
+                                    keyboardType="email-address"
+                                    textContentType="emailAddress"
+                                    autoCapitalize="none"
+                                    value={nusEmail}
+                                    onChangeText={this.handleEmail.bind(this)}
+                                    onFocus={this.clearError.bind(this)}
+                                    onSubmitEditing={this.validateInput.bind(this)}
+                                />
+                                <View>
+                                    <AuthButton
+                                        onPress={this.validateInput.bind(this)}
+                                        style={styles.button}
+                                        loading={isLoading}
+                                    >
+                                        Next
+                                    </AuthButton>
+                                    <ErrorMessage
+                                        error={generalError}
+                                        style={{ textAlign: 'center' }}
+                                    />
+                                </View>
+                            </View>
                         </View>
                     </View>
-                </View>
-                {!keyboardShown && (
-                    <View style={styles.bottom}>
-                        <MainText style={styles.backLoginText} onPress={this.goToSignIn.bind(this)}>
-                            Back to Login
-                        </MainText>
-                    </View>
-                )}
-            </ScrollView>
+                </TouchableWithoutFeedback>
+            </View>
         );
     }
 }
@@ -226,7 +239,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.appWhite,
         alignItems: 'center',
-        justifyContent: 'center',
     },
     title: {
         fontSize: 25,
@@ -239,10 +251,10 @@ const styles = StyleSheet.create({
         width: Layout.window.width,
     },
     intro: {
-        fontSize: 15,
+        fontSize: undefined,
         flexWrap: 'wrap',
         textAlign: 'center',
-        marginHorizontal: 30,
+        marginHorizontal: 40,
     },
     form: {
         marginTop: 10,
@@ -263,6 +275,7 @@ const styles = StyleSheet.create({
     backLoginText: {
         fontWeight: '600',
         fontSize: 15,
+        textAlign: 'center',
         color: Colors.appGreen,
     },
 });

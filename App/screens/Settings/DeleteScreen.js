@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Keyboard, Platform, ScrollView } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Keyboard,
+    Platform,
+    ScrollView,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -214,95 +221,96 @@ class SignUpScreen extends Component {
         } = this.state;
 
         return (
-            <ScrollView
-                contentContainerStyle={[
-                    styles.container,
-                    {
-                        paddingBottom:
-                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
-                    },
-                ]}
-                keyboardShouldPersistTaps={'handled'}
-            >
-                <View
-                    style={{
-                        marginTop:
-                            keyboardShown && Platform.OS === 'ios' ? 150 : keyboardShown ? 50 : 0,
-                    }}
-                >
-                    <View style={styles.titleContainer}>
-                        <MainText style={styles.title}>Delete Account</MainText>
-                        <MainText style={styles.subtitle}>We are sorry to see you go...</MainText>
-                    </View>
-                    <View style={styles.form}>
-                        <FormInput
-                            containerStyle={styles.box}
-                            isError={emailError}
-                            errorMessage={emailError}
-                            placeholder="NUS email address"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            textContentType="emailAddress"
-                            autoCapitalize="none"
-                            value={nusEmail}
-                            onChangeText={this.handleEmail.bind(this)}
-                            onFocus={this.clearEmailError.bind(this)}
-                            onSubmitEditing={() => this.passwordRef.focus()}
-                        />
-
-                        <FormInput
-                            inputRef={(input) => (this.passwordRef = input)}
-                            containerStyle={styles.box}
-                            isError={passwordError}
-                            errorMessage={passwordError}
-                            placeholder="Password"
-                            autoCapitalize="none"
-                            returnKeyType="next"
-                            textContentType="password"
-                            onChangeText={this.handlePassword.bind(this)}
-                            onFocus={this.clearPasswordError.bind(this)}
-                            secureTextEntry={passwordHidden}
-                            value={password}
-                            rightIcon={
-                                <Icon
-                                    type={'ionicon'}
-                                    name={passwordIcon}
-                                    size={28}
-                                    color={Colors.appGray2}
-                                    containerStyle={{ marginRight: 5 }}
-                                    onPress={this.handlePasswordVisibility.bind(this)}
+            <View style={{ flex: 1 }}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View
+                        style={[
+                            styles.container,
+                            {
+                                paddingBottom:
+                                    Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                                justifyContent: keyboardShown ? 'flex-end' : 'center',
+                            },
+                        ]}
+                    >
+                        <View style={{ marginBottom: 5 }}>
+                            <View style={styles.titleContainer}>
+                                <MainText style={styles.title}>Delete Account</MainText>
+                                <MainText style={styles.subtitle}>
+                                    We are sorry to see you go...
+                                </MainText>
+                            </View>
+                            <View style={styles.form}>
+                                <FormInput
+                                    containerStyle={styles.box}
+                                    isError={emailError}
+                                    errorMessage={emailError}
+                                    placeholder="NUS email address"
+                                    keyboardType="email-address"
+                                    returnKeyType="next"
+                                    textContentType="emailAddress"
+                                    autoCapitalize="none"
+                                    value={nusEmail}
+                                    onChangeText={this.handleEmail.bind(this)}
+                                    onFocus={this.clearEmailError.bind(this)}
+                                    onSubmitEditing={() => this.passwordRef.focus()}
                                 />
-                            }
-                            onSubmitEditing={() => this.confirmationRef.focus()}
-                        />
-                        <FormInput
-                            inputRef={(input) => (this.confirmationRef = input)}
-                            containerStyle={styles.box}
-                            isError={confirmationError}
-                            errorMessage={confirmationError}
-                            placeholder="To confirm type 'DELETE'"
-                            autoCapitalize="none"
-                            returnKeyType="done"
-                            textContentType="none"
-                            onChangeText={this.handleConfirmation.bind(this)}
-                            onFocus={this.clearConfirmationError.bind(this)}
-                            value={confirmation}
-                            onSubmitEditing={this.validateInputAndDelete.bind(this)}
-                        />
-                        <AuthButton
-                            onPress={this.validateInputAndDelete.bind(this)}
-                            style={styles.button}
-                            loading={isLoading}
-                        >
-                            Delete My Account
-                        </AuthButton>
-                        <ErrorMessage
-                            style={{ textAlign: 'center' }}
-                            error={generalError ? generalError : ' '}
-                        />
+
+                                <FormInput
+                                    inputRef={(input) => (this.passwordRef = input)}
+                                    containerStyle={styles.box}
+                                    isError={passwordError}
+                                    errorMessage={passwordError}
+                                    placeholder="Password"
+                                    autoCapitalize="none"
+                                    returnKeyType="next"
+                                    textContentType="password"
+                                    onChangeText={this.handlePassword.bind(this)}
+                                    onFocus={this.clearPasswordError.bind(this)}
+                                    secureTextEntry={passwordHidden}
+                                    value={password}
+                                    rightIcon={
+                                        <Icon
+                                            type={'ionicon'}
+                                            name={passwordIcon}
+                                            size={28}
+                                            color={Colors.appGray2}
+                                            containerStyle={{ marginRight: 5 }}
+                                            onPress={this.handlePasswordVisibility.bind(this)}
+                                        />
+                                    }
+                                    onSubmitEditing={() => this.confirmationRef.focus()}
+                                />
+                                <FormInput
+                                    inputRef={(input) => (this.confirmationRef = input)}
+                                    containerStyle={styles.box}
+                                    isError={confirmationError}
+                                    errorMessage={confirmationError}
+                                    placeholder="To confirm type 'DELETE'"
+                                    autoCapitalize="none"
+                                    returnKeyType="done"
+                                    textContentType="none"
+                                    onChangeText={this.handleConfirmation.bind(this)}
+                                    onFocus={this.clearConfirmationError.bind(this)}
+                                    value={confirmation}
+                                    onSubmitEditing={this.validateInputAndDelete.bind(this)}
+                                />
+                                <AuthButton
+                                    onPress={this.validateInputAndDelete.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Delete My Account
+                                </AuthButton>
+                                <ErrorMessage
+                                    style={{ textAlign: 'center' }}
+                                    error={generalError ? generalError : ' '}
+                                />
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
+                </TouchableWithoutFeedback>
+            </View>
         );
     }
 }
@@ -311,7 +319,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.appWhite,
-        justifyContent: 'center',
         alignItems: 'center',
     },
     title: {

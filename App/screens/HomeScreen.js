@@ -42,16 +42,8 @@ class HomeScreen extends Component {
                     style={{ width: Layout.window.width }}
                     renderLoading={this.renderLoading}
                     startInLoadingState={true}
-                    domStorageEnabled={true}
-                    javaScriptEnabled={true}
                     ref={this.webviewRef}
                     onNavigationStateChange={(navState) => {
-                        if (navState.title === 'Service Unavailable') {
-                            const redirectTo =
-                                'window.location = "https://tembusu.nus.edu.sg/about"';
-                            this.webviewRef.current.injectJavaScript(redirectTo);
-                            return;
-                        }
                         this.setState({
                             canGoBack: navState.canGoBack,
                             canGoForward: navState.canGoForward,

@@ -654,7 +654,7 @@ class ProfileEdit extends Component {
                 break;
         }
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container} keyboardShouldPersistTaps={'handled'}>
                 <View>
                     {this.renderUploading()}
                     {this.renderSuccessPopup()}

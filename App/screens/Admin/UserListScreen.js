@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { Colors } from '../../constants';
 import { withFirebase } from '../../helper/Firebase';
-import { MAIN_FONT, MainText, Popup } from '../../components';
+import { MAIN_FONT, MainText, Popup, SearchBar } from '../../components';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -14,13 +14,16 @@ const mapStateToProps = (state) => {
 class UserListScreen extends Component {
     state = {
         isLoading: false,
-        users: [],
+        filteredUsers: [],
+
+        searchValue: '',
 
         adminSettingsVisible: false,
         targetUser: null,
         isAdmin: null,
         isVerified: null,
     };
+    users = [];
 
     componentDidMount() {
         this.refresh();
@@ -29,22 +32,42 @@ class UserListScreen extends Component {
     refresh = () => {
         this.setState({
             isLoading: true,
+            searchValue: '',
         });
         this.props.firebase
             .getAllUsers()
+            .then((users) =>
+                users.sort((x, y) =>
+                    x.displayName ? x.displayName.localeCompare(y.displayName) : -1
+                )
+            )
             .then((users) => {
+                this.users = users;
                 this.setState({
-                    users: users.sort((x, y) =>
-                        x.displayName ? x.displayName.localeCompare(y.displayName) : -1
-                    ),
+                    filteredUsers: users,
                     isLoading: false,
                 });
             })
-            .catch(() => {
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() =>
                 this.setState({
                     isLoading: false,
-                });
-            });
+                })
+            );
+    };
+
+    setSearchValue = (text) => {
+        this.setState({
+            searchValue: text,
+        });
+        const filteredUsers = this.users.filter((data) => {
+            return data.displayName.indexOf(text) > -1;
+        });
+        this.setState({
+            filteredUsers: filteredUsers,
+        });
     };
 
     goToProfile = (uid) => {
@@ -224,13 +247,24 @@ class UserListScreen extends Component {
     };
 
     render() {
-        const { users, isLoading } = this.state;
+        const { filteredUsers, isLoading } = this.state;
 
         return (
             <View style={styles.container}>
                 {this.renderAdminSettings()}
+                <SearchBar
+                    value={this.state.searchValue}
+                    onChangeText={this.setSearchValue}
+                    onCancel={() => this.setSearchValue('')}
+                    style={{
+                        paddingVertical: 15,
+                        borderBottomWidth: 1,
+                        borderColor: Colors.appGray2,
+                        zIndex: 1,
+                    }}
+                />
                 <FlatList
-                    data={users}
+                    data={filteredUsers}
                     renderItem={({ item }) => this.renderUser(item)}
                     keyExtractor={(item) => item.uid}
                     ListEmptyComponent={() => (

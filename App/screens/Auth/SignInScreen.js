@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Keyboard, Text, Platform, ScrollView } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Keyboard,
+    Text,
+    Platform,
+    ScrollView,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import { withFirebase } from '../../helper/Firebase';
@@ -251,93 +259,104 @@ class SignInScreen extends Component {
             keyboardShown,
         } = this.state;
         return (
-            <ScrollView
-                contentContainerStyle={[
-                    styles.container,
-                    {
-                        paddingBottom:
-                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
-                    },
-                ]}
-                keyboardShouldPersistTaps={'handled'}
-            >
-                {this.renderNotVerifiedPopup()}
-                {this.renderEmailSentPopup()}
-                <View style={{ marginTop: keyboardShown ? 40 : 0 }}>
-                    <View style={styles.titleContainer}>
-                        <LogoText style={styles.title} adjustsFontSizeToFit={true}>
-                            TEMBU<Text style={styles.title2}>FRIENDS</Text>
-                        </LogoText>
-                    </View>
+            <View style={{ flex: 1 }}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View
+                        style={[
+                            styles.container,
+                            {
+                                paddingBottom:
+                                    Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                                justifyContent: keyboardShown ? 'flex-end' : 'center',
+                            },
+                        ]}
+                    >
+                        {this.renderNotVerifiedPopup()}
+                        {this.renderEmailSentPopup()}
+                        {!keyboardShown && (
+                            <View style={styles.bottom}>
+                                <MainText style={styles.registerText}>
+                                    Don't have an account?{' '}
+                                    <Text
+                                        style={styles.hyperlink}
+                                        onPress={this.goToRegister.bind(this)}
+                                    >
+                                        Sign Up
+                                    </Text>
+                                </MainText>
+                            </View>
+                        )}
+                        <View style={{ marginBottom: 20 }}>
+                            <View style={styles.titleContainer}>
+                                <LogoText
+                                    style={styles.title}
+                                    adjustsFontSizeToFit={true}
+                                    numberOfLines={1}
+                                >
+                                    TEMBU<Text style={styles.title2}>FRIENDS</Text>
+                                </LogoText>
+                            </View>
 
-                    <View style={styles.form}>
-                        <FormInput
-                            containerStyle={styles.box}
-                            isError={errorHighlight || emailError}
-                            errorMessage={emailError}
-                            placeholder="NUS email address"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            textContentType="emailAddress"
-                            autoCapitalize="none"
-                            value={nusEmail}
-                            onChangeText={this.handleEmail.bind(this)}
-                            onFocus={this.clearError.bind(this)}
-                            onSubmitEditing={() => this.passwordRef.focus()}
-                        />
-                        <FormInput
-                            inputRef={(input) => (this.passwordRef = input)}
-                            containerStyle={styles.box}
-                            isError={errorHighlight}
-                            errorMessage={generalError}
-                            errorStyle={{ textAlign: 'center' }}
-                            placeholder="Password"
-                            autoCapitalize="none"
-                            returnKeyType="done"
-                            textContentType="newPassword"
-                            onChangeText={this.handlePassword.bind(this)}
-                            onFocus={this.clearError.bind(this)}
-                            secureTextEntry={passwordHidden}
-                            value={password}
-                            rightIcon={
-                                <Icon
-                                    type={'ionicon'}
-                                    name={passwordIcon}
-                                    size={28}
-                                    color={Colors.appGray2}
-                                    containerStyle={{ marginRight: 5 }}
-                                    onPress={this.handlePasswordVisibility.bind(this)}
+                            <View style={styles.form}>
+                                <FormInput
+                                    containerStyle={styles.box}
+                                    isError={errorHighlight || emailError}
+                                    errorMessage={emailError}
+                                    placeholder="NUS email address"
+                                    keyboardType="email-address"
+                                    returnKeyType="next"
+                                    textContentType="emailAddress"
+                                    autoCapitalize="none"
+                                    value={nusEmail}
+                                    onChangeText={this.handleEmail.bind(this)}
+                                    onFocus={this.clearError.bind(this)}
+                                    onSubmitEditing={() => this.passwordRef.focus()}
                                 />
-                            }
-                            onSubmitEditing={this.validateInputAndSignIn.bind(this)}
-                        />
+                                <FormInput
+                                    inputRef={(input) => (this.passwordRef = input)}
+                                    containerStyle={styles.box}
+                                    isError={errorHighlight}
+                                    errorMessage={generalError}
+                                    errorStyle={{ textAlign: 'center' }}
+                                    placeholder="Password"
+                                    autoCapitalize="none"
+                                    returnKeyType="done"
+                                    textContentType="newPassword"
+                                    onChangeText={this.handlePassword.bind(this)}
+                                    onFocus={this.clearError.bind(this)}
+                                    secureTextEntry={passwordHidden}
+                                    value={password}
+                                    rightIcon={
+                                        <Icon
+                                            type={'ionicon'}
+                                            name={passwordIcon}
+                                            size={28}
+                                            color={Colors.appGray2}
+                                            containerStyle={{ marginRight: 5 }}
+                                            onPress={this.handlePasswordVisibility.bind(this)}
+                                        />
+                                    }
+                                    onSubmitEditing={this.validateInputAndSignIn.bind(this)}
+                                />
 
-                        <MainText
-                            style={[styles.hyperlink, styles.forgetPasswordText]}
-                            onPress={this.goToForgetPassword.bind(this)}
-                        >
-                            Forgotten password?
-                        </MainText>
-                        <AuthButton
-                            onPress={this.validateInputAndSignIn.bind(this)}
-                            style={styles.button}
-                            loading={isLoading}
-                        >
-                            Log In
-                        </AuthButton>
+                                <MainText
+                                    style={[styles.hyperlink, styles.forgetPasswordText]}
+                                    onPress={this.goToForgetPassword.bind(this)}
+                                >
+                                    Forgotten password?
+                                </MainText>
+                                <AuthButton
+                                    onPress={this.validateInputAndSignIn.bind(this)}
+                                    style={styles.button}
+                                    loading={isLoading}
+                                >
+                                    Log In
+                                </AuthButton>
+                            </View>
+                        </View>
                     </View>
-                </View>
-                {!keyboardShown && (
-                    <View style={styles.bottom}>
-                        <MainText style={styles.registerText}>
-                            Don't have an account?{' '}
-                            <Text style={styles.hyperlink} onPress={this.goToRegister.bind(this)}>
-                                Sign Up
-                            </Text>
-                        </MainText>
-                    </View>
-                )}
-            </ScrollView>
+                </TouchableWithoutFeedback>
+            </View>
         );
     }
 }
@@ -345,14 +364,14 @@ class SignInScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Colors.appWhite,
     },
     title: {
-        fontSize: 40,
+        fontSize: 100,
         color: Colors.appGreen,
         textAlign: 'center',
+        marginHorizontal: 40,
     },
     title2: {
         color: Colors.appBlack,
@@ -364,7 +383,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     titleContainer: {
-        justifyContent: 'flex-end',
         marginBottom: 20,
         width: Layout.window.width,
     },
@@ -387,6 +405,7 @@ const styles = StyleSheet.create({
     registerText: {
         fontSize: 15,
         fontWeight: '600',
+        textAlign: 'center',
         color: Colors.appBlack,
     },
     hyperlink: {

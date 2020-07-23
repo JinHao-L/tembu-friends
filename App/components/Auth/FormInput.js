@@ -50,6 +50,7 @@ function FormInput({
                         onBlur && onBlur();
                     }}
                     blurOnSubmit={false}
+                    autoCompleteType={'off'}
                     onSubmitEditing={onSubmitEditing}
                 />
                 {rightIcon}
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         backgroundColor: Colors.appWhite,
         flexDirection: 'row',
+        overflow: 'hidden',
     },
     input: {
         marginLeft: 5,
