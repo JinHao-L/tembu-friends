@@ -3,9 +3,9 @@ import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors } from '../../constants';
-import { MAIN_FONT, MainText, Popup, NotificationItem } from '../../components';
-import { withFirebase } from '../../helper/Firebase';
+import { MAIN_FONT, Colors } from 'constant';
+import { MainText, Popup, NotificationItem } from 'components';
+import { withFirebase } from 'helper/Firebase';
 
 const mapStateToProps = (state) => {
     return {

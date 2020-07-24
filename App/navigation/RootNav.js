@@ -7,13 +7,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { fetchUserData, updateProfile, listenFriendList, clearCache } from '../redux';
-import { withFirebase } from '../helper/Firebase';
-import PushNotifications from '../helper/PushNotification';
+import { fetchUserData, updateProfile, listenFriendList, clearCache } from 'redux';
+import { withFirebase } from 'helper/Firebase';
+import PushNotifications from 'helper/PushNotification';
+import { AppLogo } from 'components';
+import { Colors } from 'constant';
 import HomeTabNav from './HomeTabNav';
 import AuthNav from './AuthNav';
-import { AppLogo } from '../components';
-import { Colors } from '../constants';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -106,38 +106,38 @@ class RootNav extends Component {
     async loadLocalAsync() {
         return await Promise.all([
             Asset.loadAsync([
-                require('../assets/images/logo.png'),
+                require('assets/images/logo.png'),
 
-                require('../assets/images/default/profile.png'),
-                require('../assets/images/default/banner.png'),
+                require('assets/images/default/profile.png'),
+                require('assets/images/default/banner.png'),
 
-                require('../assets/images/menu/AdminIcon.png'),
-                require('../assets/images/menu/SettingsIcon.png'),
-                require('../assets/images/menu/QRcode.png'),
-                require('../assets/images/menu/FriendsIcon.png'),
+                require('assets/images/menu/AdminIcon.png'),
+                require('assets/images/menu/SettingsIcon.png'),
+                require('assets/images/menu/QRcode.png'),
+                require('assets/images/menu/FriendsIcon.png'),
 
-                require('../assets/images/misc/search-guide.png'),
-                require('../assets/images/misc/friend-request-icon.png'),
-                require('../assets/images/misc/QR_background.jpg'),
+                require('assets/images/misc/search-guide.png'),
+                require('assets/images/misc/friend-request-icon.png'),
+                require('assets/images/misc/QR_background.jpg'),
 
-                require('../assets/images/popup/success-icon.png'),
-                require('../assets/images/popup/warning-icon.png'),
-                require('../assets/images/popup/invalid-icon.png'),
+                require('assets/images/popup/success-icon.png'),
+                require('assets/images/popup/warning-icon.png'),
+                require('assets/images/popup/invalid-icon.png'),
 
-                require('../assets/images/profile/verified-icon.png'),
-                require('../assets/images/profile/house-icon.png'),
-                require('../assets/images/profile/job-icon.png'),
-                require('../assets/images/profile/study-icon.png'),
-                require('../assets/images/profile/QR-Code.png'),
+                require('assets/images/profile/verified-icon.png'),
+                require('assets/images/profile/house-icon.png'),
+                require('assets/images/profile/job-icon.png'),
+                require('assets/images/profile/study-icon.png'),
+                require('assets/images/profile/QR-Code.png'),
 
-                require('../assets/images/settings/contact-us.png'),
-                require('../assets/images/settings/FAQ-icon.png'),
-                require('../assets/images/settings/next-icon.png'),
-                require('../assets/images/settings/post-icon.png'),
+                require('assets/images/settings/contact-us.png'),
+                require('assets/images/settings/FAQ-icon.png'),
+                require('assets/images/settings/next-icon.png'),
+                require('assets/images/settings/post-icon.png'),
             ]).then(() => console.log('Assets Loaded')),
             Font.loadAsync({
-                'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.otf'),
-                'Futura-Medium-BT': require('../assets/fonts/Futura-Medium-BT.ttf'),
+                'Montserrat-SemiBold': require('assets/fonts/Montserrat-SemiBold.otf'),
+                'Futura-Medium-BT': require('assets/fonts/Futura-Medium-BT.ttf'),
             }).then(() => console.log('Font Loaded')),
         ]);
     }

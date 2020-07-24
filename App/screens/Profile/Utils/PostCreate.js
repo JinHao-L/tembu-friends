@@ -12,9 +12,9 @@ import { Avatar, Button, Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import { HeaderBackButton } from '@react-navigation/stack';
 
-import { MAIN_FONT, MainText, Popup, GreenButton } from '../../../components';
-import { Colors } from '../../../constants';
-import { withFirebase } from '../../../helper/Firebase';
+import { MainText, Popup, GreenButton } from 'components';
+import { Colors, MAIN_FONT } from 'constant';
+import { withFirebase } from 'helper/Firebase';
 
 class PostCreate extends Component {
     state = {
@@ -344,7 +344,7 @@ class PostCreate extends Component {
                         source={
                             profileImg
                                 ? { uri: profileImg }
-                                : require('../../../assets/images/default/profile.png')
+                                : require('assets/images/default/profile.png')
                         }
                         containerStyle={styles.avatarStyle}
                     />

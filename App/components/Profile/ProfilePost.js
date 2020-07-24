@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import { Avatar, Icon } from 'react-native-elements';
 import ViewMoreText from 'react-native-view-more-text';
 
-import { Colors, Layout } from '../../constants';
+import { Colors, Layout } from 'constant';
 import { MainText } from '../Commons';
 import PostImage from './PostImage';
 
@@ -78,7 +78,7 @@ function ProfilePost({
                     source={
                         sender_img
                             ? { uri: sender_img }
-                            : require('../../assets/images/default/profile.png')
+                            : require('assets/images/default/profile.png')
                     }
                     containerStyle={{
                         marginRight: 10,

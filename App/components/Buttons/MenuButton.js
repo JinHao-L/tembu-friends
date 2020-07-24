@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Platform } from 'react-native';
 import { BaseButton } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
 
-import { Colors } from '../../constants';
+import { Colors } from 'constant';
 import { MainText } from '../Commons';
 
 function MenuButton(property) {
@@ -36,7 +36,7 @@ function MenuButton(property) {
                             source={
                                 avatar
                                     ? { uri: avatar }
-                                    : require('../../assets/images/default/profile.png')
+                                    : require('assets/images/default/profile.png')
                             }
                             containerStyle={styles.profileContainer}
                         />
@@ -55,13 +55,13 @@ function MenuButton(property) {
 const getImage = (img) => {
     switch (img) {
         case 'Friends':
-            return require('../../assets/images/menu/FriendsIcon.png');
+            return require('assets/images/menu/FriendsIcon.png');
         case 'QRCode':
-            return require('../../assets/images/menu/QRcode.png');
+            return require('assets/images/menu/QRcode.png');
         case 'Admin':
-            return require('../../assets/images/menu/AdminIcon.png');
+            return require('assets/images/menu/AdminIcon.png');
         case 'Settings':
-            return require('../../assets/images/menu/SettingsIcon.png');
+            return require('assets/images/menu/SettingsIcon.png');
         case 'Default':
             return null;
     }

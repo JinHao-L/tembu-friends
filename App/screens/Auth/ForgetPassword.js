@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    Keyboard,
-    ScrollView,
-    Platform,
-    Text,
-    TouchableWithoutFeedback,
-} from 'react-native';
+import { View, StyleSheet, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 
-import { withFirebase } from '../../helper/Firebase';
-import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText, Popup, LogoText } from '../../components';
+import { withFirebase } from 'helper/Firebase';
+import { Colors, NUSEmailSignature, Layout } from 'constant';
+import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from 'components';
 
 class ForgetPassword extends Component {
     state = {

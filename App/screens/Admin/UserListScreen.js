@@ -3,9 +3,9 @@ import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { ListItem, Button, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors } from '../../constants';
-import { withFirebase } from '../../helper/Firebase';
-import { MAIN_FONT, MainText, Popup, SearchBar } from '../../components';
+import { Colors, MAIN_FONT } from 'constant';
+import { MainText, Popup, SearchBar } from 'components';
+import { withFirebase } from 'helper/Firebase';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };

@@ -3,9 +3,9 @@ import { StyleSheet, View, FlatList, Image } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { GreenButton, MAIN_FONT, MainText, Popup, UserItem } from '../../components';
-import { Colors } from '../../constants';
-import { withFirebase } from '../../helper/Firebase';
+import { GreenButton, MainText, Popup, UserItem } from 'components';
+import { Colors, MAIN_FONT } from 'constant';
+import { withFirebase } from 'helper/Firebase';
 
 const mapStateToProps = (state) => {
     return {
@@ -104,7 +104,7 @@ class SearchResults extends Component {
             return (
                 <View style={{ marginTop: 50, alignItems: 'center' }}>
                     <Image
-                        source={require('../../assets/images/misc/search-guide.png')}
+                        source={require('assets/images/misc/search-guide.png')}
                         style={{
                             width: 300,
                             height: 100,

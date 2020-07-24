@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { TabBar, TabView } from 'react-native-tab-view';
 
-import { MAIN_FONT, SearchBar } from '../../components';
-import { Colors, Layout } from '../../constants';
-import { withFirebase } from '../../helper/Firebase';
+import { SearchBar } from 'components';
+import { MAIN_FONT, Colors, Layout } from 'constant';
+import { withFirebase } from 'helper/Firebase';
 import SearchResults from './SearchResults';
 
 class ExploreScreen extends Component {

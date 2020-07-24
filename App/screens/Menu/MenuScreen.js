@@ -3,9 +3,9 @@ import { Text, ScrollView, StyleSheet, View, ActivityIndicator } from 'react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 
-import { Colors } from '../../constants';
-import { MenuButton, Popup } from '../../components';
-import { withFirebase } from '../../helper/Firebase';
+import { Colors } from 'constant';
+import { MenuButton, Popup } from 'components';
+import { withFirebase } from 'helper/Firebase';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData, friendSubscriber: state.friendSubscriber };

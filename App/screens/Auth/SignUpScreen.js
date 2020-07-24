@@ -6,14 +6,13 @@ import {
     Text,
     Platform,
     ActivityIndicator,
-    ScrollView,
     TouchableWithoutFeedback,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-import { withFirebase } from '../../helper/Firebase';
-import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from '../../components';
+import { withFirebase } from 'helper/Firebase';
+import { Colors, NUSEmailSignature, Layout } from 'constant';
+import { AuthButton, FormInput, ErrorMessage, MainText, Popup } from 'components';
 
 const wordsOnly = /^[A-Za-z ]+$/;
 const passwordFormat = /^(?=.*\d)(?=.*[A-Za-z]).{8,}$/;

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { StatusBar, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { TabBarIcon } from '../components';
-import { HomeScreen } from '../screens';
+import { TabBarIcon } from 'components';
+import { HomeScreen } from 'screens';
 import { MenuNav, NotificationNav, ExploreNav } from './tabs';
-import { Colors } from '../constants';
+import { Colors } from 'constant';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -39,6 +39,19 @@ class HomeTabNav extends Component {
                                 <TabBarIcon focused={focused} name="md-home" />
                             ),
                         }}
+                        listeners={({ navigation, route }) => ({
+                            tabPress: () => {
+                                if (navigation && navigation.isFocused()) {
+                                    const screenFunctions = route?.params;
+                                    if (
+                                        screenFunctions &&
+                                        typeof screenFunctions.tapOnTabNavigator === 'function'
+                                    ) {
+                                        screenFunctions.tapOnTabNavigator();
+                                    }
+                                }
+                            },
+                        })}
                     />
                     <BottomTab.Screen
                         name="ExploreNav"

@@ -3,17 +3,10 @@ import { View, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-nati
 import { connect } from 'react-redux';
 import { Button } from 'react-native-elements';
 
-import {
-    MAIN_FONT,
-    MainText,
-    Popup,
-    ProfilePost,
-    ProfileHeader,
-    GreenButton,
-} from '../../components';
-import { Colors } from '../../constants';
-import { withFirebase } from '../../helper/Firebase';
-import { fetchUserData, updateProfile } from '../../redux';
+import { MainText, Popup, ProfilePost, ProfileHeader, GreenButton } from 'components';
+import { Colors, MAIN_FONT } from 'constant';
+import { withFirebase } from 'helper/Firebase';
+import { fetchUserData, updateProfile } from 'redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -54,7 +47,7 @@ class MyProfile extends Component {
                     onPress={this.goToMyQR}
                     icon={
                         <Image
-                            source={require('../../assets/images/profile/QR-Code.png')}
+                            source={require('assets/images/profile/QR-Code.png')}
                             style={{ width: 25, height: 25 }}
                         />
                     }

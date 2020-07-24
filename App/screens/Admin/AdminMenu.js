@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { MenuButton } from '../../components';
-import { Colors } from '../../constants';
+import { MenuButton } from 'components';
+import { Colors } from 'constant';
 
 class AdminMenu extends Component {
     navigating = false;

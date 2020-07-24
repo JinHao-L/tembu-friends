@@ -7,9 +7,9 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { BaseButton } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
 
-import { Colors } from '../../constants';
-import { MainText } from '../../components';
-import { withHeight } from '../../helper/HeaderHeightHook';
+import { Colors } from 'constant';
+import { MainText } from 'components';
+import { withHeight } from 'helper/HeaderHeightHook';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };

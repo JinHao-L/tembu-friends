@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import { MAIN_FONT, MainText, NotificationItem } from '../../components';
-import { withFirebase } from '../../helper/Firebase';
+import { MainText, NotificationItem } from 'components';
+import { withFirebase } from 'helper/Firebase';
 import { connect } from 'react-redux';
-import { Colors } from '../../constants';
+import { MAIN_FONT, Colors } from 'constant';
 
 const mapStateToProps = (state) => {
     return {
@@ -212,7 +212,7 @@ class FriendRequests extends Component {
         return (
             <View style={styles.emptyContainerStyle}>
                 <Image
-                    source={require('../../assets/images/misc/friend-request-icon.png')}
+                    source={require('assets/images/misc/friend-request-icon.png')}
                     style={{ marginBottom: 30, width: 100, height: 100 }}
                 />
                 <MainText style={styles.emptyText}>

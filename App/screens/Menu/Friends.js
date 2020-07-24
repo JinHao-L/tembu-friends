@@ -3,9 +3,9 @@ import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-nati
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { MAIN_FONT, MainText, UserItem, SearchBar, Popup, GreenButton } from '../../components';
-import { withFirebase } from '../../helper/Firebase';
-import { Colors } from '../../constants';
+import { MainText, UserItem, SearchBar, Popup, GreenButton } from 'components';
+import { withFirebase } from 'helper/Firebase';
+import { MAIN_FONT, Colors } from 'constant';
 
 const mapStateToProps = (state) => {
     return {
@@ -61,11 +61,11 @@ class Friends extends Component {
 
         return this.props.firebase
             .getUsers(friendList)
-            .then((list) => list.sort((a, b) => a.displayName.localeCompare(b.displayName)))
             .then((list) => {
-                this.friendList = list;
+                const sortedList = list.sort((a, b) => a.displayName.localeCompare(b.displayName));
+                this.friendList = sortedList;
                 this.setState({
-                    filteredList: list,
+                    filteredList: sortedList,
                 });
             })
             .then(() => this.setSearchValue(this.state.searchValue))
@@ -227,7 +227,7 @@ class Friends extends Component {
         return (
             <View style={styles.emptyContainerStyle}>
                 <Image
-                    source={require('../../assets/images/misc/friend-request-icon.png')}
+                    source={require('assets/images/misc/friend-request-icon.png')}
                     style={{ marginBottom: 30, width: 100, height: 100 }}
                 />
                 <MainText style={styles.emptyText}>

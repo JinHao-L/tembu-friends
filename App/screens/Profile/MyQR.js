@@ -7,9 +7,9 @@ import { Button } from 'react-native-elements';
 import * as Sharing from 'expo-sharing';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 
-import { Colors } from '../../constants';
-import { LogoText, MainText } from '../../components';
-import { withHeight } from '../../helper/HeaderHeightHook';
+import { Colors } from 'constant';
+import { LogoText, MainText } from 'components';
+import { withHeight } from 'helper/HeaderHeightHook';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -76,15 +76,11 @@ class MyQR extends Component {
         }
         return (
             <QRCode
-                logo={
-                    userData
-                        ? { uri: userData.profileImg }
-                        : require('../../assets/images/logo.png')
-                }
+                logo={userData ? { uri: userData.profileImg } : require('assets/images/logo.png')}
                 logoSize={50}
                 size={250}
                 ecl={'Q'}
-                backgroundImage={require('../../assets/images/misc/QR_background.jpg')}
+                backgroundImage={require('assets/images/misc/QR_background.jpg')}
                 content={'tf:' + userData.uid}
             />
         );

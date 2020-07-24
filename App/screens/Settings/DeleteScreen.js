@@ -3,9 +3,9 @@ import { View, StyleSheet, Keyboard, Platform, TouchableWithoutFeedback } from '
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { withFirebase } from '../../helper/Firebase';
-import { Colors, Layout } from '../../constants';
-import { AuthButton, FormInput, MainText, ErrorMessage } from '../../components';
+import { withFirebase } from 'helper/Firebase';
+import { Colors, Layout } from 'constant';
+import { AuthButton, FormInput, MainText, ErrorMessage } from 'components';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData, friendSubscriber: state.friendSubscriber };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
-import { Colors } from '../constants';
+import { Colors } from 'constant';
 
 const PushNotifications = {
     registerAsync: async () => {

@@ -3,8 +3,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Colors } from '../../constants';
-import { MAIN_FONT } from '../../components';
+import { Colors, TITLE_FONT } from '../../constant';
 import {
     ModuleEdit,
     MyProfile,
@@ -33,13 +32,13 @@ function ExploreNav() {
                 headerPressColorAndroid: Colors.appWhite,
                 headerTitleAlign: 'left',
                 headerTitleStyle: {
-                    fontFamily: MAIN_FONT,
-                    fontSize: 26,
+                    fontFamily: TITLE_FONT,
+                    fontSize: 30,
                 },
                 headerTitleContainerStyle: {
                     left: 0,
                     marginLeft: Platform.OS === 'ios' ? 50 : 40,
-                    paddingBottom: 3,
+                    // paddingBottom: 3,
                 },
                 headerBackImage: () => (
                     <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />

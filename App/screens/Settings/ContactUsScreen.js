@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, Linking } from 'react-native';
 
-import { MainText } from '../../components';
-import { Colors } from '../../constants';
+import { MainText } from 'components';
+import { Colors } from 'constant';
 
 class ContactUsScreen extends Component {
     mailTo = () => {
@@ -13,7 +13,7 @@ class ContactUsScreen extends Component {
         return (
             <View style={styles.container}>
                 <Image
-                    source={require('../../assets/images/settings/contact-us.png')}
+                    source={require('assets/images/settings/contact-us.png')}
                     style={{ marginBottom: 30, width: 100, height: 76.17 }}
                     resizeMode={'contain'}
                 />

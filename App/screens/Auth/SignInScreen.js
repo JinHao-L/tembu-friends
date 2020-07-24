@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
-import {
-    View,
-    StyleSheet,
-    Keyboard,
-    Text,
-    Platform,
-    ScrollView,
-    TouchableWithoutFeedback,
-} from 'react-native';
+import { View, StyleSheet, Keyboard, Text, Platform, TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-import { withFirebase } from '../../helper/Firebase';
-import { Colors, NUSEmailSignature, Layout } from '../../constants';
-import { AuthButton, FormInput, LogoText, MainText, Popup } from '../../components';
+import { withFirebase } from 'helper/Firebase';
+import { Colors, NUSEmailSignature, Layout } from 'constant';
+import { AuthButton, FormInput, LogoText, MainText, Popup } from 'components';
 
 class SignInScreen extends Component {
     state = {

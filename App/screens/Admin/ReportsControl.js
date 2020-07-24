@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { FlatList, View, StyleSheet, Platform } from 'react-native';
 import { ListItem, Button, Overlay } from 'react-native-elements';
 
-import { Colors } from '../../constants';
-import { MAIN_FONT, MainText, ProfilePost } from '../../components';
-import { withFirebase } from '../../helper/Firebase';
+import { Colors, MAIN_FONT } from 'constant';
+import { MainText, ProfilePost } from 'components';
+import { withFirebase } from 'helper/Firebase';
 
 class ReportsControl extends Component {
     state = {

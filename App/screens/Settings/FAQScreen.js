@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { MainText } from '../../components';
-import { Colors } from '../../constants';
+import { MainText } from 'components';
+import { Colors } from 'constant';
 
 class FAQScreen extends Component {
     render() {

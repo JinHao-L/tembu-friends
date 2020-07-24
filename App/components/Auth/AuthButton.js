@@ -1,30 +1,22 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { RectButton } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 
-import { Colors } from '../../constants';
-import { MainText } from '../Commons';
+import { Colors, MAIN_FONT } from 'constant';
 
 const AuthButton = (property) => {
     const { style, onPress, loading, children, ...others } = property;
     return (
-        <RectButton
-            {...others}
-            style={[
-                styles.container,
-                { backgroundColor: loading ? Colors.appGray2 : Colors.appGreen },
-                style,
-            ]}
+        <Button
+            buttonStyle={[styles.container, style]}
+            disabled={loading}
+            loading={loading}
+            loadingProps={{ size: 'small', color: Colors.appGreen }}
+            title={children}
+            titleStyle={styles.text}
             onPress={onPress}
-        >
-            {loading ? (
-                <View>
-                    <ActivityIndicator size="small" color="white" />
-                </View>
-            ) : (
-                <MainText style={styles.text}> {children} </MainText>
-            )}
-        </RectButton>
+            {...others}
+        />
     );
 };
 
@@ -33,8 +25,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 5,
         paddingVertical: 7,
+        backgroundColor: Colors.appGreen,
     },
     text: {
+        fontFamily: MAIN_FONT,
         fontSize: 15,
         fontWeight: '600',
         color: Colors.appWhite,

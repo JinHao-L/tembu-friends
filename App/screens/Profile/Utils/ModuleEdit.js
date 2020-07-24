@@ -4,8 +4,8 @@ import { Button, Icon } from 'react-native-elements';
 import { TabBar, TabView } from 'react-native-tab-view';
 import { HeaderBackButton } from '@react-navigation/stack';
 
-import { Colors, Layout } from '../../../constants';
-import { MAIN_FONT, Popup, SearchBar } from '../../../components';
+import { Colors, Layout, MAIN_FONT } from 'constant';
+import { Popup, SearchBar } from 'components';
 import { AllModules, MyModules } from './ModulesUtil';
 
 class ModuleEdit extends Component {

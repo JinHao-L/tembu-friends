@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import Colors from '../constants/Colors';
+import Colors from 'constant/Colors';
 
 export default function TabBarIcon(property) {
     const { name, focused } = property;

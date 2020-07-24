@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { MainText } from '../Commons';
-import { Colors } from '../../constants';
+import { Colors } from 'constant';
 
 function ErrorMessage({ error, style }) {
     return <MainText style={[styles.errorText, style]}>{error}</MainText>;

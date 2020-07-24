@@ -3,9 +3,9 @@ import { View, StyleSheet, Image } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { MAIN_FONT, MainText } from '../../components';
-import { Colors } from '../../constants';
-import { updateProfile } from '../../redux';
+import { MainText } from 'components';
+import { MAIN_FONT, Colors } from 'constant';
+import { updateProfile } from 'redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -94,7 +94,7 @@ class SettingsScreen extends Component {
                         }}
                         leftIcon={
                             <Image
-                                source={require('../../assets/images/menu/FriendsIcon.png')}
+                                source={require('assets/images/menu/FriendsIcon.png')}
                                 style={styles.icon}
                                 resizeMode={'contain'}
                                 resizeMethod={'scale'}
@@ -115,7 +115,7 @@ class SettingsScreen extends Component {
                         }}
                         leftIcon={
                             <Image
-                                source={require('../../assets/images/settings/post-icon.png')}
+                                source={require('assets/images/settings/post-icon.png')}
                                 style={styles.icon}
                                 resizeMode={'contain'}
                                 resizeMethod={'scale'}
@@ -134,7 +134,7 @@ class SettingsScreen extends Component {
                         onPress={this.goToFAQ}
                         leftIcon={
                             <Image
-                                source={require('../../assets/images/settings/FAQ-icon.png')}
+                                source={require('assets/images/settings/FAQ-icon.png')}
                                 style={styles.icon}
                                 resizeMode={'contain'}
                                 resizeMethod={'scale'}
@@ -142,7 +142,7 @@ class SettingsScreen extends Component {
                         }
                         rightIcon={
                             <Image
-                                source={require('../../assets/images/settings/next-icon.png')}
+                                source={require('assets/images/settings/next-icon.png')}
                                 style={styles.nextIcon}
                                 resizeMode={'contain'}
                             />
@@ -155,7 +155,7 @@ class SettingsScreen extends Component {
                         onPress={this.goToContactUs}
                         leftIcon={
                             <Image
-                                source={require('../../assets/images/settings/contact-us.png')}
+                                source={require('assets/images/settings/contact-us.png')}
                                 style={styles.icon}
                                 resizeMode={'contain'}
                                 resizeMethod={'scale'}
@@ -163,7 +163,7 @@ class SettingsScreen extends Component {
                         }
                         rightIcon={
                             <Image
-                                source={require('../../assets/images/settings/next-icon.png')}
+                                source={require('assets/images/settings/next-icon.png')}
                                 style={styles.nextIcon}
                                 resizeMode={'contain'}
                             />

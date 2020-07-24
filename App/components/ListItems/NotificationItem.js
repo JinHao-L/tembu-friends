@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { MainText } from '../Commons';
-import { Colors } from '../../constants';
+import { Colors } from 'constant';
 
 const timeDifference = (timestamp) => {
     if (timestamp) {
@@ -77,7 +77,7 @@ function NotificationItem({
                 rounded: true,
                 source: avatarImg
                     ? { uri: avatarImg }
-                    : require('../../assets/images/default/profile.png'),
+                    : require('assets/images/default/profile.png'),
                 showAccessory: !!accessoryIcon,
                 accessory: {
                     name: accessoryIcon,

@@ -3,16 +3,9 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { Avatar, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { Colors } from '../../constants';
-import {
-    MainText,
-    MAIN_FONT,
-    ProfilePost,
-    ProfileHeader,
-    Popup,
-    GreenButton,
-} from '../../components';
-import { withFirebase } from '../../helper/Firebase';
+import { Colors, MAIN_FONT } from 'constant';
+import { MainText, ProfilePost, ProfileHeader, Popup, GreenButton } from 'components';
+import { withFirebase } from 'helper/Firebase';
 
 const mapStateToProps = (state) => {
     return {
@@ -301,7 +294,7 @@ class UserProfile extends Component {
                         source={
                             this.props.userData.profileImg
                                 ? { uri: this.props.userData.profileImg }
-                                : require('../../assets/images/default/profile.png')
+                                : require('assets/images/default/profile.png')
                         }
                         containerStyle={{
                             marginRight: 10,

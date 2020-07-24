@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { Colors } from '../../../../constants';
-import { MAIN_FONT, MainText } from '../../../../components';
+import { Colors, MAIN_FONT } from 'constant';
+import { MainText } from 'components';
 
 class MyModules extends Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {

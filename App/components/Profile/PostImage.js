@@ -3,7 +3,6 @@ import {
     Image,
     TouchableOpacity,
     View,
-    ScrollView,
     StyleSheet,
     Modal,
     ActivityIndicator,
@@ -12,7 +11,7 @@ import {
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Icon } from 'react-native-elements';
 
-import { Layout, Colors } from '../../constants';
+import { Layout, Colors } from 'constant';
 
 let ratio = 2 / 3;
 
