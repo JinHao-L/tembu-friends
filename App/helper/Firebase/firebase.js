@@ -97,6 +97,7 @@ const Firebase = {
             .then((doc) => {
                 if (!doc.exists) {
                     console.log('No such user data!', uid);
+                    return null;
                 } else {
                     console.log('Document data available');
                     return doc.data();
@@ -180,12 +181,12 @@ const Firebase = {
     deletePost: (uid, postId) => {
         return firebase.firestore().collection(`posts/${uid}/userPosts`).doc(`${postId}`).delete();
     },
-    reportPost: (uid, postId, displayName) => {
+    reportPost: (uid, postId, writtenTo, reportedBy) => {
         const reportRef = firebase.firestore().collection(`reports`).doc('posts');
 
         const postRef = firebase.firestore().collection(`posts/${uid}/userPosts`).doc(postId);
 
-        const toAdd = { uid, postId, displayName };
+        const toAdd = { uid, postId, writtenTo, reportedBy };
 
         return reportRef
             .update({
@@ -202,6 +203,7 @@ const Firebase = {
             .then((doc) => {
                 if (!doc.exists) {
                     console.log('Post does not exist!');
+                    return null;
                 } else {
                     console.log('Post data available');
                     return doc.data();
@@ -209,6 +211,7 @@ const Firebase = {
             })
             .catch((err) => {
                 console.log('Error getting post document', err);
+                return null;
             });
     },
 

@@ -139,9 +139,7 @@ class NotificationScreen extends Component {
         }
         this.navigating = true;
         setTimeout(() => (this.navigating = false), 500);
-        if (!uid || uid === 'deleted') {
-            console.log('User does not exist');
-        } else if (uid === this.props.userData.uid) {
+        if (uid === this.props.userData.uid) {
             this.props.navigation.push('MyProfile');
         } else {
             this.props.navigation.push('UserProfile', { user_uid: uid });

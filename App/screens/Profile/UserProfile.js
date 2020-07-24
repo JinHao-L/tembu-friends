@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
 import { Avatar, Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 
@@ -19,11 +19,14 @@ class UserProfile extends Component {
         postsData: [],
         limit: 5,
         lastLoaded: null,
+        userLoading: true,
         loading: false,
         refreshing: false,
         allPostsLoaded: false,
         buttonLoading: false,
 
+        postOptionsVisible: false,
+        postOptionsProps: null,
         unfriendPopupVisible: false,
         respondPopupVisible: false,
     };
@@ -35,11 +38,17 @@ class UserProfile extends Component {
             this.setState(
                 {
                     profileData: userData,
+                    userLoading: false,
                 },
                 () => this.retrievePosts()
             );
-        } else {
+        } else if (user_uid) {
             this.getUser(user_uid);
+        } else {
+            this.setState({
+                profileData: null,
+                userLoading: false,
+            });
         }
     }
 
@@ -49,9 +58,7 @@ class UserProfile extends Component {
         }
         this.navigating = true;
         setTimeout(() => (this.navigating = false), 500);
-        if (!uid || uid === 'deleted') {
-            console.log('User does not exist');
-        } else if (uid === this.props.userData.uid) {
+        if (uid === this.props.userData.uid) {
             this.props.navigation.push('MyProfile');
         } else {
             this.props.navigation.push('UserProfile', { user_uid: uid });
@@ -76,11 +83,15 @@ class UserProfile extends Component {
         return this.props.firebase.getUserData(uid).then((profileData) => {
             if (profileData === null) {
                 console.log('User not found', uid);
-                this.props.navigation.goBack();
+                this.setState({
+                    profileData: profileData,
+                    userLoading: false,
+                });
             } else {
                 this.setState(
                     {
                         profileData: profileData,
+                        userLoading: false,
                     },
                     () => this.retrievePosts()
                 );
@@ -298,7 +309,7 @@ class UserProfile extends Component {
                         }
                         containerStyle={{
                             marginRight: 10,
-                            borderWidth: StyleSheet.hairlineWidth,
+                            borderWidth: 1,
                             borderColor: Colors.appGray2,
                         }}
                     />
@@ -323,8 +334,81 @@ class UserProfile extends Component {
             return null;
         }
     };
-    renderPost = (post) => {
-        return <ProfilePost postDetails={post} onUserPress={this.goToProfile} />;
+    renderPost = (post, index) => {
+        const isOwner = post.sender_uid === this.props.userData.uid;
+        return (
+            <ProfilePost
+                postDetails={post}
+                onUserPress={this.goToProfile}
+                postOptionsVisible={!post.reported || isOwner}
+                onPostOptionsPress={(id, reported) =>
+                    this.togglePostOptions(id, index, reported, isOwner)
+                }
+            />
+        );
+    };
+
+    togglePostOptions = (id, index, reported, isOwner) => {
+        if (id === undefined) {
+            this.setState({
+                postOptionsVisible: !this.state.postOptionsVisible,
+                postOptionsProps: null,
+            });
+        } else {
+            this.setState(
+                {
+                    postOptionsVisible: !this.state.postOptionsVisible,
+                    postOptionsProps: {
+                        postId: id,
+                        index: index,
+                        reported: reported,
+                        isOwner: isOwner,
+                    },
+                },
+                () => console.log(this.state.postOptionsProps)
+            );
+        }
+    };
+
+    deletePost = ({ postId, index }) => {
+        this.setState(
+            {
+                postsData: [
+                    ...this.state.postsData.slice(0, index),
+                    ...this.state.postsData.slice(index + 1),
+                ],
+            },
+            () => {
+                if (postId === this.state.lastLoaded) {
+                    this.setState({
+                        lastLoaded: this.state.postsData[this.state.postsData.length - 1]
+                            .time_posted,
+                    });
+                }
+                console.log('Deleting Posts');
+                this.props.firebase
+                    .deletePost(this.state.profileData.uid, postId)
+                    .catch((error) => console.log(error));
+            }
+        );
+    };
+    reportPost = ({ postId, index }) => {
+        this.state.postsData[index].reported = true;
+        this.setState({
+            postsData: [
+                ...this.state.postsData.slice(0, index),
+                this.state.postsData[index],
+                ...this.state.postsData.slice(index + 1),
+            ],
+        });
+        return this.props.firebase
+            .reportPost(
+                this.state.profileData.uid,
+                postId,
+                this.state.profileData.displayName,
+                this.props.userData.displayName
+            )
+            .catch((error) => console.log('report error', error));
     };
 
     renderUnfriendPopup = () => {
@@ -422,10 +506,62 @@ class UserProfile extends Component {
             />
         );
     };
+    renderPostOptions = () => {
+        return (
+            <Popup
+                imageType={'Custom'}
+                isVisible={this.state.postOptionsVisible}
+                title={'Options'}
+                body={
+                    <View>
+                        {this.state.postOptionsProps?.isOwner ? (
+                            <Button
+                                title={'Delete this post'}
+                                type={'clear'}
+                                titleStyle={styles.optionsTitle}
+                                icon={{
+                                    name: 'delete',
+                                    color: Colors.statusRed,
+                                    size: 25,
+                                    containerStyle: { paddingHorizontal: 10 },
+                                }}
+                                buttonStyle={{ justifyContent: 'flex-start' }}
+                                containerStyle={{ borderRadius: 0 }}
+                                onPress={() => {
+                                    this.deletePost(this.state.postOptionsProps);
+                                    this.togglePostOptions();
+                                }}
+                            />
+                        ) : !this.state.postOptionsProps?.reported ? (
+                            <Button
+                                title={'Flag post as inappropriate'}
+                                type={'clear'}
+                                titleStyle={styles.optionsTitle}
+                                icon={{
+                                    name: 'flag',
+                                    color: Colors.statusYellow,
+                                    size: 25,
+                                    containerStyle: { paddingHorizontal: 10 },
+                                }}
+                                buttonStyle={{ justifyContent: 'flex-start' }}
+                                containerStyle={{ borderRadius: 0 }}
+                                onPress={() => {
+                                    this.reportPost(this.state.postOptionsProps);
+                                    this.togglePostOptions();
+                                }}
+                            />
+                        ) : null}
+                    </View>
+                }
+                buttonText={'Cancel'}
+                callback={this.togglePostOptions}
+            />
+        );
+    };
 
     render() {
-        const { profileData, postsData, refreshing } = this.state;
-        if (!profileData || !this.props.userData) {
+        const { profileData, postsData, refreshing, userLoading } = this.state;
+        if (userLoading || !this.props.userData) {
             return (
                 <View
                     style={[
@@ -439,14 +575,25 @@ class UserProfile extends Component {
                     <ActivityIndicator size={'large'} />
                 </View>
             );
+        } else if (!userLoading && !profileData) {
+            return (
+                <View style={styles.userDeletedContainer}>
+                    <Image
+                        source={require('assets/images/profile/user-deleted-icon.png')}
+                        style={{ marginBottom: 30, width: 100, height: 100 }}
+                    />
+                    <MainText style={styles.userDeletedText}>This account is deleted</MainText>
+                </View>
+            );
         } else {
             return (
                 <View style={styles.container}>
                     {this.renderRespondPopup()}
                     {this.renderUnfriendPopup()}
+                    {this.renderPostOptions()}
                     <FlatList
                         data={postsData}
-                        renderItem={({ item }) => this.renderPost(item)}
+                        renderItem={({ item, index }) => this.renderPost(item, index)}
                         keyExtractor={(post) => post.post_id}
                         ListHeaderComponent={this.renderHeader}
                         ListFooterComponent={this.renderFooter}
@@ -502,6 +649,26 @@ const styles = StyleSheet.create({
     friendsButtonContainer: {
         marginRight: 20,
         marginBottom: 5,
+    },
+    userDeletedContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Colors.appWhite,
+    },
+    userDeletedText: {
+        marginHorizontal: 30,
+        fontSize: 16,
+        fontWeight: '600',
+        color: Colors.appBlack,
+        textAlign: 'center',
+    },
+    optionsTitle: {
+        fontFamily: MAIN_FONT,
+        fontSize: 15,
+        color: Colors.appBlack,
+        flexShrink: 1,
+        textAlign: 'left',
     },
 });
 

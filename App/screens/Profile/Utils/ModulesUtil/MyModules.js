@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     separator: {
-        borderWidth: StyleSheet.hairlineWidth,
+        borderWidth: 1,
         borderColor: Colors.appGray4,
     },
     titleStyle: {

@@ -13,7 +13,6 @@ class ExploreScreen extends Component {
         this.state = {
             loading: false,
             userList: [],
-            limit: 10,
 
             value: '',
 
@@ -146,7 +145,6 @@ class ExploreScreen extends Component {
             .orderBy('displayName', 'asc')
             .startAt(name)
             .endAt(name + '\uf8ff')
-            .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
@@ -155,9 +153,35 @@ class ExploreScreen extends Component {
             })
             .then((userList) => {
                 this.setState({
-                    loading: false,
                     nameUserList: userList,
                 });
+            })
+            .then(() => {
+                const title_name = this.toTitleCase(name);
+                if (title_name !== name) {
+                    console.log('Searching by name:', title_name);
+                    return this.props.firebase
+                        .getUserCollection()
+                        .orderBy('displayName', 'asc')
+                        .startAt(title_name)
+                        .endAt(title_name + '\uf8ff')
+                        .get()
+                        .then((documentSnapshots) => documentSnapshots.docs)
+                        .then((documents) => {
+                            console.log('Retrieving', documents.length, 'users');
+                            return documents.map((document) => document.data());
+                        })
+                        .then((userList) => {
+                            this.setState({
+                                nameUserList: [...this.state.nameUserList, ...userList],
+                                loading: false,
+                            });
+                        });
+                } else {
+                    return this.setState({
+                        loading: false,
+                    });
+                }
             })
             .catch((error) => {
                 this.setState({ loading: false });
@@ -174,7 +198,6 @@ class ExploreScreen extends Component {
         return this.props.firebase
             .getUserCollection()
             .where('moduleCodes', 'array-contains', mod)
-            .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
@@ -203,7 +226,6 @@ class ExploreScreen extends Component {
             .orderBy('role', 'asc')
             .startAt(role)
             .endAt(role + '\uf8ff')
-            .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
@@ -212,9 +234,35 @@ class ExploreScreen extends Component {
             })
             .then((userList) => {
                 this.setState({
-                    loading: false,
                     roleUserList: userList,
                 });
+            })
+            .then(() => {
+                const title_role = this.toTitleCase(role);
+                if (title_role !== role) {
+                    console.log('Searching by role:', title_role);
+                    return this.props.firebase
+                        .getUserCollection()
+                        .orderBy('displayName', 'asc')
+                        .startAt(title_role)
+                        .endAt(title_role + '\uf8ff')
+                        .get()
+                        .then((documentSnapshots) => documentSnapshots.docs)
+                        .then((documents) => {
+                            console.log('Retrieving', documents.length, 'users');
+                            return documents.map((document) => document.data());
+                        })
+                        .then((userList) => {
+                            this.setState({
+                                roleUserList: [...this.state.roleUserList, ...userList],
+                                loading: false,
+                            });
+                        });
+                } else {
+                    return this.setState({
+                        loading: false,
+                    });
+                }
             })
             .catch((error) => {
                 this.setState({ loading: false });
@@ -236,7 +284,6 @@ class ExploreScreen extends Component {
             .orderBy('roomNumber', 'asc')
             .startAt(roomNumber)
             .endAt(roomNumber + '\uf8ff')
-            .limit(this.state.limit)
             .get()
             .then((documentSnapshots) => documentSnapshots.docs)
             .then((documents) => {
@@ -256,6 +303,14 @@ class ExploreScreen extends Component {
             .finally(() => {
                 this.loaded.room = true;
             });
+    };
+
+    toTitleCase = (text) => {
+        const arr = text.split(' ');
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+        }
+        return arr.join(' ');
     };
 
     render() {

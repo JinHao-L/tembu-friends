@@ -148,7 +148,7 @@ function ProfileHeader({
                 <MainText style={styles.title}>Modules that I’ve taken in Tembusu</MainText>
                 <ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled={true}>
                     {moduleCodes.length === 0 ? (
-                        <MainText style={styles.emptyText}>None</MainText>
+                        <MainText style={styles.emptyText}>No modules taken</MainText>
                     ) : (
                         moduleCodes.map((item, index) => (
                             <ListItem
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
         fontFamily: MAIN_FONT,
         color: Colors.appGray4,
         fontSize: 12,
-        textAlign: 'center',
+        textAlign: 'left',
     },
 });
 

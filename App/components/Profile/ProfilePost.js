@@ -54,7 +54,16 @@ function ProfilePost({
     onUserPress = () => null,
     postOptionsVisible = false,
     onPostOptionsPress,
+    style,
 }) {
+    if (postDetails == null) {
+        return (
+            <View style={[styles.box]}>
+                <MainText style={styles.deletedText}>Post has been deleted</MainText>
+            </View>
+        );
+    }
+
     const {
         body,
         is_private,
@@ -69,7 +78,7 @@ function ProfilePost({
     } = postDetails;
 
     return (
-        <View style={[styles.box, is_private && { backgroundColor: Colors.appGray1 }]}>
+        <View style={[styles.box, is_private && { backgroundColor: Colors.appGray1 }, style]}>
             <View style={styles.header}>
                 <Avatar
                     size={35}
@@ -82,28 +91,33 @@ function ProfilePost({
                     }
                     containerStyle={{
                         marginRight: 10,
-                        borderWidth: StyleSheet.hairlineWidth,
+                        borderWidth: 1,
                         borderColor: Colors.appGray2,
                     }}
-                    onPress={() => onUserPress(sender_uid)}
+                    onPress={sender_uid ? () => onUserPress(sender_uid) : undefined}
                 />
                 <View style={{ flexDirection: 'column' }}>
-                    <MainText style={{ fontSize: 15 }} onPress={() => onUserPress(sender_uid)}>
+                    <MainText
+                        style={{ fontSize: 15 }}
+                        onPress={sender_uid ? () => onUserPress(sender_uid) : undefined}
+                    >
                         {sender_name}
                     </MainText>
-                    <MainText>{formatDate(time_posted)}</MainText>
+                    <View style={{ flexDirection: 'row' }}>
+                        <MainText>{formatDate(time_posted)}</MainText>
+                        {is_private && (
+                            <MainText
+                                style={{
+                                    marginLeft: 5,
+                                    color: Colors.appGray4,
+                                }}
+                            >
+                                (Private)
+                            </MainText>
+                        )}
+                    </View>
                 </View>
-                {is_private && (
-                    <MainText
-                        style={{
-                            alignSelf: 'flex-end',
-                            marginLeft: 5,
-                            color: Colors.appGray4,
-                        }}
-                    >
-                        (Private)
-                    </MainText>
-                )}
+
                 {postOptionsVisible && (
                     <Icon
                         name={'more-horiz'}
@@ -180,6 +194,13 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    deletedText: {
+        textAlign: 'center',
+        paddingTop: 20,
+        paddingBottom: 15,
+        fontSize: 16,
+        fontWeight: '600',
     },
 });
 

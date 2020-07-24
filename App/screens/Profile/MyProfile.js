@@ -145,11 +145,7 @@ class MyProfile extends Component {
         }
         this.navigating = true;
         setTimeout(() => (this.navigating = false), 500);
-        if (!uid || uid === 'deleted') {
-            console.log('User does not exist', uid);
-        } else {
-            this.props.navigation.push('UserProfile', { user_uid: uid });
-        }
+        this.props.navigation.push('UserProfile', { user_uid: uid });
     };
     goToMyQR = () => {
         if (this.navigating) {
@@ -198,7 +194,12 @@ class MyProfile extends Component {
             ],
         });
         return this.props.firebase
-            .reportPost(this.props.userData.uid, postId, this.props.userData.displayName)
+            .reportPost(
+                this.props.userData.uid,
+                postId,
+                this.props.userData.displayName,
+                this.props.userData.displayName
+            )
             .catch((error) => console.log('report error', error));
     };
 

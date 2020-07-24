@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     line: {
         width: 280 > width / 2 ? 280 : width / 2,
         borderBottomColor: Colors.appGray1,
-        borderWidth: StyleSheet.hairlineWidth,
+        borderWidth: 1,
     },
     buttonText: {
         fontFamily: MAIN_FONT,

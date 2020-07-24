@@ -26,7 +26,6 @@ class ReportsControl extends Component {
         return this.props.firebase
             .getPostReport()
             .then((data) => {
-                console.log(data);
                 this.setState({ data });
             })
             .catch((error) => console.log('Get Post report', error))
@@ -40,7 +39,7 @@ class ReportsControl extends Component {
                 contentContainerStyle={styles.reportContentContainer}
                 title={'Report ' + item.postId}
                 titleStyle={styles.title}
-                subtitle={'Reported by: ' + item.displayName}
+                subtitle={'Reported by: ' + item.reportedBy}
                 subtitleStyle={styles.subtitle}
                 onPress={this.state.fetchingPost ? undefined : () => this.showPost(item, index)}
             />
@@ -106,7 +105,13 @@ class ReportsControl extends Component {
                     overlayStyle={styles.overlayContainer}
                 >
                     <View>
-                        <ProfilePost postDetails={this.state.overlayData} />
+                        <MainText style={styles.popupTitle}>
+                            {'To: ' + this.state.currPost?.writtenTo || 'User deleted'}
+                        </MainText>
+                        <ProfilePost
+                            postDetails={this.state.overlayData}
+                            style={styles.separator}
+                        />
                         <Button
                             title={'Delete Post'}
                             type={'clear'}
@@ -117,12 +122,7 @@ class ReportsControl extends Component {
                             }}
                             containerStyle={[
                                 styles.buttonContainer,
-                                Platform.OS === 'ios'
-                                    ? {
-                                          borderBottomColor: Colors.appGray2,
-                                          borderBottomWidth: StyleSheet.hairlineWidth,
-                                      }
-                                    : {},
+                                Platform.OS === 'ios' && styles.separator,
                             ]}
                         />
                         <Button
@@ -135,12 +135,7 @@ class ReportsControl extends Component {
                             }}
                             containerStyle={[
                                 styles.buttonContainer,
-                                Platform.OS === 'ios'
-                                    ? {
-                                          borderBottomColor: Colors.appGray2,
-                                          borderBottomWidth: StyleSheet.hairlineWidth,
-                                      }
-                                    : {},
+                                Platform.OS === 'ios' && styles.separator,
                             ]}
                         />
                         <Button
@@ -210,6 +205,20 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '600',
         color: '#222',
+    },
+    popupTitle: {
+        fontWeight: '600',
+        fontSize: 15,
+        color: '#333',
+        textAlign: 'center',
+        paddingVertical: 10,
+        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderColor: Colors.appGray2,
+    },
+    separator: {
+        borderColor: Colors.appGray2,
+        borderBottomWidth: 1,
     },
 });
 

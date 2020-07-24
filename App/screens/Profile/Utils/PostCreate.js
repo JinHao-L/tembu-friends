@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     },
     avatarStyle: {
         marginRight: 10,
-        borderWidth: StyleSheet.hairlineWidth,
+        borderWidth: 1,
         borderColor: Colors.appGray2,
     },
     content: {

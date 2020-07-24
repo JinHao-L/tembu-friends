@@ -247,7 +247,14 @@ class SignInScreen extends Component {
                                         this.toggleNotVerifiedPopup();
                                         this.toggleEmailSentPopup();
                                     })
-                                    .catch((error) => console.log(error));
+                                    .catch((error) => {
+                                        console.log(error);
+                                        this.toggleNotVerifiedPopup();
+                                        this.setState({
+                                            generalError:
+                                                'Unusual activity detected. Please try again later',
+                                        });
+                                    });
                             }}
                             style={styles.hyperlink}
                         >
