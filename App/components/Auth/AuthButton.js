@@ -16,6 +16,7 @@ const AuthButton = (property) => {
             titleStyle={styles.text}
             onPress={onPress}
             {...others}
+            testID={'AuthButton'}
         />
     );
 };

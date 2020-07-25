@@ -26,6 +26,7 @@ function MenuButton(property) {
                 underlayColor={Colors.appGray2}
                 rippleColor={Colors.appGray2}
                 {...others}
+                testID={'MenuButton'}
             >
                 <View style={styles.contents}>
                     {avatar || type === 'Profile' ? (

@@ -20,6 +20,9 @@
                 "preset": "jest-expo/android"
             }
         ],
+        "testMatch": [
+            ".**/__tests__/**/*.js?(x)"
+        ],
         "transformIgnorePatterns": [
             "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
         ]
@@ -65,6 +68,8 @@
     "devDependencies": {
         "@babel/core": "^7.10.4",
         "babel-preset-expo": "^8.2.3",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-15": "^1.4.1",
         "husky": "^4.2.5",
         "jest-expo": "^38.0.0",
         "prettier": "^2.0.5",

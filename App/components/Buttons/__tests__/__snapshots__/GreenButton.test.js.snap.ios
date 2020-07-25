@@ -31,6 +31,7 @@ exports[`<GreenButton/> renders correctly 1`] = `
         "opacity": 1,
       }
     }
+    testID="GreenButton"
   >
     <View
       style={
@@ -48,7 +49,22 @@ exports[`<GreenButton/> renders correctly 1`] = `
           "paddingVertical": 2,
         }
       }
-    />
+    >
+      <Text
+        style={
+          Object {
+            "color": "#FFFFFF",
+            "fontFamily": "Montserrat-SemiBold",
+            "fontSize": 12,
+            "paddingBottom": 1,
+            "paddingTop": 2,
+            "textAlign": "center",
+          }
+        }
+      >
+        button
+      </Text>
+    </View>
   </View>
 </View>
 `;

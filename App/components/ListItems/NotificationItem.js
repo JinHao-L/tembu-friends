@@ -97,6 +97,7 @@ function NotificationItem({
             }}
             onPress={onPress}
             onLongPress={onLongPress}
+            testID={'listitem'}
         />
     );
 }

@@ -47,6 +47,22 @@ exports[`<GreenButton/> renders correctly 1`] = `
         "paddingVertical": 2,
       }
     }
-  />
+    testID="GreenButton"
+  >
+    <Text
+      style={
+        Object {
+          "color": "#FFFFFF",
+          "fontFamily": "Montserrat-SemiBold",
+          "fontSize": 12,
+          "paddingBottom": 1,
+          "paddingTop": 2,
+          "textAlign": "center",
+        }
+      }
+    >
+      button
+    </Text>
+  </View>
 </View>
 `;

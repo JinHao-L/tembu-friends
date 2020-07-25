@@ -5,7 +5,7 @@ import RadioButton from '../RadioButton';
 
 describe('<RadioButton/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<RadioButton />).toJSON();
+        const tree = renderer.create(<RadioButton selected={false} />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

@@ -31,6 +31,7 @@ exports[`<AuthButton/> renders correctly 1`] = `
         "opacity": 1,
       }
     }
+    testID="AuthButton"
   >
     <View
       style={

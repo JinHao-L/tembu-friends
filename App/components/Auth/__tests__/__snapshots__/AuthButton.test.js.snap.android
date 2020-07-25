@@ -46,6 +46,7 @@ exports[`<AuthButton/> renders correctly 1`] = `
         "paddingVertical": 7,
       }
     }
+    testID="AuthButton"
   />
 </View>
 `;

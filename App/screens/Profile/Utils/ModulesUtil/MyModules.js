@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.appWhite,
     },
     separator: {
-        borderWidth: 1,
-        borderColor: Colors.appGray4,
+        height: 3,
+        backgroundColor: Colors.appGray2,
     },
     titleStyle: {
         fontFamily: MAIN_FONT,

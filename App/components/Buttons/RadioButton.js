@@ -6,7 +6,7 @@ import { MainText } from '../Commons';
 function RadioButton(props) {
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={props.onPress}>
+            <TouchableOpacity onPress={props.onPress} testID={'touchable'}>
                 <View style={[styles.outer, { borderColor: props.tintColor }, props.style]}>
                     {props.selected ? (
                         <View style={[styles.inner, { backgroundColor: props.tintColor }]} />

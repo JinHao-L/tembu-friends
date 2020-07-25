@@ -19,6 +19,7 @@ const UserItem = ({ name, profileImg, onPress, style, textStyle, rightElement = 
             titleStyle={[styles.text, textStyle]}
             rightElement={rightElement}
             onPress={onPress}
+            testID={'UserItem'}
         />
     );
 };

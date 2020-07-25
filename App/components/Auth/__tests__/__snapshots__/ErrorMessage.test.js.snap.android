@@ -19,5 +19,7 @@ exports[`<ErrorMessage/> renders correctly 1`] = `
       ],
     ]
   }
-/>
+>
+  ERROR
+</Text>
 `;

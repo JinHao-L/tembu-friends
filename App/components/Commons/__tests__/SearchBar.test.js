@@ -5,7 +5,7 @@ import SearchBar from '../SearchBar';
 
 describe('<SearchBar/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<SearchBar />).toJSON();
+        const tree = renderer.create(<SearchBar value={'text'} />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

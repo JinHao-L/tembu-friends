@@ -14,6 +14,7 @@ function GreenButton({
 }) {
     return (
         <Button
+            testID={'GreenButton'}
             containerStyle={[styles.friendButtonContainer, containerStyle]}
             buttonStyle={[
                 styles.friendButton,

@@ -23,6 +23,7 @@ exports[`<RadioButton/> renders correctly 1`] = `
         "opacity": 1,
       }
     }
+    testID="touchable"
   >
     <View
       style={

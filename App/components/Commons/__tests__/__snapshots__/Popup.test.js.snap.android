@@ -142,7 +142,9 @@ exports[`<Popup/> renders correctly 1`] = `
                   },
                 ]
               }
-            />
+            >
+              title
+            </Text>
             <Text
               style={
                 Array [
@@ -157,7 +159,9 @@ exports[`<Popup/> renders correctly 1`] = `
                   },
                 ]
               }
-            />
+            >
+              body
+            </Text>
           </View>
         </View>
       </View>

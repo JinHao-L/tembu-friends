@@ -68,6 +68,7 @@ function Popup({
                             styles.buttonContainer,
                             { borderBottomEndRadius: 20, borderBottomStartRadius: 20 },
                         ]}
+                        testID={'lastButton'}
                     />
                 )}
             </View>
@@ -132,8 +133,8 @@ const styles = StyleSheet.create({
     },
     line: {
         width: 280 > width / 2 ? 280 : width / 2,
-        borderBottomColor: Colors.appGray1,
-        borderWidth: 1,
+        backgroundColor: Colors.appGray2,
+        height: 1,
     },
     buttonText: {
         fontFamily: MAIN_FONT,
