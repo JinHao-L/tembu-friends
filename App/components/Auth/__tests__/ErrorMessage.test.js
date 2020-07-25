@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import ErrorMessage from '../ErrorMessage';
 
-describe('<AppLogo/>', () => {
+describe('<ErrorMessage/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<ErrorMessage />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

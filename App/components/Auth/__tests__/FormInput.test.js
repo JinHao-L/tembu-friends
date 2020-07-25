@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import FormInput from '../FormInput';
 
-describe('<AppLogo/>', () => {
+describe('<FormInput/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<FormInput />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import Popup from '../Popup';
 
-describe('<AppLogo/>', () => {
+describe('<Popup/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<Popup isVisible={true} />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

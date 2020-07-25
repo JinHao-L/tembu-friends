@@ -274,7 +274,11 @@ class NotificationScreen extends Component {
     renderFriendRequests = (request, responseStatus) => {
         return (
             <NotificationItem
-                message={request.displayName + ' sent you a friend request.'}
+                message={
+                    request.displayName
+                        ? request.displayName + ' sent you a friend request.'
+                        : '(deleted)'
+                }
                 seen={request.seen}
                 timeCreated={request.time_requested}
                 avatarImg={request.profileImg}

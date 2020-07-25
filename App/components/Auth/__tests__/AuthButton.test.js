@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import AuthButton from '../AuthButton';
 
-describe('<AppLogo/>', () => {
+describe('<AuthButton/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<AuthButton />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

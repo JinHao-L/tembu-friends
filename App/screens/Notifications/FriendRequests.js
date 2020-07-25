@@ -148,7 +148,7 @@ class FriendRequests extends Component {
     renderFriendRequests = (request, index) => {
         return (
             <NotificationItem
-                message={request.displayName}
+                message={request.displayName || '(deleted)'}
                 seen={request.seen}
                 titleSpread={true}
                 timeCreated={request.time_requested}

@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import GreenButton from '../GreenButton';
 
-describe('<AppLogo/>', () => {
+describe('<GreenButton/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<GreenButton />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

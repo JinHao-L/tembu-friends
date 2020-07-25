@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import RadioButton from '../RadioButton';
 
-describe('<AppLogo/>', () => {
+describe('<RadioButton/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<RadioButton />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

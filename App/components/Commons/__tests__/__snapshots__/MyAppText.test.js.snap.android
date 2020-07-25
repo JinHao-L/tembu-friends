@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LogoText/> renders correctly 1`] = `
+<Text
+  style={
+    Array [
+      Object {
+        "fontFamily": "Futura-Medium-BT",
+        "fontSize": 12,
+      },
+      undefined,
+    ]
+  }
+/>
+`;
+
+exports[`<MainText/> renders correctly 1`] = `
+<Text
+  style={
+    Array [
+      Object {
+        "fontFamily": "Montserrat-SemiBold",
+        "fontSize": 13,
+      },
+      undefined,
+    ]
+  }
+/>
+`;

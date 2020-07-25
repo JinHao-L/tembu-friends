@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import SearchBar from '../SearchBar';
 
-describe('<AppLogo/>', () => {
+describe('<SearchBar/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<SearchBar />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

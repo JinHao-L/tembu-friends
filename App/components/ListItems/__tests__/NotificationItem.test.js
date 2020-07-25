@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import NotificationItem from '../NotificationItem';
 
-describe('<AppLogo/>', () => {
+describe('<NotificationItem/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<NotificationItem />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });

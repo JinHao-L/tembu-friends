@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FormInput/> renders correctly 1`] = `
+<View
+  style={
+    Array [
+      undefined,
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "#FFFFFF",
+          "borderRadius": 6,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "overflow": "hidden",
+        },
+        undefined,
+        Object {
+          "borderColor": "#D9D9D9",
+        },
+      ]
+    }
+  >
+    <TextInput
+      allowFontScaling={true}
+      autoCompleteType="off"
+      blurOnSubmit={false}
+      onBlur={[Function]}
+      onFocus={[Function]}
+      placeholderTextColor="#D9D9D9"
+      rejectResponderTermination={true}
+      style={
+        Object {
+          "flex": 1,
+          "fontFamily": "Montserrat-SemiBold",
+          "fontSize": 15,
+          "fontWeight": "600",
+          "marginLeft": 5,
+          "paddingVertical": 0,
+          "textAlignVertical": "center",
+        }
+      }
+      underlineColorAndroid="transparent"
+    />
+  </View>
+  <Text
+    style={
+      Array [
+        Object {
+          "fontFamily": "Montserrat-SemiBold",
+          "fontSize": 13,
+        },
+        Array [
+          Object {
+            "color": "#FF0000",
+            "flexWrap": "wrap",
+            "fontSize": 12,
+            "textAlign": "left",
+          },
+          undefined,
+        ],
+      ]
+    }
+  >
+     
+  </Text>
+</View>
+`;

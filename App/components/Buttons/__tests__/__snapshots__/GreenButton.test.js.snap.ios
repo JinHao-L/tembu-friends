@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GreenButton/> renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "borderRadius": 20,
+      "overflow": "hidden",
+    }
+  }
+>
+  <View
+    accessibilityRole="button"
+    accessibilityState={
+      Object {
+        "busy": false,
+        "disabled": false,
+      }
+    }
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "#248458",
+          "borderColor": "#248458",
+          "borderRadius": 20,
+          "borderWidth": 1,
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "minWidth": 86,
+          "padding": 8,
+          "paddingHorizontal": 0,
+          "paddingVertical": 2,
+        }
+      }
+    />
+  </View>
+</View>
+`;

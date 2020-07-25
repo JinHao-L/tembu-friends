@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AppLogo renders correctly 1`] = `
+exports[`<AppLogo/> renders correctly 1`] = `
 <Image
   resizeMode="contain"
   source={1}

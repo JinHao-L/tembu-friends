@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import AppLogo from '../AppLogo';
+import MenuButton from '../MenuButton';
 
-describe('<AppLogo/>', () => {
+describe('<MenuButton/>', () => {
     it('renders correctly', () => {
-        const tree = renderer.create(<AppLogo />).toJSON();
+        const tree = renderer.create(<MenuButton />).toJSON();
         expect(tree).toMatchSnapshot();
     });
 });
