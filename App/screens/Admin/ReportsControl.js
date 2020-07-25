@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { FlatList, View, StyleSheet, Platform } from 'react-native';
+import { FlatList, View, StyleSheet, Platform, ScrollView } from 'react-native';
 import { ListItem, Button, Overlay } from 'react-native-elements';
 
 import { Colors, MAIN_FONT } from 'constant';
 import { MainText, ProfilePost } from 'components';
 import { withFirebase } from 'helper/Firebase';
+import Layout from '../../constant/Layout';
 
 class ReportsControl extends Component {
     state = {
@@ -108,10 +109,12 @@ class ReportsControl extends Component {
                         <MainText style={styles.popupTitle}>
                             {'To: ' + this.state.currPost?.writtenTo || 'User deleted'}
                         </MainText>
-                        <ProfilePost
-                            postDetails={this.state.overlayData}
-                            style={styles.separator}
-                        />
+                        <ScrollView style={{ maxHeight: Layout.window.height / 2 }}>
+                            <ProfilePost
+                                postDetails={this.state.overlayData}
+                                style={styles.separator}
+                            />
+                        </ScrollView>
                         <Button
                             title={'Delete Post'}
                             type={'clear'}

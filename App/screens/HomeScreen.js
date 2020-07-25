@@ -19,7 +19,7 @@ class HomeScreen extends Component {
 
     componentDidMount() {
         this.props.navigation.setParams({
-            tapOnTabNavigator: this.homeButtonHandler.bind(this),
+            tapOnTabNavigator: this.homeButtonHandler,
         });
         if (Platform.OS === 'android') {
             BackHandler.addEventListener('hardwareBackPress', this.backButtonHandler);
@@ -41,7 +41,9 @@ class HomeScreen extends Component {
     homeButtonHandler = () => {
         const redirectTo = 'window.location = "' + this.homepage + '"';
         this.webviewRef.injectJavaScript(redirectTo);
-        this.webviewRef.clearHistory();
+        if (Platform.OS === 'android') {
+            this.webviewRef.clearHistory();
+        }
     };
 
     frontButtonHandler = () => {

@@ -129,6 +129,7 @@ class RootNav extends Component {
                 require('assets/images/profile/job-icon.png'),
                 require('assets/images/profile/study-icon.png'),
                 require('assets/images/profile/QR-Code.png'),
+                require('assets/images/profile/user-deleted-icon.png'),
 
                 require('assets/images/settings/contact-us.png'),
                 require('assets/images/settings/FAQ-icon.png'),

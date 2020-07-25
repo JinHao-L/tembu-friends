@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import {
     ActivityIndicator,
     ImageBackground,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -45,6 +48,8 @@ class ProfileEdit extends Component {
         errorMessage: null,
         unsavedEdits: false,
         uploading: false,
+
+        keyboardHeight: 0,
     };
 
     componentDidMount() {
@@ -73,6 +78,31 @@ class ProfileEdit extends Component {
                 />
             ),
         });
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide
+        );
+    }
+
+    _keyboardDidShow = (event) => {
+        this.setState({
+            keyboardHeight: event.endCoordinates.height,
+        });
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({
+            keyboardHeight: 0,
+        });
+    };
+
+    componentWillUnmount() {
+        this.keyboardDidHideListener.remove();
+        this.keyboardDidShowListener.remove();
     }
 
     onChangeBannerImgPress = async () => {
@@ -132,19 +162,19 @@ class ProfileEdit extends Component {
             this.state.firstName !== undefined &&
             (this.state.firstName.length === 0 || !this.state.firstName.match(wordsOnly))
         ) {
-            errorMessage += 'first name, ';
+            errorMessage += 'First Name (letters only), ';
             hasError = true;
         }
         if (
             this.state.lastName !== undefined &&
             (this.state.lastName.length === 0 || !this.state.lastName.match(wordsOnly))
         ) {
-            errorMessage += 'last name, ';
+            errorMessage += 'Last Name (letters only), ';
             hasError = true;
         }
 
-        if (this.state.roomNumber !== undefined && this.state.roomNumber.length !== 7) {
-            errorMessage += 'room number, ';
+        if (this.state.roomNumber !== undefined && this.state.roomNumber.length < 7) {
+            errorMessage += 'Room Number (at least 7 character), ';
             hasError = true;
         }
         if (hasError) {
@@ -233,7 +263,7 @@ class ProfileEdit extends Component {
             hasChanges = true;
         }
         if (roomNumber !== undefined) {
-            changes.roomNumber = roomNumber;
+            changes.roomNumber = roomNumber.toUpperCase();
             hasChanges = true;
         }
         if (aboutText !== undefined) {
@@ -655,7 +685,12 @@ class ProfileEdit extends Component {
         }
         return (
             <ScrollView style={styles.container} keyboardShouldPersistTaps={'handled'}>
-                <View>
+                <View
+                    style={{
+                        paddingBottom:
+                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                    }}
+                >
                     {this.renderUploading()}
                     {this.renderSuccessPopup()}
                     {this.renderFailurePopup()}
@@ -828,12 +863,13 @@ class ProfileEdit extends Component {
                         <TextInput
                             style={styles.input}
                             placeholder={'Add your room number'}
-                            maxLength={7}
+                            maxLength={8}
                             placeholderTextColor={Colors.appGray2}
                             underlineColorAndroid="transparent"
                             value={roomNumber}
                             textContentType={'postalCode'}
-                            keyboardType={'numeric'}
+                            autoCapitalize={'characters'}
+                            keyboardType={roomNumber.length < 7 ? 'number-pad' : 'default'}
                             onChangeText={this.handleRoomNumber}
                         />
                     </View>
@@ -846,6 +882,7 @@ class ProfileEdit extends Component {
                                 style={styles.aboutText}
                                 multiline={true}
                                 numberOfLines={4}
+                                minHeight={Platform.OS === 'ios' ? 20 * 4 : undefined}
                                 placeholder={
                                     'You can share why you are here in Tembusu, ' +
                                     'Interest Groups/ Committees that you are in, ' +

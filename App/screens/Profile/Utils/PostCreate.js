@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {
     ActivityIndicator,
     Image,
+    Keyboard,
+    Platform,
     ScrollView,
     StyleSheet,
     TextInput,
@@ -33,6 +35,8 @@ class PostCreate extends Component {
         successPopupVisible: false,
         failurePopupVisible: false,
         editImageVisible: false,
+
+        keyboardHeight: 0,
     };
 
     componentDidMount() {
@@ -63,6 +67,31 @@ class PostCreate extends Component {
                 />
             ),
         });
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide
+        );
+    }
+
+    _keyboardDidShow = (event) => {
+        this.setState({
+            keyboardHeight: event.endCoordinates.height,
+        });
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({
+            keyboardHeight: 0,
+        });
+    };
+
+    componentWillUnmount() {
+        this.keyboardDidHideListener.remove();
+        this.keyboardDidShowListener.remove();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -330,7 +359,15 @@ class PostCreate extends Component {
     render() {
         const { myName, profileImg, profileData, isPrivate, body, postImg } = this.state;
         return (
-            <View style={styles.container}>
+            <View
+                style={[
+                    styles.container,
+                    {
+                        paddingBottom:
+                            Platform.OS === 'ios' ? this.state.keyboardHeight : undefined,
+                    },
+                ]}
+            >
                 {this.renderDiscardPostPopup()}
                 {this.renderFailurePopup()}
                 {this.renderUploading()}
@@ -375,6 +412,7 @@ class PostCreate extends Component {
                         autoCapitalize={'sentences'}
                         onChangeText={this.handleText}
                         autoCorrect={true}
+                        scrollEnabled={false}
                     />
                     {postImg ? (
                         <TouchableOpacity onPress={this.toggleImageEdit}>
@@ -384,7 +422,7 @@ class PostCreate extends Component {
                                     width: '100%',
                                     aspectRatio: this.state.imgRatio,
                                     resizeMode: 'contain',
-                                    marginBottom: 5,
+                                    marginVertical: 20,
                                 }}
                             />
                         </TouchableOpacity>
@@ -437,14 +475,13 @@ const styles = StyleSheet.create({
         fontFamily: MAIN_FONT,
         fontSize: 15,
         fontWeight: '100',
-        paddingBottom: 20,
     },
     imgOptions: {
         borderStyle: 'dashed',
         borderWidth: 2,
         borderColor: Colors.appGray2,
         borderRadius: 5,
-        marginBottom: 5,
+        marginVertical: 20,
 
         height: 50,
         width: '100%',
