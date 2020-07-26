@@ -76,8 +76,12 @@ class MyQR extends Component {
         }
         return (
             <QRCode
-                logo={userData ? { uri: userData.profileImg } : require('assets/images/logo.png')}
-                logoSize={70}
+                logo={
+                    userData.profileImg
+                        ? { uri: userData.profileImg }
+                        : require('assets/images/logo.png')
+                }
+                logoSize={60}
                 size={250}
                 ecl={'Q'}
                 backgroundImage={require('assets/images/misc/QR_background.jpg')}

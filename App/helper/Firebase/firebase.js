@@ -186,7 +186,7 @@ const Firebase = {
 
         const postRef = firebase.firestore().collection(`posts/${uid}/userPosts`).doc(postId);
 
-        const toAdd = { uid, postId, writtenTo, reportedBy };
+        const toAdd = { uid, postId, writtenTo, reportedBy, date: new Date().valueOf() };
 
         return reportRef
             .update({

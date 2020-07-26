@@ -11,7 +11,8 @@ import { AllModules, MyModules } from './ModulesUtil';
 class ModuleEdit extends Component {
     state = {
         isLoading: true,
-        searchTerm: '',
+        allSearchTerm: '',
+        mySearchTerm: '',
 
         filteredData: [],
         filteredSelectedCodes: [],
@@ -97,31 +98,43 @@ class ModuleEdit extends Component {
             .finally(() => this.setState({ isLoading: false }));
     };
 
-    setSearchTerm = (text) => {
-        this.setState(
-            {
-                searchTerm: text,
-                allLoaded: false,
-                myLoaded: false,
-            },
-            () => this.search()
-        );
+    setSearchTerm = (text, isAllModulesTab) => {
+        if (isAllModulesTab) {
+            this.setState(
+                {
+                    allSearchTerm: text,
+                    allLoaded: false,
+                    myLoaded: false,
+                },
+                () => this.search()
+            );
+        } else {
+            this.setState(
+                {
+                    mySearchTerm: text,
+                    allLoaded: false,
+                    myLoaded: false,
+                },
+                () => this.search()
+            );
+        }
     };
     setIndex = (index) => {
         this.setState(
             {
                 index: index,
             },
-            () => this.search()
+            this.search
         );
     };
 
     search = () => {
-        const searchTerm = this.state.searchTerm;
         const key = this.state.routes[this.state.index].key;
         if (key === 'allMods') {
+            const searchTerm = this.state.allSearchTerm;
             return this.filterAllMods(searchTerm);
         } else if (key === 'myMods') {
+            const searchTerm = this.state.mySearchTerm;
             return this.filterSelected(searchTerm);
         }
     };
@@ -264,7 +277,7 @@ class ModuleEdit extends Component {
                     <AllModules
                         select={this.select}
                         filteredData={this.state.filteredData}
-                        searchTerm={this.state.searchTerm}
+                        searchTerm={this.state.allSearchTerm}
                     />
                 );
             case 'myMods':
@@ -273,22 +286,23 @@ class ModuleEdit extends Component {
                         filteredSelectedCodes={this.state.filteredSelectedCodes}
                         filteredSelectedNames={this.state.filteredSelectedNames}
                         unselect={this.unselect}
-                        searchTerm={this.state.searchTerm}
+                        searchTerm={this.state.mySearchTerm}
                     />
                 );
         }
     };
 
     render() {
-        const { searchTerm, index, routes } = this.state;
+        const { allSearchTerm, mySearchTerm, index, routes } = this.state;
+        const isAllModulesTab = routes[index].key === 'allMods';
         return (
             <View style={{ flex: 1, backgroundColor: Colors.appWhite }}>
                 {this.renderModuleLimitPopup()}
                 {this.renderExitConfirmationPopup()}
                 <SearchBar
-                    value={searchTerm}
-                    onChangeText={this.setSearchTerm}
-                    onCancel={() => this.setSearchTerm('')}
+                    value={isAllModulesTab ? allSearchTerm : mySearchTerm}
+                    onChangeText={(text) => this.setSearchTerm(text, isAllModulesTab)}
+                    onCancel={() => this.setSearchTerm('', isAllModulesTab)}
                     style={{ marginTop: 15, marginBottom: 5 }}
                 />
                 <TabView

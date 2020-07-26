@@ -27,7 +27,7 @@ class ReportsControl extends Component {
         return this.props.firebase
             .getPostReport()
             .then((data) => {
-                this.setState({ data });
+                this.setState({ data: data.sort((a, b) => a.date < b.date) });
             })
             .catch((error) => console.log('Get Post report', error))
             .finally(() => this.setState({ isLoading: false }));

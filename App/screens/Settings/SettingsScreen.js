@@ -38,24 +38,17 @@ class SettingsScreen extends Component {
 
     confirmChanges = () => {
         const { disableFriendNotification, disablePostNotifications } = this.state;
-        let changes = {};
-        let hasChanges = false;
         if (
             disableFriendNotification !==
-            !!this.props.userData.pushPermissions?.disableFriendNotification
-        ) {
-            changes.disableFriendNotification = disableFriendNotification;
-            hasChanges = true;
-        }
-        if (
+                !!this.props.userData.pushPermissions?.disableFriendNotification ||
             disablePostNotifications !==
-            !!this.props.userData.pushPermissions?.disablePostNotifications
+                !!this.props.userData.pushPermissions?.disablePostNotifications
         ) {
-            changes.disablePostNotifications = disablePostNotifications;
-            hasChanges = true;
-        }
+            const changes = {
+                disableFriendNotification,
+                disablePostNotifications,
+            };
 
-        if (hasChanges) {
             return this.props.updatePermissions(this.props.userData.uid, changes);
         }
     };

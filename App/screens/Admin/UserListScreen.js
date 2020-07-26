@@ -203,9 +203,10 @@ class UserListScreen extends Component {
                                     onPress={() => {
                                         this.users[index].isAdmin = true;
                                         this.setSearchValue(this.state.searchValue);
-                                        return this.props.firebase
-                                            .updateUserData(targetUser, { admin: true })
-                                            .then(this.closeAdminSettingsPopup);
+                                        this.closeAdminSettingsPopup();
+                                        return this.props.firebase.updateUserData(targetUser, {
+                                            admin: true,
+                                        });
                                     }}
                                 />
                                 <Popup.Separator />
@@ -228,9 +229,10 @@ class UserListScreen extends Component {
                                     onPress={() => {
                                         this.users[index].isVerified = false;
                                         this.setSearchValue(this.state.searchValue);
-                                        return this.props.firebase
-                                            .updateUserData(targetUser, { verified: false })
-                                            .then(this.closeAdminSettingsPopup);
+                                        this.closeAdminSettingsPopup();
+                                        return this.props.firebase.updateUserData(targetUser, {
+                                            verified: false,
+                                        });
                                     }}
                                 />
                                 {!isAdmin && <Popup.Separator />}
@@ -252,9 +254,10 @@ class UserListScreen extends Component {
                                     onPress={() => {
                                         this.users[index].isVerified = true;
                                         this.setSearchValue(this.state.searchValue);
-                                        return this.props.firebase
-                                            .updateUserData(targetUser, { verified: true })
-                                            .then(this.closeAdminSettingsPopup);
+                                        this.closeAdminSettingsPopup();
+                                        return this.props.firebase.updateUserData(targetUser, {
+                                            verified: true,
+                                        });
                                     }}
                                 />
                                 {!isAdmin && <Popup.Separator />}
@@ -276,9 +279,10 @@ class UserListScreen extends Component {
                                 onPress={() => {
                                     this.users[index].isDisabled = false;
                                     this.setSearchValue(this.state.searchValue);
-                                    return this.props.firebase
-                                        .updateUserData(targetUser, { disabled: false })
-                                        .then(this.closeAdminSettingsPopup);
+                                    this.closeAdminSettingsPopup();
+                                    return this.props.firebase.updateUserData(targetUser, {
+                                        disabled: false,
+                                    });
                                 }}
                             />
                         ) : !isAdmin ? (
@@ -297,9 +301,10 @@ class UserListScreen extends Component {
                                 onPress={() => {
                                     this.users[index].isDisabled = true;
                                     this.setSearchValue(this.state.searchValue);
-                                    return this.props.firebase
-                                        .updateUserData(targetUser, { disabled: true })
-                                        .then(this.closeAdminSettingsPopup);
+                                    this.closeAdminSettingsPopup();
+                                    return this.props.firebase.updateUserData(targetUser, {
+                                        disabled: true,
+                                    });
                                 }}
                             />
                         ) : null}

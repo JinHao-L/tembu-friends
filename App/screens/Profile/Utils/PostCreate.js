@@ -412,7 +412,7 @@ class PostCreate extends Component {
                         autoCapitalize={'sentences'}
                         onChangeText={this.handleText}
                         autoCorrect={true}
-                        scrollEnabled={false}
+                        scrollEnabled={true}
                     />
                     {postImg ? (
                         <TouchableOpacity onPress={this.toggleImageEdit}>
