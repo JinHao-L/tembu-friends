@@ -15,24 +15,23 @@ A social app for Tembusians (An Apollo-11 Project)
 -   Posting capabilities
 -   Search feature
 -   Adding friends
-
-## Upcoming features
-
 -   Notifications
--   QR generator and QR scanner
+-   Custom QR generator and QR scanner
 -   Settings
     -   Notification settings
-    -   Help/Contact
-    -   About Us
+    -   FAQ
+    -   Contact Us
 -   Admin features
+    -   User list (Verify, ban or make users admin)
+    -   Posts' report handling
 
-## Existing bugs
+## App Demo
 
-1.  Textstyle of picker is different from Text inputs (profile-edit)
-2.  View for iOS differs from Android
-    - Popup not showing
-    - Some buttons not responsive
-    - Header back title covers text
+Hosted on Expo server. [(link)](https://expo.io/@tembufriends/TembuFriends)
+
+(*NUS email is required to use the app)
+
+(*Due to Apple limitation, expo-hosted apps are not accessible by iOS system. You can reach out to us to request for a workaround to test the app)
 
 ## Navigation flow
 
