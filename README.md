@@ -120,4 +120,6 @@ View it here: [link](https://github.com/JinHao-L/tembufriends-functions)
 
 ## License
 
-NIL
+Copyright 2020 Jin Hao and Sebastian Png.
+
+Licensed under the MIT License
