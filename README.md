@@ -27,7 +27,9 @@ A social app for Tembusians (An Apollo-11 Project)
 
 ## App Demo
 
-Hosted on Expo server. [(link)](https://expo.io/@tembufriends/TembuFriends)
+[Watch the demo](https://www.youtube.com/watch?v=vYg_Eed1BIs)
+
+Hosted on Expo server. [(prototype)](https://expo.io/@tembufriends/TembuFriends)
 
 (*NUS email is required to use the app)
 
