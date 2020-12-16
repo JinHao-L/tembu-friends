@@ -4,6 +4,16 @@ A social app for Tembusians (An Apollo-11 Project)
 
 ![App Poster](https://i.imgur.com/e6QMP4f.png)
 
+## Demo
+
+[![Watch the demo on Youtube](https://i.ibb.co/yPKNb1L/image.png)](https://www.youtube.com/watch?v=vYg_Eed1BIs)
+
+Hosted on Expo server: [(here)](https://expo.io/@tembufriends/TembuFriends)
+
+(*NUS email is required to use the app)
+
+(*Due to Apple limitation, expo-hosted apps are not accessible by iOS system.)
+
 ## Implemented features
 
 -   Authentication Flow
@@ -24,16 +34,6 @@ A social app for Tembusians (An Apollo-11 Project)
 -   Admin features
     -   User list (Verify, ban or make users admin)
     -   Posts' report handling
-
-## App Demo
-
-[Watch the demo](https://www.youtube.com/watch?v=vYg_Eed1BIs)
-
-Hosted on Expo server. [(prototype)](https://expo.io/@tembufriends/TembuFriends)
-
-(*NUS email is required to use the app)
-
-(*Due to Apple limitation, expo-hosted apps are not accessible by iOS system. You can reach out to us to request for a workaround to test the app)
 
 ## Navigation flow
 
@@ -69,37 +69,35 @@ Hosted on Expo server. [(prototype)](https://expo.io/@tembufriends/TembuFriends)
         └── Menu Nav                            # Navigable content from explore feature
             ├── Menu Screen                     # Initial route
             │
-            ├── Profile (My Profile)        # Called from My Profile button
+            ├── Profile (My Profile)            # Called from My Profile button
             |   |
             │   ├── My Profile
-            │   │   └── Edit Profile
+            │   │   └── Edit Profile            # Edit profile info
             │   │       └── Edit Modules
             │   │
-            │   ├── Visit Other Profiles
-            │   │   └── Write Posts
-            │   │
-            │   ├── Friends
-            |   |
-            ├── Profile (Friends)           # Called from Friends button
+            │   └── Visit Other Profiles        # Visit other user through their posts
+            │       └── Write Posts
+            |   
+            ├── Friend List                     # Called from Friends button
             │
             ├── QR code
-            │   ├── My QR                       # Not implemented yet
-            │   └── QR Scanner                  # Not implemented yet
+            │   ├── My QR                       # To view QR code/ save it in gallery
+            │   └── QR Scanner                  # Use camera to scan QR image
             │
             ├── Settings Nav
-            │   ├── Notifications settings      # Not implemented yet
-            │   ├── Help                        # Not implemented yet
-            │   └── About Us                    # Not implemented yet
+            │   ├── Notifications settings      # To disable/enable notifications
+            │   ├── Help                        # Common FAQs about the app usage
+            │   └── About Us                    # Short description about the creator
             │
             ├── Admin Nav
-            │   ├── Reports                     # Not implemented yet
-            │   └── User list                   # Not implemented yet
+            │   ├── Reports                     # To verify and review reported posts
+            │   └── User list                   # To view, ban users or make users admin
             │
-            ├── Delete Screen                   # Testing feature
+            ├── Delete Screen                   # For account creation testing
             │
-            └── Logout                          # Home tab is no longer defined and Auth nav is defined instead
+            └── Logout                          # Return to Auth Nav
 
-See [navigation](https://github.com/JinHao-L/tembu-friends/tree/master/App/navigation) and [screens](https://github.com/JinHao-L/tembu-friends/tree/master/App/screens)
+For source code, see [navigations](https://github.com/JinHao-L/tembu-friends/tree/master/App/navigation) and [screens](https://github.com/JinHao-L/tembu-friends/tree/master/App/screens)
 
 ## Backend
 
@@ -110,8 +108,7 @@ View it here: [link](https://github.com/JinHao-L/tembufriends-functions)
 
 ## Tech Stack
 
--   Language: JavaScript
--   Environment: Node.js
+-   Language: JavaScript (Node.js)
 -   Framework: React Native
 -   Technologies:
     -   Expo
