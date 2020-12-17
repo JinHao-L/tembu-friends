@@ -2,7 +2,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 
 import Popup from '../Popup';
-import { fireEvent, render } from 'react-native-testing-library';
+import { fireEvent, render } from '@testing-library/react-native';
 
 describe('<Popup/>', () => {
     it('renders correctly', () => {
