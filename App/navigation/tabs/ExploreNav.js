@@ -44,7 +44,7 @@ function ExploreNav() {
                     <Icon name={'ios-arrow-back'} size={26} color={Colors.appWhite} />
                 ),
                 headerBackTitleVisible: false,
-                headerLeftContainerStyle: { marginLeft: Platform.OS === 'ios' ? 20 : 5 },
+                headerLeftContainerStyle: { marginLeft: Platform.OS === 'ios' ? 20 : 0 },
             }}
         >
             <ExploreStack.Screen

@@ -34,7 +34,7 @@ class ModuleEdit extends Component {
         myLoaded: false,
         changes: false,
     };
-    year = '2019-2020';
+    year = '2020-2021';
     allData = [];
     limit = 50;
 
@@ -43,6 +43,7 @@ class ModuleEdit extends Component {
             headerLeft: () => (
                 <HeaderBackButton
                     onPress={this.backButtonPressed}
+                    pressColorAndroid={Colors.appWhite}
                     labelVisible={false}
                     backImage={() => (
                         <Icon

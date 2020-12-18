@@ -37,13 +37,15 @@ class ReportsControl extends Component {
         return (
             <ListItem
                 containerStyle={styles.reportContainer}
-                contentContainerStyle={styles.reportContentContainer}
-                title={'Report ' + item.postId}
-                titleStyle={styles.title}
-                subtitle={'Reported by: ' + item.reportedBy}
-                subtitleStyle={styles.subtitle}
                 onPress={this.state.fetchingPost ? undefined : () => this.showPost(item, index)}
-            />
+            >
+                <ListItem.Content style={styles.reportContentContainer}>
+                    <ListItem.Title style={styles.title}>{'Report ' + item.postId}</ListItem.Title>
+                    <ListItem.Subtitle style={styles.subtitle}>
+                        {'Reported by: ' + item.reportedBy}
+                    </ListItem.Subtitle>
+                </ListItem.Content>
+            </ListItem>
         );
     };
 

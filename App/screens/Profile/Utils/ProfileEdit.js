@@ -20,7 +20,7 @@ import { HeaderBackButton } from '@react-navigation/stack';
 import { Colors, Layout, MAIN_FONT } from 'constant';
 import { withFirebase } from 'helper/Firebase';
 import { MainText, Popup, RadioButton } from 'components';
-import { updateProfile } from 'redux';
+import { updateProfile } from 'app/redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -57,6 +57,7 @@ class ProfileEdit extends Component {
             headerLeft: () => (
                 <HeaderBackButton
                     onPress={this.toggleExitConfirmationPopup}
+                    pressColorAndroid={Colors.appWhite}
                     labelVisible={false}
                     backImage={() => (
                         <Icon
@@ -106,7 +107,7 @@ class ProfileEdit extends Component {
     }
 
     onChangeBannerImgPress = async () => {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to get a profile picture!');
             return;
@@ -123,10 +124,11 @@ class ProfileEdit extends Component {
             this.setState({
                 bannerImg: result.uri,
             });
+            this.editsDetected();
         }
     };
     onChangeProfileImgPress = async () => {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to get a profile picture!');
             return;
@@ -143,6 +145,7 @@ class ProfileEdit extends Component {
             this.setState({
                 profileImg: result.uri,
             });
+            this.editsDetected();
         }
     };
     uploadImage = async (uri, type) => {
@@ -726,19 +729,17 @@ class ProfileEdit extends Component {
                                 ? { uri: profileImg }
                                 : require('assets/images/default/profile.png')
                         }
-                        showAccessory={true}
-                        accessory={{
-                            containerStyle: {
-                                bottom: 5,
-                            },
-                            raised: true,
-                            size: 12,
-                            name: 'add-a-photo',
-                            color: Colors.appGreen,
-                            overlayColor: Colors.appWhite,
-                            onPress: this.onChangeProfileImgPress,
-                        }}
-                    />
+                    >
+                        <Avatar.Accessory
+                            containerStyle={{ bottom: 5 }}
+                            raised={true}
+                            size={17}
+                            name={'add-a-photo'}
+                            color={Colors.appGreen}
+                            overlayColor={Colors.appWhite}
+                            onPress={this.onChangeProfileImgPress}
+                        />
+                    </Avatar>
 
                     <View style={styles.box}>
                         <MainText style={styles.label}>First Name</MainText>
@@ -937,11 +938,15 @@ class ProfileEdit extends Component {
                                 moduleCodes.map((item, index) => (
                                     <ListItem
                                         key={item}
-                                        leftElement={<MainText>•</MainText>}
-                                        title={`${item} ${moduleNames[index]}`}
-                                        titleStyle={styles.text}
                                         containerStyle={{ padding: 0, paddingBottom: 1 }}
-                                    />
+                                    >
+                                        {<MainText>•</MainText>}
+                                        <ListItem.Content>
+                                            <ListItem.Title style={styles.text}>
+                                                {`${item} ${moduleNames[index]}`}
+                                            </ListItem.Title>
+                                        </ListItem.Content>
+                                    </ListItem>
                                 ))
                             )}
                         </View>

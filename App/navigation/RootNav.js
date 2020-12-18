@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
 
-import { fetchUserData, updateProfile, listenFriendList, clearCache } from 'redux';
+import { fetchUserData, updateProfile, listenFriendList, clearCache } from 'app/redux';
 import { withFirebase } from 'helper/Firebase';
 import PushNotifications from 'helper/PushNotification';
 import { AppLogo } from 'components';
@@ -21,18 +21,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchUserData: () => {
-            dispatch(fetchUserData());
-        },
-        updateToken: (uid, token) => {
-            dispatch(updateProfile(uid, { expoPushToken: token }));
-        },
-        listenFriendList: (uid) => {
-            dispatch(listenFriendList(uid));
-        },
-        clearCache: () => {
-            dispatch(clearCache());
-        },
+        fetchUserData: () => dispatch(fetchUserData()),
+        updateToken: (uid, token) => dispatch(updateProfile(uid, { expoPushToken: token })),
+        listenFriendList: (uid) => dispatch(listenFriendList(uid)),
+        clearCache: () => dispatch(clearCache()),
     };
 };
 const RootStack = createStackNavigator();

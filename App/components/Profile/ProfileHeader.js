@@ -83,18 +83,18 @@ function ProfileHeader({
                             ? { uri: profileImg }
                             : require('assets/images/default/profile.png')
                     }
-                    showAccessory
-                    accessory={{
-                        color: getStatusColor(statusType),
-                        size: 22,
-                        name: 'lens',
-                        style: {
+                >
+                    <Avatar.Accessory
+                        onPress={onAccessoryPress}
+                        color={getStatusColor(statusType)}
+                        size={22}
+                        name={'lens'}
+                        style={{
                             backgroundColor: Colors.appWhite,
                             borderRadius: 50,
-                        },
-                    }}
-                    onAccessoryPress={onAccessoryPress}
-                />
+                        }}
+                    />
+                </Avatar>
                 {button}
             </View>
             <View style={[styles.box, { paddingTop: 0 }]}>
@@ -151,19 +151,14 @@ function ProfileHeader({
                         <MainText style={styles.emptyText}>No modules taken</MainText>
                     ) : (
                         moduleCodes.map((item, index) => (
-                            <ListItem
-                                key={item}
-                                leftElement={<MainText>•</MainText>}
-                                title={`${item} ${moduleNames[index]}`}
-                                titleStyle={{
-                                    fontFamily: MAIN_FONT,
-                                    fontSize: 13,
-                                }}
-                                containerStyle={{
-                                    padding: 0,
-                                    paddingBottom: 1,
-                                }}
-                            />
+                            <ListItem key={item} containerStyle={{ padding: 0, paddingBottom: 1 }}>
+                                <MainText>•</MainText>
+                                <ListItem.Content>
+                                    <ListItem.Title style={{ fontFamily: MAIN_FONT, fontSize: 13 }}>
+                                        {`${item} ${moduleNames[index]}`}
+                                    </ListItem.Title>
+                                </ListItem.Content>
+                            </ListItem>
                         ))
                     )}
                 </ScrollView>

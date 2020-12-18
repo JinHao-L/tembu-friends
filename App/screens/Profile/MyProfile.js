@@ -6,7 +6,7 @@ import { Button } from 'react-native-elements';
 import { MainText, Popup, ProfilePost, ProfileHeader, GreenButton } from 'components';
 import { Colors, MAIN_FONT } from 'constant';
 import { withFirebase } from 'helper/Firebase';
-import { fetchUserData, updateProfile } from 'redux';
+import { fetchUserData, updateProfile } from 'app/redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -14,12 +14,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchUserData: () => {
-            dispatch(fetchUserData());
-        },
-        updateStatus: (uid, status) => {
-            dispatch(updateProfile(uid, { statusType: status }));
-        },
+        fetchUserData: () => dispatch(fetchUserData()),
+        updateStatus: (uid, status) => dispatch(updateProfile(uid, { statusType: status })),
     };
 };
 

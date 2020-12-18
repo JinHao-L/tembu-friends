@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
+import { default as thunk } from 'redux-thunk';
 
 //
 // Initial State
@@ -62,5 +62,5 @@ const dataReducer = (state = initialState, action) => {
 // Store
 //
 
-const store = createStore(dataReducer, applyMiddleware(thunkMiddleware));
+const store = createStore(dataReducer, applyMiddleware(thunk));
 export default store;

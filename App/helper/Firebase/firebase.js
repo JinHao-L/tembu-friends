@@ -10,7 +10,7 @@ import {
     MESSAGE_SENDER_ID,
     APP_ID,
     MEASUREMENT_ID,
-} from 'react-native-dotenv';
+} from '@env';
 import PushNotifications from '../PushNotification';
 
 const firebaseConfig = {

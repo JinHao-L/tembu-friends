@@ -49,7 +49,7 @@ class ScanQR extends Component {
             message: '',
             canScan: false,
         });
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to get a QR code picture!');
             return;

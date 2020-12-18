@@ -83,7 +83,6 @@ function ProfilePost({
                 <Avatar
                     size={35}
                     rounded
-                    title={sender_name[0]}
                     source={
                         sender_img
                             ? { uri: sender_img }

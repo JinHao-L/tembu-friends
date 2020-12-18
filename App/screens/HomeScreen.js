@@ -72,7 +72,6 @@ class HomeScreen extends Component {
                             width: 26,
                             height: 26,
                         }}
-                        iconStyle={{ right: 1 }}
                     />
                     {loading ? (
                         <ActivityIndicator
@@ -105,7 +104,6 @@ class HomeScreen extends Component {
                             width: 26,
                             height: 26,
                         }}
-                        iconStyle={{ left: 1 }}
                     />
                 </View>
                 <WebView

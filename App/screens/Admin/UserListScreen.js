@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { ListItem, Button, Icon } from 'react-native-elements';
+import { ListItem, Button, Icon, Avatar } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { Colors, MAIN_FONT } from 'constant';
@@ -98,28 +98,8 @@ class UserListScreen extends Component {
                     styles.outerContainer,
                     isDisabled && { backgroundColor: 'rgba(255, 0, 0, 0.25)' },
                 ]}
-                title={displayName || 'undefined'}
-                titleStyle={styles.titleStyle}
-                underlayColor={isDisabled ? Colors.appGray4 : undefined}
-                subtitle={
-                    <MainText style={styles.subtitleStyle}>
-                        {email}
-                        <Text style={styles.unverifiedText}>
-                            {!emailVerified ? ' (Unverified)' : ''}
-                        </Text>
-                    </MainText>
-                }
-                subtitleStyle={styles.subtitleStyle}
-                leftAvatar={{
-                    rounded: true,
-                    size: 50,
-                    source: photoURL
-                        ? { uri: photoURL }
-                        : require('../../assets/images/default/profile.png'),
-                }}
-                rightElement={this.renderBadges(isVerified, isAdmin)}
                 onPress={() => {
-                    return this.setState({
+                    this.setState({
                         adminSettingsVisible: true,
                         targetUser: uid,
                         isAdmin: isAdmin,
@@ -129,7 +109,32 @@ class UserListScreen extends Component {
                         index: index,
                     });
                 }}
-            />
+                underlayColor={isDisabled ? Colors.appGray4 : undefined}
+            >
+                <Avatar
+                    rounded
+                    size={50}
+                    source={
+                        photoURL
+                            ? { uri: photoURL }
+                            : require('../../assets/images/default/profile.png')
+                    }
+                />
+                <ListItem.Content>
+                    <ListItem.Title style={styles.titleStyle}>
+                        {displayName || 'undefined'}
+                    </ListItem.Title>
+                    <ListItem.Subtitle>
+                        <MainText style={styles.subtitleStyle}>
+                            {email}
+                            <Text style={styles.unverifiedText}>
+                                {!emailVerified ? ' (Unverified)' : ''}
+                            </Text>
+                        </MainText>
+                    </ListItem.Subtitle>
+                </ListItem.Content>
+                {this.renderBadges(isVerified, isAdmin)}
+            </ListItem>
         );
     };
     renderBadges = (isVerified, isAdmin) => {

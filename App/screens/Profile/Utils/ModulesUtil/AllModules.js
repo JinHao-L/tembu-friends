@@ -28,21 +28,21 @@ class AllModules extends Component {
 
     renderItem = (moduleCode, moduleName) => {
         return (
-            <ListItem
-                title={moduleCode}
-                titleStyle={styles.titleStyle}
-                subtitle={moduleName}
-                subtitleStyle={styles.subtitleStyle}
-                checkBox={{
-                    iconType: 'material',
-                    checkedIcon: 'remove',
-                    uncheckedIcon: 'add',
-                    checkedColor: Colors.appGreen,
-                    uncheckedColor: Colors.appGreen,
-                    checked: false,
-                    onPress: () => this.props.select(moduleCode, moduleName),
-                }}
-            />
+            <ListItem>
+                <ListItem.Content>
+                    <ListItem.Title style={styles.titleStyle}>{moduleCode}</ListItem.Title>
+                    <ListItem.Subtitle style={styles.subtitleStyle}>{moduleName}</ListItem.Subtitle>
+                </ListItem.Content>
+                <ListItem.CheckBox
+                    checked={false}
+                    iconType={'material'}
+                    checkedIcon={'remove'}
+                    uncheckedIcon={'add'}
+                    checkedColor={Colors.appGreen}
+                    uncheckedColor={Colors.appGreen}
+                    onPress={() => this.props.select(moduleCode, moduleName)}
+                />
+            </ListItem>
         );
     };
 

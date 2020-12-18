@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { Avatar, ListItem } from 'react-native-elements';
 
 import { MainText } from '../Commons';
 import { Colors } from 'constant';
@@ -53,57 +53,58 @@ function NotificationItem({
     return (
         <ListItem
             containerStyle={seen ? styles.notificationItemSeen : styles.notificationItem}
-            title={
-                titleSpread ? (
-                    <View style={{ flexDirection: 'row', width: '100%' }}>
-                        <MainText style={styles.titleText}>{message}</MainText>
-                        <MainText style={[styles.dateTimeText]}>
-                            {timeDifference(timeCreated)}
-                        </MainText>
-                    </View>
-                ) : (
-                    <MainText style={styles.titleText}>
-                        {message}{' '}
-                        <MainText style={styles.dateTimeText}>
-                            {timeDifference(timeCreated)}
-                        </MainText>
-                    </MainText>
-                )
-            }
-            titleStyle={{ color: Colors.appWhite }}
             underlayColor={Colors.appGray2}
-            subtitle={subtitleElement}
-            leftAvatar={{
-                rounded: true,
-                source: avatarImg
-                    ? { uri: avatarImg }
-                    : require('assets/images/default/profile.png'),
-                showAccessory: !!accessoryIcon,
-                accessory: {
-                    name: accessoryIcon,
-                    type: 'material-community',
-                    underlayColor: Colors.appWhite,
-                    color: Colors.appWhite,
-                    style: { backgroundColor: Colors.appGreen, borderRadius: 50 },
-                },
-                size: 50,
-                onPress: avatarOnPress,
-                overlayContainerStyle: {
-                    backgroundColor: Colors.appWhite,
-                },
-                containerStyle: {
-                    alignSelf: 'flex-start',
-                },
-            }}
             onPress={onPress}
             onLongPress={onLongPress}
             testID={'listitem'}
-        />
+        >
+            <Avatar
+                rounded
+                size={50}
+                source={
+                    avatarImg ? { uri: avatarImg } : require('assets/images/default/profile.png')
+                }
+                onPress={avatarOnPress}
+                overlayContainerStyle={{ backgroundColor: Colors.appWhite }}
+                containerStyle={{ alignSelf: 'flex-start' }}
+            >
+                {accessoryIcon && (
+                    <Avatar.Accessory
+                        name={accessoryIcon}
+                        type={'material-community'}
+                        underlayColor={Colors.appWhite}
+                        color={Colors.appWhite}
+                        style={{ backgroundColor: Colors.appGreen, borderRadius: 50 }}
+                    />
+                )}
+            </Avatar>
+            <ListItem.Content style={{ alignContent: 'center', flexDirection: 'row' }}>
+                <ListItem.Title style={{ color: Colors.appWhite }}>
+                    {titleSpread ? (
+                        <MainText style={styles.titleText}>
+                            {message}
+                            <MainText style={[styles.dateTimeText]}>
+                                {timeDifference(timeCreated)}
+                            </MainText>
+                        </MainText>
+                    ) : (
+                        <MainText style={styles.titleText}>
+                            {message}{' '}
+                            <MainText style={styles.dateTimeText}>
+                                {timeDifference(timeCreated)}
+                            </MainText>
+                        </MainText>
+                    )}
+                </ListItem.Title>
+                <ListItem.Subtitle>{subtitleElement}</ListItem.Subtitle>
+            </ListItem.Content>
+        </ListItem>
     );
 }
 
 const styles = StyleSheet.create({
     titleText: {
+        color: Colors.appBlack,
         fontSize: 14,
         fontWeight: '600',
     },

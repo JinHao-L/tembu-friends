@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { Avatar, ListItem } from 'react-native-elements';
 
 import { Colors, MAIN_FONT } from 'constant';
 
@@ -8,19 +8,21 @@ const UserItem = ({ name, profileImg, onPress, style, textStyle, rightElement = 
     return (
         <ListItem
             containerStyle={[styles.outerContainer, style]}
-            leftAvatar={{
-                rounded: true,
-                size: 50,
-                source: profileImg
-                    ? { uri: profileImg }
-                    : require('assets/images/default/profile.png'),
-            }}
-            title={name}
-            titleStyle={[styles.text, textStyle]}
-            rightElement={rightElement}
             onPress={onPress}
             testID={'UserItem'}
-        />
+        >
+            <Avatar
+                rounded={true}
+                size={50}
+                source={
+                    profileImg ? { uri: profileImg } : require('assets/images/default/profile.png')
+                }
+            />
+            <ListItem.Content style={{ alignContent: 'center' }}>
+                <ListItem.Title style={[styles.text, textStyle]}>{name}</ListItem.Title>
+            </ListItem.Content>
+            {rightElement}
+        </ListItem>
     );
 };
 

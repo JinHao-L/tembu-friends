@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-elements';
+import { connect } from 'react-redux';
 
 import { MainText, NotificationItem } from 'components';
 import { withFirebase } from 'helper/Firebase';
-import { connect } from 'react-redux';
 import { MAIN_FONT, Colors } from 'constant';
 
 const mapStateToProps = (state) => {

@@ -44,6 +44,7 @@ class PostCreate extends Component {
             headerLeft: () => (
                 <HeaderBackButton
                     onPress={this.toggleDiscardPostPopup}
+                    pressColorAndroid={Colors.appWhite}
                     labelVisible={false}
                     backImage={() => (
                         <Icon
@@ -167,7 +168,7 @@ class PostCreate extends Component {
     };
 
     chooseImg = async () => {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Sorry, we need camera roll permissions to get a profile picture!');
             return;

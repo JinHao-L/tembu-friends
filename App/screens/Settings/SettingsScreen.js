@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Switch } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { MainText } from 'components';
 import { MAIN_FONT, Colors } from 'constant';
-import { updateProfile } from 'redux';
+import { updateProfile } from 'app/redux';
 
 const mapStateToProps = (state) => {
     return { userData: state.userData };
@@ -13,9 +13,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updatePermissions: (uid, permission) => {
-            dispatch(updateProfile(uid, { pushPermissions: permission }));
-        },
+        updatePermissions: (uid, permission) =>
+            dispatch(updateProfile(uid, { pushPermissions: permission })),
     };
 };
 
@@ -73,104 +72,92 @@ class SettingsScreen extends Component {
                     <View style={styles.sectionHeader}>
                         <MainText style={styles.sectionHeaderText}>Notifications</MainText>
                     </View>
-                    <ListItem
-                        title={'Friend Requests'}
-                        titleStyle={styles.title}
-                        containerStyle={styles.settingsItem}
-                        switch={{
-                            trackColor: { false: Colors.appRed, true: Colors.appGreen },
-                            value: !disableFriendNotification,
-                            onValueChange: () =>
+                    <ListItem containerStyle={styles.settingsItem}>
+                        <Image
+                            source={require('assets/images/menu/FriendsIcon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                            resizeMethod={'scale'}
+                        />
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.title}>Friend Requests</ListItem.Title>
+                        </ListItem.Content>
+                        <Switch
+                            trackColor={{ false: Colors.appRed, true: Colors.appGreen }}
+                            value={!disableFriendNotification}
+                            onValueChange={() =>
                                 this.setState({
                                     disableFriendNotification: !disableFriendNotification,
-                                }),
-                        }}
-                        leftIcon={
-                            <Image
-                                source={require('assets/images/menu/FriendsIcon.png')}
-                                style={styles.icon}
-                                resizeMode={'contain'}
-                                resizeMethod={'scale'}
-                            />
-                        }
-                    />
-                    <ListItem
-                        title={'Posts'}
-                        titleStyle={styles.title}
-                        containerStyle={styles.settingsItem}
-                        switch={{
-                            trackColor: { false: Colors.appRed, true: Colors.appGreen },
-                            value: !disablePostNotifications,
-                            onValueChange: () =>
+                                })
+                            }
+                        />
+                    </ListItem>
+                    <ListItem containerStyle={styles.settingsItem}>
+                        <Image
+                            source={require('assets/images/settings/post-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                            resizeMethod={'scale'}
+                        />
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.title}>Posts</ListItem.Title>
+                        </ListItem.Content>
+                        <Switch
+                            trackColor={{ false: Colors.appRed, true: Colors.appGreen }}
+                            value={!disablePostNotifications}
+                            onValueChange={() =>
                                 this.setState({
                                     disablePostNotifications: !disablePostNotifications,
-                                }),
-                        }}
-                        leftIcon={
-                            <Image
-                                source={require('assets/images/settings/post-icon.png')}
-                                style={styles.icon}
-                                resizeMode={'contain'}
-                                resizeMethod={'scale'}
-                            />
-                        }
-                    />
+                                })
+                            }
+                        />
+                    </ListItem>
                 </View>
                 <View>
                     <View style={styles.sectionHeader}>
                         <MainText style={styles.sectionHeaderText}>Support</MainText>
                     </View>
-                    <ListItem
-                        title={'Frequently Asked Questions'}
-                        titleStyle={styles.title}
-                        containerStyle={styles.settingsItem}
-                        onPress={this.goToFAQ}
-                        leftIcon={
-                            <Image
-                                source={require('assets/images/settings/FAQ-icon.png')}
-                                style={styles.icon}
-                                resizeMode={'contain'}
-                                resizeMethod={'scale'}
-                            />
-                        }
-                        rightIcon={
-                            <Image
-                                source={require('assets/images/settings/next-icon.png')}
-                                style={styles.nextIcon}
-                                resizeMode={'contain'}
-                            />
-                        }
-                    />
-                    <ListItem
-                        title={'Contact Us'}
-                        titleStyle={styles.title}
-                        containerStyle={styles.settingsItem}
-                        onPress={this.goToContactUs}
-                        leftIcon={
-                            <Image
-                                source={require('assets/images/settings/contact-us.png')}
-                                style={styles.icon}
-                                resizeMode={'contain'}
-                                resizeMethod={'scale'}
-                            />
-                        }
-                        rightIcon={
-                            <Image
-                                source={require('assets/images/settings/next-icon.png')}
-                                style={styles.nextIcon}
-                                resizeMode={'contain'}
-                            />
-                        }
-                    />
+                    <ListItem containerStyle={styles.settingsItem} onPress={this.goToFAQ}>
+                        <Image
+                            source={require('assets/images/settings/FAQ-icon.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                            resizeMethod={'scale'}
+                        />
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.title}>
+                                Frequently Asked Questions
+                            </ListItem.Title>
+                        </ListItem.Content>
+                        <Image
+                            source={require('assets/images/settings/next-icon.png')}
+                            style={styles.nextIcon}
+                            resizeMode={'contain'}
+                        />
+                    </ListItem>
+                    <ListItem containerStyle={styles.settingsItem} onPress={this.goToContactUs}>
+                        <Image
+                            source={require('assets/images/settings/contact-us.png')}
+                            style={styles.icon}
+                            resizeMode={'contain'}
+                            resizeMethod={'scale'}
+                        />
+                        <ListItem.Content>
+                            <ListItem.Title style={styles.title}>Contact Us</ListItem.Title>
+                        </ListItem.Content>
+                        <Image
+                            source={require('assets/images/settings/next-icon.png')}
+                            style={styles.nextIcon}
+                            resizeMode={'contain'}
+                        />
+                    </ListItem>
                 </View>
                 <View style={{ height: 30 }} />
-                <ListItem
-                    contentContainerStyle={{ alignItems: 'center' }}
-                    title={'Delete Account'}
-                    titleStyle={styles.deleteTitle}
-                    containerStyle={styles.deleteContainer}
-                    onPress={this.goToDelete}
-                />
+                <ListItem containerStyle={styles.deleteContainer} onPress={this.goToDelete}>
+                    <ListItem.Content style={{ alignItems: 'center' }}>
+                        <ListItem.Title style={styles.deleteTitle}>Delete Account</ListItem.Title>
+                    </ListItem.Content>
+                </ListItem>
             </View>
         );
     }
