@@ -4,6 +4,8 @@ A social app for Tembusians (An Apollo-11 Project)
 
 ![App Poster](https://i.imgur.com/e6QMP4f.png)
 
+For **detailed write-up**, see [Google Doc](https://docs.google.com/document/d/1QqdZvL2rQxd9YPI_1KxZBTe_RL20MkOKKq330yiCV4c/edit?usp=sharing)
+
 ## Demo
 
 [![Watch the demo on Youtube](https://i.ibb.co/yPKNb1L/image.png)](https://www.youtube.com/watch?v=vYg_Eed1BIs)
