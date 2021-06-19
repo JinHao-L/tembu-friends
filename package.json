@@ -41,7 +41,7 @@
         "expo-linear-gradient": "~8.4.0",
         "expo-notifications": "~0.8.2",
         "expo-sharing": "~8.5.0",
-        "firebase": "7.9.0",
+        "firebase": "7.24.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
