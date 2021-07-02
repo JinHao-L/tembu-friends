@@ -1828,10 +1828,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-picker/picker/-/picker-1.9.6.tgz#fb3e32af2346004013465d56f563ce403394f94d"
   integrity sha512-iA0BDq8nTosTWiZOLtOilKG79TctRHfqBQulPIVGMdkJBzd10ceqmwDY98MHGAGWayH7p//t4401vh7Mm6Q0IQ==
 
-"@react-navigation/bottom-tabs@^5.6.1":
-  version "5.11.2"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.11.2.tgz#5b541612fcecdea2a5024a4028da35e4a727bde6"
-  integrity sha512-7+hH00N9Ze74VcX8uYWVyXFXZ0Fwid+lG+SSLtmnJjk1Y6oIQpQ17EPqKO0UZlKKjhsvMlAnL5fdgFtoqnSjcA==
+"@react-navigation/bottom-tabs@^5.11.11":
+  version "5.11.11"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.11.11.tgz#ad4dfee4316522d8c05b5a8ad460f597bddb9e3c"
+  integrity sha512-hThj6Vfw+ITzAVj5TgLEoxkVEcBD+gYeieWOe6FryBRgokgKNCzFQzqArJ5UCmNMxklNH0rstJfcdyHflLuPtw==
   dependencies:
     color "^3.1.3"
     react-native-iphone-x-helper "^1.3.0"
